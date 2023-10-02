@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float health;
     private Rigidbody _rb;
     private Vector3 _movement;
     private Ray _ray;
@@ -26,15 +28,15 @@ public class PlayerController : MonoBehaviour
         }
         
         transform.Translate(_movement * moveSpeed * Time.deltaTime, Space.World);
+
+        if (health <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
-    private void FixedUpdate()
+    public void ChangeHealth(int healthValue)
     {
-        // if (Physics.Raycast(_ray, out _hit))
-        // {
-        //     transform.LookAt(new Vector3(_hit.point.x, transform.position.y, _hit.point.z));
-        // }
-        //
-        // transform.Translate(_movement * moveSpeed * Time.deltaTime, Space.World);
+        health += healthValue;
     }
 }

@@ -10,7 +10,6 @@ public class CameraController : MonoBehaviour
     
     void LateUpdate()
     {
-        // transform.position = Vector3.SmoothDamp(transform.position, target.position, ref movementSpeed, 0.3f);
         transform.position = Vector3.Lerp(transform.position, target.position + targetOffset,
             movementSpeed * Time.deltaTime);
     }

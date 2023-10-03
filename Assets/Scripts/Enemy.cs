@@ -13,6 +13,9 @@ public class Enemy : MonoBehaviour
     private float _normalSpeed;
     
     private PlayerController _player;
+
+    private ScoreManager _scoreManager;
+    
     
     // Start is called before the first frame update
     void Start()
@@ -20,6 +23,7 @@ public class Enemy : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
         _normalSpeed = speed;
+        _scoreManager = FindObjectOfType<ScoreManager>();
     }
 
     // Update is called once per frame
@@ -37,6 +41,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+            _scoreManager.Kill();
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);

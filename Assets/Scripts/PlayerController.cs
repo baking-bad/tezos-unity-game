@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,10 +11,13 @@ public class PlayerController : MonoBehaviour
     private Ray _ray;
     private RaycastHit _hit;
 
+    [SerializeField] private TMP_Text healthDisplay;
+
     // Start is called before the first frame update
     void Start()
     {
         // _rb = GetComponent<Rigidbody>();
+        healthDisplay.text = "HP: " + health;
     }
 
     // Update is called once per frame
@@ -38,5 +42,6 @@ public class PlayerController : MonoBehaviour
     public void ChangeHealth(float healthValue)
     {
         health += healthValue;
+        healthDisplay.text = "HP: " + health;
     }
 }

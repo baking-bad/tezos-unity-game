@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ChangeHealth(int healthValue)
+    public void ChangeHealth(float healthValue)
     {
         health += healthValue;
     }

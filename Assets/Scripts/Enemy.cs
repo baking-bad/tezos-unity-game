@@ -3,8 +3,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private float health;
-    [SerializeField] private int meleeDamage;
+    [SerializeField] public float health;
+    [SerializeField] public float meleeDamage;
     [SerializeField] private float startStopTime;
     [SerializeField] private float startTimeBtwAttack;
     

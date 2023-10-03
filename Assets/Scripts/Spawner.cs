@@ -29,7 +29,6 @@ public class Spawner : MonoBehaviour
             enemyScript.health = enemyHealth;
             enemyScript.meleeDamage = enemyDamage;
             
-            
             _timeBtwSpawn = startTimeBtwSpawn;
             if (startTimeBtwSpawn > minTime)
             {

@@ -167,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ce25341c73b54696a0b6ef2ab74cd57, type: 2}
+  - {fileID: 2100000, guid: 4a2ce938081cb4c7fb86fb1e3a667a00, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -217,11 +217,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b160f779d81b43b0a4f41c0bbd8f8cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
   health: 4
   meleeDamage: 5
+  speed: 4
   startStopTime: 0.03
   startTimeBtwAttack: 1
+  damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
 --- !u!136 &7512836089440099214
 CapsuleCollider:
   m_ObjectHideFlags: 0

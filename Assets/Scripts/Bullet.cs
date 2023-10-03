@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
 
     [SerializeField] private bool enemyBullet;
 
+    public GameObject damageEffect;
     public GameObject destroyEffect;
 
     // Start is called before the first frame update
@@ -29,11 +30,13 @@ public class Bullet : MonoBehaviour
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
                 hit.collider.GetComponent<Enemy>().TakeDamage(damage);
+                Instantiate(damageEffect, transform.position, Quaternion.identity);
             }
             
             if (hit.collider.CompareTag("Player") && enemyBullet)
             {
                 hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
+                Instantiate(damageEffect, transform.position, Quaternion.identity);
             }
 
             DestroyBullet();

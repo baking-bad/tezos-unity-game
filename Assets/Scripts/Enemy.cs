@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] public float health;
-    [SerializeField] public float meleeDamage;
+    public float health;
+    public float meleeDamage;
+    public float speed;
     [SerializeField] private float startStopTime;
     [SerializeField] private float startTimeBtwAttack;
     
     private float _timeBtwAttack;
     private float _stopTime;
     private float _normalSpeed;
-    
+
+    public GameObject damageEffect;
     private PlayerController _player;
 
     private ScoreManager _scoreManager;
@@ -64,6 +65,7 @@ public class Enemy : MonoBehaviour
 
     private void OnEnemyAttack()
     {
+        Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
         _player.ChangeHealth(-meleeDamage);
         _timeBtwAttack = startTimeBtwAttack;
     }

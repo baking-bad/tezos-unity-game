@@ -15,7 +15,8 @@ public class Enemy : MonoBehaviour
     public GameObject damageEffect;
     private PlayerController _player;
 
-    private ScoreManager _scoreManager;
+    private SoundManager _soundManager;
+    private UiManager _uiManager;
     
     
     // Start is called before the first frame update
@@ -24,7 +25,9 @@ public class Enemy : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
         _normalSpeed = speed;
-        _scoreManager = FindObjectOfType<ScoreManager>();
+        var manager = GameObject.FindGameObjectWithTag("Manager");
+        _uiManager = manager.GetComponent<UiManager>();
+        _soundManager = manager.GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -41,8 +44,9 @@ public class Enemy : MonoBehaviour
         }
         if (health <= 0)
         {
+            _soundManager.Death();
+            _uiManager.Kill();
             Destroy(gameObject);
-            _scoreManager.Kill();
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);

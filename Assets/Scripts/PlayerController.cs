@@ -1,24 +1,16 @@
-using TMPro;
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
-    [SerializeField] private float health;
-    private Rigidbody _rb;
+    public float health;
+    
     private Vector3 _movement;
     private Ray _ray;
     private RaycastHit _hit;
 
-    [SerializeField] private TMP_Text healthDisplay;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // _rb = GetComponent<Rigidbody>();
-        healthDisplay.text = "HP: " + health;
-    }
+    public Action<float> healthChanged;
 
     // Update is called once per frame
     void Update()
@@ -32,16 +24,11 @@ public class PlayerController : MonoBehaviour
         }
         
         transform.Translate(_movement * moveSpeed * Time.deltaTime, Space.World);
-
-        if (health <= 0)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
     }
 
     public void ChangeHealth(float healthValue)
     {
         health += healthValue;
-        healthDisplay.text = "HP: " + health;
+        healthChanged.Invoke(health);
     }
 }

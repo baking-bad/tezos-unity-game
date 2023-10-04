@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class LevelManager : MonoBehaviour
@@ -18,6 +19,7 @@ public class LevelManager : MonoBehaviour
 
     private int _score;
     public Action<int> scoreUpdated;
+    public Action playerDied;
 
     private SoundManager _soundManager;
     private PlayerController _player;
@@ -40,7 +42,7 @@ public class LevelManager : MonoBehaviour
         {
             _soundManager.Lose();
             Stop();
-            ShowResults();
+            playerDied.Invoke();
         }
         else
         {
@@ -78,6 +80,12 @@ public class LevelManager : MonoBehaviour
         return _score;
     }
 
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1;
+    }
+
     private void EnemyKilled()
     {
         _score++;
@@ -97,10 +105,5 @@ public class LevelManager : MonoBehaviour
         }
 
         enabled = false;
-    }
-
-    private void ShowResults()
-    {
-        // TODO: show canvas with result
     }
 }

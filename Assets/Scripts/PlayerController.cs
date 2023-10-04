@@ -4,12 +4,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
-    public float health;
+    [SerializeField] private float health;
     
     private Vector3 _movement;
     private Ray _ray;
     private RaycastHit _hit;
-
+    
     public Action<float> healthChanged;
 
     // Update is called once per frame
@@ -28,7 +28,12 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeHealth(float healthValue)
     {
-        health += healthValue;
+        health += healthValue; ;
         healthChanged.Invoke(health);
+    }
+
+    public float GetPlayerHealth()
+    {
+        return health;
     }
 }

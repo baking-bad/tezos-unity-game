@@ -4,7 +4,7 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioClip shot, takeDamage, death, lose;
     private GameObject _listener;
-    
+
     private void Start()
     {
         if (Camera.main != null) _listener = Camera.main.gameObject;

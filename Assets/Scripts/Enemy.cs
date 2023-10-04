@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -14,20 +15,19 @@ public class Enemy : MonoBehaviour
 
     public GameObject damageEffect;
     private PlayerController _player;
-
+    
     private SoundManager _soundManager;
-    private UiManager _uiManager;
     
-    
+    public Action enemyKilled;
+
+
     // Start is called before the first frame update
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
         _normalSpeed = speed;
-        var manager = GameObject.FindGameObjectWithTag("Manager");
-        _uiManager = manager.GetComponent<UiManager>();
-        _soundManager = manager.GetComponent<SoundManager>();
+        _soundManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            _uiManager.Kill();
+            enemyKilled.Invoke();
             Destroy(gameObject);
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);

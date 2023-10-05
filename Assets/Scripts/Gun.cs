@@ -15,12 +15,12 @@ public class Gun : MonoBehaviour
         Enemy
     }
 
-    public SoundManager soundManager;
+    private SoundManager _soundManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        soundManager = FindObjectOfType<SoundManager>().GetComponent<SoundManager>();
+        _soundManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -43,7 +43,7 @@ public class Gun : MonoBehaviour
     private void Shoot()
     {
         Instantiate(bullet, shotPoint.position, shotPoint.rotation);
-        soundManager.Shot();
+        _soundManager.Shot();
         _timeBtwShots = startTimeBtwShots;
     }
 }

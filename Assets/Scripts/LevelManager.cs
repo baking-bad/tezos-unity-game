@@ -26,6 +26,7 @@ public class LevelManager : MonoBehaviour
     private int _score;
     public Action<int> scoreUpdated;
     public Action playerDied;
+    public Action<float, float> levelDifficultyIncreased;
 
     private SoundManager _soundManager;
     private PlayerController _player;
@@ -83,6 +84,8 @@ public class LevelManager : MonoBehaviour
             {
                 startTimeBtwSpawn -= decreaseTime;
             }
+            
+            levelDifficultyIncreased.Invoke(enemyHealth, enemyDamage);
         }
         else
         {

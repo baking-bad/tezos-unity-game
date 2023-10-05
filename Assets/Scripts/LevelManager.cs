@@ -107,7 +107,10 @@ public class LevelManager : MonoBehaviour
         scoreUpdated.Invoke(_score);
         _soundManager.Death();
         if (killAward != null)
-            Instantiate(killAward, killPosition.position, Quaternion.identity);
+        {
+            var award = Instantiate(killAward, killPosition.position, Quaternion.identity);
+            award.name = killAward.name;
+        }
     }
 
     private void Stop()

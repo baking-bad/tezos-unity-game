@@ -45,19 +45,19 @@ public class PlayerController : MonoBehaviour
     {
         for (var i = 0; i < unlockedWeapons.Count; i++)
         {
-            if (!unlockedWeapons[i].activeInHierarchy) continue;
-            
-            unlockedWeapons[i].SetActive(false);
-            if (i != 0)
+            if (unlockedWeapons[i].activeInHierarchy)
             {
-                unlockedWeapons[i - 1].SetActive(true);
+                unlockedWeapons[i].SetActive(false);
+                if (i != 0)
+                {
+                    unlockedWeapons[i - 1].SetActive(true);
+                }
+                else
+                {
+                    unlockedWeapons[^1].SetActive(true);
+                }
+                break;
             }
-            else
-            {
-                unlockedWeapons[^1].SetActive(true);
-            }
-            
-            break;
         }
     }
 
@@ -72,7 +72,10 @@ public class PlayerController : MonoBehaviour
         {
             for (var i = 0; i < allWeapons.Length; i++)
             {
-                unlockedWeapons.Add(allWeapons[i]);
+                if (other.name == allWeapons[i].name)
+                {
+                    unlockedWeapons.Add(allWeapons[i]);
+                }
             }
             SwitchWeapon(); 
             Destroy(other.gameObject);

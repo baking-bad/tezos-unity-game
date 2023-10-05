@@ -16,6 +16,12 @@ public class LevelManager : MonoBehaviour
     public float increaseHealth;
     public float enemyDamage;
     public float increaseDamage;
+    
+    [Header("Improvements rate:")]
+    public int improvementsRate;
+    
+    [Header("Improvements:")]
+    public GameObject[] weapons;
 
     private int _score;
     public Action<int> scoreUpdated;
@@ -24,6 +30,7 @@ public class LevelManager : MonoBehaviour
     private SoundManager _soundManager;
     private PlayerController _player;
     private float _timeBtwSpawn;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -41,8 +48,8 @@ public class LevelManager : MonoBehaviour
         if (_player.GetPlayerHealth() <= 0)
         {
             _soundManager.Lose();
-            Stop();
             playerDied.Invoke();
+            Stop();
         }
         else
         {
@@ -63,7 +70,15 @@ public class LevelManager : MonoBehaviour
             enemyScript.health = enemyHealth;
             enemyScript.meleeDamage = enemyDamage;
             enemyScript.enemyKilled += EnemyKilled;
+            
+            if (_score > 0 && _score % improvementsRate == 0)
+            {
+                var randomImprovement = Random.Range(0, weapons.Length);
+                enemyScript.killAward = weapons[randomImprovement];
+            }
+            
             _timeBtwSpawn = startTimeBtwSpawn;
+            
             if (startTimeBtwSpawn > minTime)
             {
                 startTimeBtwSpawn -= decreaseTime;
@@ -86,11 +101,13 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void EnemyKilled()
+    private void EnemyKilled(Transform killPosition, GameObject killAward)
     {
         _score++;
         scoreUpdated.Invoke(_score);
         _soundManager.Death();
+        if (killAward != null)
+            Instantiate(killAward, killPosition.position, Quaternion.identity);
     }
 
     private void Stop()
@@ -98,8 +115,8 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 0;
 
         _player.enabled = false;
-        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (var e in enemies)
+        var enemiesGo = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (var e in enemiesGo)
         {
             e.GetComponent<Enemy>().enabled = false;
         }

@@ -18,7 +18,8 @@ public class Enemy : MonoBehaviour
     
     private SoundManager _soundManager;
     
-    public Action enemyKilled;
+    public GameObject killAward;
+    public Action<Transform, GameObject> enemyKilled;
 
 
     // Start is called before the first frame update
@@ -45,7 +46,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled.Invoke();
+            enemyKilled.Invoke(transform, killAward);
             Destroy(gameObject);
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);

@@ -46,9 +46,11 @@ public class Landmine : MonoBehaviour
 
     private void Detonate()
     {   
-        _affectedEnemies.ForEach(e => e
-            .GetComponent<Enemy>()
-            .TakeDamage(damage, stunTime));
+        _affectedEnemies.ForEach(e =>
+        {
+            if (e.gameObject != null)
+                e.GetComponent<Enemy>().TakeDamage(damage, stunTime);   
+        });
         
         Instantiate(damageEffect, transform.position, Quaternion.identity);
         DestroyMine();   

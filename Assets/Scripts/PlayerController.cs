@@ -19,7 +19,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        _movement = new Vector3(
+            Input.GetAxisRaw("Horizontal"),
+            0f,
+            Input.GetAxisRaw("Vertical"));
+        
         _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         
         if (Physics.Raycast(_ray, out _hit))
@@ -41,23 +45,30 @@ public class PlayerController : MonoBehaviour
         healthChanged.Invoke(health);
     }
 
-    public void SwitchWeapon()
+    private void SwitchWeapon(bool isTaked = false)
     {
         for (var i = 0; i < unlockedWeapons.Count; i++)
         {
-            if (unlockedWeapons[i].activeInHierarchy)
+            if (!unlockedWeapons[i].activeInHierarchy) continue;
+            
+            unlockedWeapons[i].SetActive(false);
+
+            if (isTaked)
             {
-                unlockedWeapons[i].SetActive(false);
-                if (i != 0)
+                unlockedWeapons[^1].SetActive(true);
+            }
+            else
+            {
+                if (i >= unlockedWeapons.Count - 1)
                 {
-                    unlockedWeapons[i - 1].SetActive(true);
+                    unlockedWeapons[0].SetActive(true);
                 }
                 else
                 {
-                    unlockedWeapons[^1].SetActive(true);
+                    unlockedWeapons[i + 1].SetActive(true);
                 }
-                break;
             }
+            break;
         }
     }
 
@@ -70,14 +81,17 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Weapon"))
         {
-            for (var i = 0; i < allWeapons.Length; i++)
+            if (!unlockedWeapons.Exists(w => w.name == other.name))
             {
-                if (other.name == allWeapons[i].name)
+                foreach (var g in allWeapons)
                 {
-                    unlockedWeapons.Add(allWeapons[i]);
+                    if (other.name == g.name)
+                    {
+                        unlockedWeapons.Add(g);
+                    }
                 }
+                SwitchWeapon(isTaked: true);
             }
-            SwitchWeapon(); 
             Destroy(other.gameObject);
         }
     }

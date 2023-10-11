@@ -4,6 +4,7 @@ using UnityEngine;
 public class Landmine : MonoBehaviour
 {
     [SerializeField] private int damage;
+    [SerializeField] private float stunTime;
     
     public GameObject damageEffect;
     public GameObject destroyEffect;
@@ -47,7 +48,7 @@ public class Landmine : MonoBehaviour
     {   
         _affectedEnemies.ForEach(e => e
             .GetComponent<Enemy>()
-            .TakeDamage(damage));
+            .TakeDamage(damage, stunTime));
         
         Instantiate(damageEffect, transform.position, Quaternion.identity);
         DestroyMine();   

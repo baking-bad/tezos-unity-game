@@ -75,7 +75,7 @@ public class LevelManager : MonoBehaviour
             if (_score > 0 && _score % improvementsRate == 0)
             {
                 var randomImprovement = Random.Range(0, weapons.Length);
-                enemyScript.killAward = weapons[randomImprovement];
+                enemyScript.SetKillAward(weapons[randomImprovement]);
             }
             
             _timeBtwSpawn = startTimeBtwSpawn;

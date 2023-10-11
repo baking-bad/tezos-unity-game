@@ -4,10 +4,10 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float health;
-    public float meleeDamage;
     public float speed;
-    [SerializeField] private float startStopTime;
-    [SerializeField] private float startTimeBtwAttack;
+    [SerializeField] private bool canMeleeDamage;
+    [SerializeField] private float meleeAttackRate;
+    public float meleeDamage;
     
     private float _timeBtwAttack;
     private float _stopTime;
@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
     
     private SoundManager _soundManager;
     
-    public GameObject killAward;
+    private GameObject _killAward;
     public Action<Transform, GameObject> enemyKilled;
 
 
@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled.Invoke(transform, killAward);
+            enemyKilled.Invoke(transform, _killAward);
             Destroy(gameObject);
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);
@@ -55,6 +55,8 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (!canMeleeDamage) return;
+        
         if (other.CompareTag("Player"))
         {
             if (_timeBtwAttack <= 0)
@@ -72,12 +74,17 @@ public class Enemy : MonoBehaviour
     {
         Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
         _player.ChangeHealth(-meleeDamage);
-        _timeBtwAttack = startTimeBtwAttack;
+        _timeBtwAttack = meleeAttackRate;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, float stunTime)
     {
-        _stopTime = startStopTime;
+        _stopTime = stunTime;
         health -= damage;
+    }
+
+    public void SetKillAward(GameObject award)
+    {
+        _killAward = award;
     }
 }

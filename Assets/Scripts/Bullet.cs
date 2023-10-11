@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float lifetime;
     [SerializeField] private float distance;
     [SerializeField] private int damage;
+    [SerializeField] private float stunTime;
     
     [SerializeField] private LayerMask mask;
 
@@ -29,7 +30,7 @@ public class Bullet : MonoBehaviour
         {
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
-                hit.collider.GetComponent<Enemy>().TakeDamage(damage);
+                hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
                 Instantiate(damageEffect, transform.position, Quaternion.identity);
             }
             

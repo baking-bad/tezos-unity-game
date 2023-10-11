@@ -12,7 +12,8 @@ public class PostProcessingScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        _player = GameObject.FindGameObjectWithTag("Player")
+            .GetComponent<PlayerController>();
         _player.healthChanged += TakeDamage;
         
         _player.GetComponentInChildren<PostProcessVolume>()
@@ -30,7 +31,7 @@ public class PostProcessingScript : MonoBehaviour
     }
 
     
-    private void TakeDamage(float i)
+    private void TakeDamage(int i)
     {
         StartCoroutine(DamageEffect());
     }

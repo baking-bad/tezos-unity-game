@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3270076870304686368}
   - component: {fileID: 3270076870304686371}
   - component: {fileID: 4263576718988575681}
+  - component: {fileID: -5558702236156049999}
   m_Layer: 0
   m_Name: Red Gun
   m_TagString: Weapon
@@ -98,3 +99,16 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5558702236156049999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3270076870304686373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b57a53f574a141acad7e5a2145af7c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destructionTime: 15

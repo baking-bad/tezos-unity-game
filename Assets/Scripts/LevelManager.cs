@@ -49,7 +49,7 @@ public class LevelManager : MonoBehaviour
         if (_player.GetPlayerHealth() <= 0)
         {
             _soundManager.Lose();
-            playerDied.Invoke();
+            playerDied?.Invoke();
             Stop();
         }
         else
@@ -85,7 +85,7 @@ public class LevelManager : MonoBehaviour
                 startTimeBtwSpawn -= decreaseTime;
             }
             
-            levelDifficultyIncreased.Invoke(enemyHealth, enemyDamage);
+            levelDifficultyIncreased?.Invoke(enemyHealth, enemyDamage);
         }
         else
         {
@@ -107,7 +107,7 @@ public class LevelManager : MonoBehaviour
     private void EnemyKilled(Transform killPosition, GameObject killAward)
     {
         _score++;
-        scoreUpdated.Invoke(_score);
+        scoreUpdated?.Invoke(_score);
         _soundManager.Death();
         if (killAward != null)
         {

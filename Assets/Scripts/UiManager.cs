@@ -1,50 +1,82 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
-    [SerializeField] private TMP_Text healthDisplay;
-    [SerializeField] private TMP_Text scoreDisplay;
+    [SerializeField] private TMP_Text health;
+    [SerializeField] private TMP_Text score;
+    [SerializeField] private Image weaponIcon;
+    [SerializeField] private TMP_Text bulletsQty;
     [SerializeField] private GameObject restartPanel;
-    [SerializeField] private TMP_Text resultDisplay;
-    [SerializeField] private TMP_Text enemyHpDisplay;
-    [SerializeField] private TMP_Text enemyDamageDisplay;
+    [SerializeField] private TMP_Text resultText;
+    [SerializeField] private TMP_Text enemyHp;
+    [SerializeField] private TMP_Text enemyDamage;
+    [SerializeField] public Sprite[] weaponSprites;
+
+    private PlayerController _player;
 
     // Start is called before the first frame update
     void Start()
     {
-        var player = GameObject.FindGameObjectWithTag("Player")
+        _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
         var levelManager = GetComponent<LevelManager>();
         
         levelManager.scoreUpdated += ScoreUpdated;
         levelManager.playerDied += ShowRestartPanel;
         levelManager.levelDifficultyIncreased += LevelDifficultyIncreased;
-        player.healthChanged += PlayerHealthChanged;
+        _player.healthChanged += PlayerHealthChanged;
+        _player.weaponSwitched += WeaponSwitched;
+        _player.GetCurrentWeapon().bulletsQtyChanged += BulletsQtyChanged;
         
-        scoreDisplay.text = "Score: " + levelManager.GetScore();
-        healthDisplay.text = "HP: " + player.GetPlayerHealth();
+        score.text = "Score: " + levelManager.GetScore();
+        health.text = "HP: " + _player.GetPlayerHealth();
     }
 
-    private void ScoreUpdated(int score)
+    private void ScoreUpdated(int scr)
     {
-        scoreDisplay.text = "Score: " + score;
+        score.text = "Score: " + scr;
     }
 
-    private void PlayerHealthChanged(float health)
+    private void PlayerHealthChanged(int hlth)
     {
-        healthDisplay.text = "HP: " + health;
+        health.text = "HP: " + hlth;
     }
-    
-    private void LevelDifficultyIncreased(float enemyHealth, float enemyDamage)
+
+    private void WeaponSwitched(Gun weapon)
     {
-        enemyHpDisplay.text = "Enemy HP: " + enemyHealth;
-        enemyDamageDisplay.text = "Enemy Damage: " + enemyDamage;
+        foreach (var w in weaponSprites)
+        {
+            if (w.name != weapon.name) continue;
+            
+            weaponIcon.sprite = w;
+
+            bulletsQty.text = weapon.gunType == Gun.GunType.Default 
+                ? "Inf." 
+                : weapon.GetBulletsQty().ToString();
+
+            _player.GetCurrentWeapon().bulletsQtyChanged -= BulletsQtyChanged;
+            weapon.bulletsQtyChanged += BulletsQtyChanged;
+                
+            break;
+        }
+    }
+
+    private void BulletsQtyChanged(int qty)
+    {
+        bulletsQty.text = qty.ToString();
+    }
+
+    private void LevelDifficultyIncreased(float enemyHlth, float enemyDmg)
+    {
+        enemyHp.text = "Enemy HP: " + enemyHlth;
+        enemyDamage.text = "Enemy Damage: " + enemyDmg;
     }
 
     private void ShowRestartPanel()
     {
-        resultDisplay.text = scoreDisplay.text;
+        resultText.text = score.text;
         restartPanel.SetActive(true);
     }
 }

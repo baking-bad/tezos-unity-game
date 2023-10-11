@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5679387227904841522}
   - component: {fileID: 1997364439014551017}
   - component: {fileID: 3636958166026968906}
+  - component: {fileID: 3759576482521665571}
   m_Layer: 0
   m_Name: Mortar
   m_TagString: Weapon
@@ -97,3 +98,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3759576482521665571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7930680257687005231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b57a53f574a141acad7e5a2145af7c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destructionTime: 15

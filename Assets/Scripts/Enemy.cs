@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled.Invoke(transform, _killAward);
+            enemyKilled?.Invoke(transform, _killAward);
             Destroy(gameObject);
         }
         transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
     private void OnEnemyAttack()
     {
         Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
-        _player.ChangeHealth(-meleeDamage);
+        _player.ChangeHealth((int)Math.Round(-meleeDamage));
         _timeBtwAttack = meleeAttackRate;
     }
 

@@ -108,17 +108,18 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Weapon"))
         {
-            if (!unlockedWeapons.Exists(w => w.name == other.name))
+            foreach (var w in allWeapons)
             {
-                foreach (var g in allWeapons)
+                if (other.name != w.name) continue;
+                
+                if (!unlockedWeapons.Exists(go => go.name == other.name))
                 {
-                    if (other.name == g.name)
-                    {
-                        unlockedWeapons.Add(g);
-                        g.GetComponent<Gun>().ChangeBulletsQty(30); // todo: TEMP
-                    }
+                    unlockedWeapons.Add(w);
+                    SwitchWeapon(isTaked: true);
                 }
-                SwitchWeapon(isTaked: true);
+                w.GetComponent<Gun>().ChangeBulletsQty(30); // todo: TEMP
+                
+                break;
             }
             Destroy(other.gameObject);
         }

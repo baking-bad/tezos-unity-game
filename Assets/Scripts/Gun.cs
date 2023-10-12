@@ -65,5 +65,6 @@ public class Gun : MonoBehaviour
     public void ChangeBulletsQty(int qty)
     {
         _bulletsQty += qty;
+        bulletsQtyChanged?.Invoke(_bulletsQty);
     }
 }

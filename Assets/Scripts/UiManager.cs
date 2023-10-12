@@ -12,7 +12,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private TMP_Text resultText;
     [SerializeField] private TMP_Text enemyHp;
     [SerializeField] private TMP_Text enemyDamage;
-    [SerializeField] public Sprite[] weaponSprites;
+    [SerializeField] private Sprite[] weaponSprites;
+    [SerializeField] private Image shieldTimer;
 
     private PlayerController _player;
 
@@ -29,7 +30,10 @@ public class UiManager : MonoBehaviour
         _player.healthChanged += PlayerHealthChanged;
         _player.weaponSwitched += WeaponSwitched;
         _player.GetCurrentWeapon().bulletsQtyChanged += BulletsQtyChanged;
-        
+        _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
+        _player.GetPlayerShield().shieldTimerDeactivated += ShieldTimerDeactivated;
+        _player.GetPlayerShield().shieldTimerChanged += ShieldTimerChanged;
+
         score.text = "Score: " + levelManager.GetScore();
         health.text = "HP: " + _player.GetPlayerHealth();
     }
@@ -39,7 +43,7 @@ public class UiManager : MonoBehaviour
         score.text = "Score: " + scr;
     }
 
-    private void PlayerHealthChanged(int hlth)
+    private void PlayerHealthChanged(int hlth, bool _)
     {
         health.text = "HP: " + hlth;
     }
@@ -78,5 +82,22 @@ public class UiManager : MonoBehaviour
     {
         resultText.text = score.text;
         restartPanel.SetActive(true);
+    }
+
+    private void ShieldTimerActivated()
+    {
+        shieldTimer.gameObject.SetActive(true);
+        shieldTimer.fillAmount = 1;
+    }
+    
+    private void ShieldTimerDeactivated()
+    {
+        shieldTimer.gameObject.SetActive(false);
+        shieldTimer.fillAmount = 1;
+    }
+    
+    private void ShieldTimerChanged(float cooldown)
+    {
+        shieldTimer.fillAmount -= 1 / cooldown * Time.deltaTime;
     }
 }

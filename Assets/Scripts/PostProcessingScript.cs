@@ -14,7 +14,7 @@ public class PostProcessingScript : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
-        _player.healthChanged += TakeDamage;
+        _player.healthChanged += ChangeHealth;
         
         _player.GetComponentInChildren<PostProcessVolume>()
             .profile
@@ -31,8 +31,10 @@ public class PostProcessingScript : MonoBehaviour
     }
 
     
-    private void TakeDamage(int i)
+    private void ChangeHealth(int _, bool damaged)
     {
+        if (!damaged) return;
+        
         StartCoroutine(DamageEffect());
     }
 

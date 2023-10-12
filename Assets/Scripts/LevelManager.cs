@@ -17,11 +17,11 @@ public class LevelManager : MonoBehaviour
     public float enemyDamage;
     public float increaseDamage;
     
-    [Header("Improvements rate:")]
-    public int improvementsRate;
+    [Header("Loot rate:")]
+    public int lootRate;
     
-    [Header("Improvements:")]
-    public GameObject[] weapons;
+    [Header("Loot:")]
+    public GameObject[] loots;
 
     private int _score;
     public Action<int> scoreUpdated;
@@ -72,10 +72,10 @@ public class LevelManager : MonoBehaviour
             enemyScript.meleeDamage = enemyDamage;
             enemyScript.enemyKilled += EnemyKilled;
             
-            if (_score > 0 && _score % improvementsRate == 0)
+            if (_score > 0 && _score % lootRate == 0)
             {
-                var randomImprovement = Random.Range(0, weapons.Length);
-                enemyScript.SetKillAward(weapons[randomImprovement]);
+                var randomImprovement = Random.Range(0, loots.Length);
+                enemyScript.SetKillAward(loots[randomImprovement]);
             }
             
             _timeBtwSpawn = startTimeBtwSpawn;

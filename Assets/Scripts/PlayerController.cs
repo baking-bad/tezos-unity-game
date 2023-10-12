@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -9,22 +10,25 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private List<GameObject> unlockedWeapons;
     [SerializeField] private GameObject[] allWeapons;
-
+    [SerializeField] private GameObject shield;
+    
     private Gun _currentWeapon;
+    private Shield _shieldScript;
     private Vector3 _movement;
     private Ray _ray;
     private RaycastHit _hit;
     
-    public Action<int> healthChanged;
+    public Action<int, bool> healthChanged;
     public Action<Gun> weaponSwitched;
 
     private void Awake()
     {
-        for (var i = 0; i < unlockedWeapons.Count; i++)
+        _shieldScript = shield.GetComponent<Shield>();
+
+        foreach (var weapon in unlockedWeapons
+                     .Where(w => w.activeInHierarchy))
         {
-            if (!unlockedWeapons[i].activeInHierarchy) continue;
-            
-            _currentWeapon = unlockedWeapons[i].GetComponent<Gun>();
+            _currentWeapon = weapon.GetComponent<Gun>();
             break;
         }
     }
@@ -57,13 +61,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ChangeHealth(int healthValue)
+    public void ChangeHealth(int healthValue, bool damaged = true)
     {
+        if (shield.activeInHierarchy && (!shield.activeInHierarchy || healthValue <= 0)) return;
+        
         health += healthValue; ;
-        healthChanged?.Invoke(health);
+        healthChanged?.Invoke(health, damaged);
     }
 
-    private void SwitchWeapon(bool isTaked = false)
+    private void SwitchWeapon(bool isTaken = false)
     {
         for (var i = 0; i < unlockedWeapons.Count; i++)
         {
@@ -71,7 +77,7 @@ public class PlayerController : MonoBehaviour
             
             unlockedWeapons[i].SetActive(false);
 
-            if (isTaked)
+            if (isTaken)
             {
                 unlockedWeapons[^1].SetActive(true);
                 _currentWeapon = unlockedWeapons[^1].GetComponent<Gun>();
@@ -104,6 +110,11 @@ public class PlayerController : MonoBehaviour
         return _currentWeapon;
     }
 
+    public Shield GetPlayerShield()
+    {
+        return _shieldScript;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Weapon"))
@@ -115,12 +126,25 @@ public class PlayerController : MonoBehaviour
                 if (!unlockedWeapons.Exists(go => go.name == other.name))
                 {
                     unlockedWeapons.Add(w);
-                    SwitchWeapon(isTaked: true);
+                    SwitchWeapon(isTaken: true);
                 }
                 w.GetComponent<Gun>().ChangeBulletsQty(30); // todo: TEMP
                 
                 break;
             }
+            Destroy(other.gameObject);
+        }
+        
+        if (other.CompareTag("HP"))
+        {
+            ChangeHealth(30, false);
+            Destroy(other.gameObject);
+        }
+        
+        if (other.CompareTag("Shield"))
+        {
+            shield.SetActive(true);
+            _shieldScript.Activate();
             Destroy(other.gameObject);
         }
     }

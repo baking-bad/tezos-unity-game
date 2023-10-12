@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     
     public Action<int, bool> healthChanged;
     public Action<Gun> weaponSwitched;
+    public Action<float> sprintCooldownContinues;
+    public Action sprintCooldownEnded;
 
     private void Awake()
     {
@@ -83,7 +85,13 @@ public class PlayerController : MonoBehaviour
 
         if (_timeBtwSprints < sprintCooldown)
         {
+            sprintCooldownContinues?.Invoke(sprintCooldown);
             _timeBtwSprints += Time.deltaTime;
+        }
+        else
+        {
+            // TODO: create var for checking in Update() 
+            sprintCooldownEnded?.Invoke();
         }
     }
 

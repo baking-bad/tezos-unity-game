@@ -14,6 +14,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private TMP_Text enemyDamage;
     [SerializeField] private Sprite[] weaponSprites;
     [SerializeField] private Image shieldTimer;
+    [SerializeField] private Image sprintTimer;
 
     private PlayerController _player;
 
@@ -29,6 +30,8 @@ public class UiManager : MonoBehaviour
         levelManager.levelDifficultyIncreased += LevelDifficultyIncreased;
         _player.healthChanged += PlayerHealthChanged;
         _player.weaponSwitched += WeaponSwitched;
+        _player.sprintCooldownContinues += SprintTimerChanged;
+        _player.sprintCooldownEnded += SprintTimerEnded;
         _player.GetCurrentWeapon().bulletsQtyChanged += BulletsQtyChanged;
         _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
         _player.GetPlayerShield().shieldTimerDeactivated += ShieldTimerDeactivated;
@@ -99,5 +102,15 @@ public class UiManager : MonoBehaviour
     private void ShieldTimerChanged(float cooldown)
     {
         shieldTimer.fillAmount -= 1 / cooldown * Time.deltaTime;
+    }
+    
+    private void SprintTimerChanged(float cooldown)
+    {
+        sprintTimer.fillAmount -= 1 / cooldown * Time.deltaTime;
+    }
+
+    private void SprintTimerEnded()
+    {
+        sprintTimer.fillAmount = 1;
     }
 }

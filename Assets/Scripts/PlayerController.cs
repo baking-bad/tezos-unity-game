@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed;
     [SerializeField] private int health;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float sprintSpeed;
+    [SerializeField] private float sprintCooldown;
+    [SerializeField] private float sprintDuration;
 
     [SerializeField] private List<GameObject> unlockedWeapons;
     [SerializeField] private GameObject[] allWeapons;
@@ -15,8 +18,13 @@ public class PlayerController : MonoBehaviour
     private Gun _currentWeapon;
     private Shield _shieldScript;
     private Vector3 _movement;
+    private Vector3 _moveVector;
+    private Rigidbody _rb;
     private Ray _ray;
     private RaycastHit _hit;
+    private float _normalSpeed;
+    private float _sprintTime;
+    private float _timeBtwSprints;
     
     public Action<int, bool> healthChanged;
     public Action<Gun> weaponSwitched;
@@ -35,29 +43,61 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _rb = GetComponent<Rigidbody>();
         weaponSwitched?.Invoke(_currentWeapon);
+        _normalSpeed = moveSpeed;
+        _timeBtwSprints = sprintCooldown;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _movement = new Vector3(
-            Input.GetAxisRaw("Horizontal"),
+        _moveVector = new Vector3(
+            Input.GetAxis("Horizontal"),
             0f,
-            Input.GetAxisRaw("Vertical"));
+            Input.GetAxis("Vertical"));
         
-        _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-        if (Physics.Raycast(_ray, out _hit))
-        {
-            transform.LookAt(new Vector3(_hit.point.x, transform.position.y, _hit.point.z));
-        }
-        
-        transform.Translate(_movement * moveSpeed * Time.deltaTime, Space.World);
+        _moveVector.Normalize();
+        _movement.Set(moveSpeed * _moveVector.x, 0f, moveSpeed * _moveVector.z);
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             SwitchWeapon();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && _timeBtwSprints >= sprintCooldown)
+        {
+            moveSpeed = sprintSpeed;
+            _sprintTime = sprintDuration;
+            _timeBtwSprints = 0;
+        }
+        
+        if (_sprintTime > 0)
+        {
+            _sprintTime -= Time.deltaTime;
+        }
+        else
+        {
+            moveSpeed = _normalSpeed;
+        }
+
+        if (_timeBtwSprints < sprintCooldown)
+        {
+            _timeBtwSprints += Time.deltaTime;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        _rb.velocity = _movement;
+        _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+        if (Physics.Raycast(_ray, out _hit))
+        {
+            transform.LookAt(new Vector3(
+                _hit.point.x,
+                transform.position.y,
+                _hit.point.z));
         }
     }
 

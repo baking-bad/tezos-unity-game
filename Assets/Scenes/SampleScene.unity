@@ -3761,8 +3761,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1179632229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 1, z: -4.5}
-  m_LocalScale: {x: 59, y: 2, z: 0.5}
+  m_LocalPosition: {x: -5, y: 0.5, z: -4.25}
+  m_LocalScale: {x: 58, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 761795536}
@@ -4091,8 +4091,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1300325732}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 24.25, y: 1, z: 20}
-  m_LocalScale: {x: 49, y: 2, z: 0.5}
+  m_LocalPosition: {x: 24.25, y: 0.5, z: 20}
+  m_LocalScale: {x: 49, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 761795536}
@@ -4776,8 +4776,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388436986}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -34.25, y: 1, z: 20}
-  m_LocalScale: {x: 49, y: 2, z: 0.5}
+  m_LocalPosition: {x: -34.25, y: 0.5, z: 20}
+  m_LocalScale: {x: 49, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 761795536}
@@ -5370,8 +5370,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1550442274}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 1, z: 44.25}
-  m_LocalScale: {x: 59, y: 2, z: 0.5}
+  m_LocalPosition: {x: -5, y: 0.5, z: 44.25}
+  m_LocalScale: {x: 58, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 761795536}
@@ -6549,6 +6549,7 @@ GameObject:
   - component: {fileID: 1972444684}
   - component: {fileID: 1972444681}
   - component: {fileID: 1972444685}
+  - component: {fileID: 1972444686}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -6639,8 +6640,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf179a184a3047cba8143fadb240dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
   health: 100
+  moveSpeed: 8
+  sprintSpeed: 32
+  sprintCooldown: 5
+  sprintDuration: 0.1
   unlockedWeapons:
   - {fileID: 1653355817}
   allWeapons:
@@ -6663,7 +6667,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &1972444685
 BoxCollider:
@@ -6677,6 +6681,20 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
+  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!136 &1972444686
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972444676}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5000001
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &2039279229
 GameObject:

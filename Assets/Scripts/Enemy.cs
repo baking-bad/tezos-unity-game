@@ -41,12 +41,6 @@ public class Enemy : MonoBehaviour
             enemyKilled?.Invoke(transform, _killAward);
             Destroy(gameObject);
         }
-        
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            _player.transform.position,
-            speed * Time.deltaTime);
-        transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
 
         if (!_isStunned) return;
         
@@ -61,6 +55,17 @@ public class Enemy : MonoBehaviour
             _stopTime -= Time.deltaTime;
         }
     }
+
+    private void FixedUpdate()
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            _player.transform.position,
+            speed * Time.deltaTime);
+        
+        transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
+    }
+
 
     private void OnTriggerStay(Collider other)
     {

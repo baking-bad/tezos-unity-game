@@ -25,10 +25,13 @@ public class PlayerController : MonoBehaviour
     private float _normalSpeed;
     private float _sprintTime;
     private float _timeBtwSprints;
+    private bool _isSprinting;
+    private bool _canSprint;
     
     public Action<int, bool> healthChanged;
     public Action<Gun> weaponSwitched;
     public Action<float> sprintCooldownContinues;
+    public Action sprintCooldownStarted;
     public Action sprintCooldownEnded;
 
     private void Awake()
@@ -67,22 +70,31 @@ public class PlayerController : MonoBehaviour
             SwitchWeapon();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && _timeBtwSprints >= sprintCooldown)
+        if (Input.GetKeyDown(KeyCode.Space) && _canSprint)
         {
+            _isSprinting = true;
+            _canSprint = false;
             moveSpeed = sprintSpeed;
             _sprintTime = sprintDuration;
             _timeBtwSprints = 0;
-        }
-        
-        if (_sprintTime > 0)
-        {
-            _sprintTime -= Time.deltaTime;
-        }
-        else
-        {
-            moveSpeed = _normalSpeed;
+            sprintCooldownStarted?.Invoke();
         }
 
+        if (_isSprinting)
+        {
+            if (_sprintTime > 0)
+            {
+                _sprintTime -= Time.deltaTime;
+            }
+            else
+            {
+                moveSpeed = _normalSpeed;
+                _isSprinting = false;
+            }
+        }
+
+        if (_canSprint) return;
+        
         if (_timeBtwSprints < sprintCooldown)
         {
             sprintCooldownContinues?.Invoke(sprintCooldown);
@@ -90,8 +102,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // TODO: create var for checking in Update() 
             sprintCooldownEnded?.Invoke();
+            _canSprint = true;
         }
     }
 

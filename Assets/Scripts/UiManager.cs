@@ -31,6 +31,7 @@ public class UiManager : MonoBehaviour
         _player.healthChanged += PlayerHealthChanged;
         _player.weaponSwitched += WeaponSwitched;
         _player.sprintCooldownContinues += SprintTimerChanged;
+        _player.sprintCooldownStarted += SprintTimerStarted;
         _player.sprintCooldownEnded += SprintTimerEnded;
         _player.GetCurrentWeapon().bulletsQtyChanged += BulletsQtyChanged;
         _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
@@ -106,7 +107,12 @@ public class UiManager : MonoBehaviour
     
     private void SprintTimerChanged(float cooldown)
     {
-        sprintTimer.fillAmount -= 1 / cooldown * Time.deltaTime;
+        sprintTimer.fillAmount += 1 / cooldown * Time.deltaTime;
+    }
+
+    private void SprintTimerStarted()
+    {
+        sprintTimer.fillAmount = 0;
     }
 
     private void SprintTimerEnded()

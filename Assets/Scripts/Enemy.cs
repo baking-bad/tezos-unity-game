@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     
     private float _timeBtwAttack;
     private float _stopTime;
+    private bool _isStunned;
     private float _normalSpeed;
 
     public GameObject damageEffect;
@@ -34,23 +35,31 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_stopTime <= 0)
-        {
-            speed = _normalSpeed;
-        }
-        else
-        {
-            speed = 0;
-            _stopTime -= Time.deltaTime;
-        }
         if (health <= 0)
         {
             _soundManager.Death();
             enemyKilled?.Invoke(transform, _killAward);
             Destroy(gameObject);
         }
-        transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, speed * Time.deltaTime);
+        
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            _player.transform.position,
+            speed * Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
+
+        if (!_isStunned) return;
+        
+        if (_stopTime <= 0)
+        {
+            speed = _normalSpeed;
+            _isStunned = false;
+        }
+        else
+        {
+            speed = 0;
+            _stopTime -= Time.deltaTime;
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -79,6 +88,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage, float stunTime)
     {
+        _isStunned = true;
         _stopTime = stunTime;
         health -= damage;
     }

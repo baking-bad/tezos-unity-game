@@ -3,68 +3,81 @@
 
 public class Gun : MonoBehaviour
 {
-    public GunType gunType;
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private Transform shotPoint;
+    public WeaponPurpose weaponPurpose;
+    public WeaponType weaponType;
+    [SerializeField] protected GameObject bullet;
+    [SerializeField] protected Transform shotPoint;
     
-    [SerializeField] private float startTimeBtwShots;
-    private float _timeBtwShots;
-    private int _bulletsQty;
+    [SerializeField] protected float startTimeBtwShots;
+    protected float timeBtwShots;
+    protected int bulletsQty;
     
-    public enum GunType
+    public enum WeaponPurpose
     {
-        Default,
         Player,
         Enemy
     }
     
+    public enum WeaponType
+    {
+        Default,
+        Gun,
+        Shotgun,
+        Mortar
+    }
+    
     public Action<int> bulletsQtyChanged;
 
-    private SoundManager _soundManager;
+    protected SoundManager soundManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        _soundManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<SoundManager>();
+        soundManager = GameObject.FindGameObjectWithTag("Manager")
+            .GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_timeBtwShots <= 0)
+        if (timeBtwShots <= 0)
         {
-            if (Input.GetMouseButton(0) && gunType == GunType.Player && _bulletsQty > 0
-                 || Input.GetMouseButton(0) && gunType == GunType.Default 
-                || gunType == GunType.Enemy)
+            if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && bulletsQty > 0 
+                || Input.GetMouseButton(0) && weaponType == WeaponType.Default 
+                || weaponPurpose == WeaponPurpose.Enemy)
             {
                 Shoot(); 
             }
         }
         else
         {
-            _timeBtwShots -= Time.deltaTime;
+            timeBtwShots -= Time.deltaTime;
         }
     }
 
-    private void Shoot()
+    protected virtual void Shoot()
     {
-        Instantiate(bullet, shotPoint.position, shotPoint.rotation);
-        _soundManager.Shot();
-        _timeBtwShots = startTimeBtwShots;
+        if (weaponType != WeaponType.Shotgun)
+            Instantiate(bullet, shotPoint.position, shotPoint.rotation);
         
-        if (gunType == GunType.Default) return;
-        _bulletsQty--;
-        bulletsQtyChanged?.Invoke(_bulletsQty);
+        soundManager.Shot(weaponType);
+        timeBtwShots = startTimeBtwShots;
+        
+        if (weaponType == WeaponType.Default || weaponPurpose == WeaponPurpose.Enemy) 
+            return;
+        
+        bulletsQty--;
+        bulletsQtyChanged?.Invoke(bulletsQty);
     }
 
     public int GetBulletsQty()
     {
-        return _bulletsQty;
+        return bulletsQty;
     }
 
     public void ChangeBulletsQty(int qty)
     {
-        _bulletsQty += qty;
-        bulletsQtyChanged?.Invoke(_bulletsQty);
+        bulletsQty += qty;
+        bulletsQtyChanged?.Invoke(bulletsQty);
     }
 }

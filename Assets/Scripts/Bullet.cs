@@ -4,7 +4,6 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float lifetime;
-    [SerializeField] private float distance;
     [SerializeField] private int damage;
     [SerializeField] private float stunTime;
     
@@ -15,6 +14,7 @@ public class Bullet : MonoBehaviour
     public GameObject damageEffect;
     public GameObject destroyEffect;
 
+    private readonly float _distance = 1;
     // Start is called before the first frame update
     private void Start()
     {
@@ -24,7 +24,7 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, distance, mask);
+        Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, _distance, mask);
         
         if (hit.collider != null)
         {

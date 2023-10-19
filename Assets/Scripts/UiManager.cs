@@ -60,7 +60,7 @@ public class UiManager : MonoBehaviour
             
             weaponIcon.sprite = w;
 
-            bulletsQty.text = weapon.gunType == Gun.GunType.Default 
+            bulletsQty.text = weapon.weaponType == Gun.WeaponType.Default 
                 ? "Inf." 
                 : weapon.GetBulletsQty().ToString();
 

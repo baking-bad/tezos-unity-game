@@ -65,6 +65,8 @@ public class LevelManager : MonoBehaviour
 
         if (_timeBtwSpawn <= 0)
         {
+            if (enemies.Length <= 0) return;
+            
             var randomEnemy = Random.Range(0, enemies.Length);
             var randomPoint = Random.Range(0, spawnPoints.Length);
             var enemyScript = Instantiate(enemies[randomEnemy], spawnPoints[randomPoint].position, Quaternion.identity).GetComponent<Enemy>();

@@ -3602,7 +3602,7 @@ GameObject:
   - component: {fileID: 1083132664}
   - component: {fileID: 1083132663}
   - component: {fileID: 1083132662}
-  - component: {fileID: 1083132661}
+  - component: {fileID: 1083132665}
   m_Layer: 7
   m_Name: Mortar
   m_TagString: Untagged
@@ -3626,23 +3626,6 @@ Transform:
   m_Father: {fileID: 1972444680}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1083132661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083132659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220dd55fc76e446d8aa5eab88505bb90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponPurpose: 0
-  weaponType: 3
-  bullet: {fileID: 6558917362959262728, guid: 01cfc7030844e47fabbf12fa4543a2ff, type: 3}
-  shotPoint: {fileID: 1971552374}
-  startTimeBtwShots: 2
 --- !u!65 &1083132662
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3706,6 +3689,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083132659}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1083132665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083132659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1085052ade2b844d0bc0c5baf76db443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponPurpose: 0
+  weaponType: 3
+  bullet: {fileID: 6558917362959262728, guid: 01cfc7030844e47fabbf12fa4543a2ff, type: 3}
+  shotPoint: {fileID: 1971552374}
+  startTimeBtwShots: 2
 --- !u!1 &1116834963
 GameObject:
   m_ObjectHideFlags: 0

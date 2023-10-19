@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Weapons;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject[] allWeapons;
     [SerializeField] private GameObject shield;
     
-    private Gun _currentWeapon;
+    private Weapon _currentWeapon;
     private Shield _shieldScript;
     private Vector3 _movement;
     private Vector3 _moveVector;
@@ -29,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private bool _canSprint;
     
     public Action<int, bool> healthChanged;
-    public Action<Gun> weaponSwitched;
+    public Action<Weapon> weaponSwitched;
     public Action<float> sprintCooldownContinues;
     public Action sprintCooldownStarted;
     public Action sprintCooldownEnded;
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour
         foreach (var weapon in unlockedWeapons
                      .Where(w => w.activeInHierarchy))
         {
-            _currentWeapon = weapon.GetComponent<Gun>();
+            _currentWeapon = weapon.GetComponent<Weapon>();
             break;
         }
     }
@@ -140,19 +141,19 @@ public class PlayerController : MonoBehaviour
             if (isTaken)
             {
                 unlockedWeapons[^1].SetActive(true);
-                _currentWeapon = unlockedWeapons[^1].GetComponent<Gun>();
+                _currentWeapon = unlockedWeapons[^1].GetComponent<Weapon>();
             }
             else
             {
                 if (i >= unlockedWeapons.Count - 1)
                 {
                     unlockedWeapons[0].SetActive(true);
-                    _currentWeapon = unlockedWeapons[0].GetComponent<Gun>();
+                    _currentWeapon = unlockedWeapons[0].GetComponent<Weapon>();
                 }
                 else
                 {
                     unlockedWeapons[i + 1].SetActive(true);
-                    _currentWeapon = unlockedWeapons[i + 1].GetComponent<Gun>();
+                    _currentWeapon = unlockedWeapons[i + 1].GetComponent<Weapon>();
                 }
             }
             weaponSwitched?.Invoke(_currentWeapon);
@@ -165,7 +166,7 @@ public class PlayerController : MonoBehaviour
         return health;
     }
 
-    public Gun GetCurrentWeapon()
+    public Weapon GetCurrentWeapon()
     {
         return _currentWeapon;
     }
@@ -188,7 +189,7 @@ public class PlayerController : MonoBehaviour
                     unlockedWeapons.Add(w);
                     SwitchWeapon(isTaken: true);
                 }
-                w.GetComponent<Gun>().ChangeBulletsQty(30); // todo: TEMP
+                w.GetComponent<Weapon>().ChangeBulletsQty(30); // todo: TEMP
                 
                 break;
             }

@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour
                     unlockedWeapons.Add(w);
                     SwitchWeapon(isTaken: true);
                 }
-                w.GetComponent<Weapon>().ChangeBulletsQty(30); // todo: TEMP
+                w.GetComponent<Weapon>().ChangeAmmoQty(30); // todo: TEMP
                 
                 break;
             }

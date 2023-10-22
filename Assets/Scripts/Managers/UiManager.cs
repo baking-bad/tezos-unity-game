@@ -11,7 +11,8 @@ namespace Managers
         [SerializeField] private TMP_Text health;
         [SerializeField] private TMP_Text score;
         [SerializeField] private Image weaponIcon;
-        [SerializeField] private TMP_Text bulletsQty;
+        [SerializeField] private TMP_Text ammoQtyInMagazine;
+        [SerializeField] private TMP_Text ammoQty;
         [SerializeField] private GameObject restartPanel;
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private TMP_Text enemyHp;
@@ -37,7 +38,7 @@ namespace Managers
             _player.sprintCooldownContinues += SprintTimerChanged;
             _player.sprintCooldownStarted += SprintTimerStarted;
             _player.sprintCooldownEnded += SprintTimerEnded;
-            _player.GetCurrentWeapon().bulletsQtyChanged += BulletsQtyChanged;
+            _player.GetCurrentWeapon().ammoQtyChanged += AmmoQtyChanged;
             _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
             _player.GetPlayerShield().shieldTimerDeactivated += ShieldTimerDeactivated;
             _player.GetPlayerShield().shieldTimerChanged += ShieldTimerChanged;
@@ -64,20 +65,27 @@ namespace Managers
             
                 weaponIcon.sprite = w;
 
-                bulletsQty.text = weapon.weaponType == WeaponType.Default 
-                    ? "Inf." 
-                    : weapon.GetBulletsQty().ToString();
+                var ammo = weapon.GetAmmo();
 
-                _player.GetCurrentWeapon().bulletsQtyChanged -= BulletsQtyChanged;
-                weapon.bulletsQtyChanged += BulletsQtyChanged;
+                ammoQtyInMagazine.text = weapon.weaponType == WeaponType.Default
+                    ? "Inf"
+                    : ammo.Item1.ToString();
+                
+                ammoQty.text = weapon.weaponType == WeaponType.Default
+                    ? "Inf"
+                    : ammo.Item2.ToString();
+
+                _player.GetCurrentWeapon().ammoQtyChanged -= AmmoQtyChanged;
+                weapon.ammoQtyChanged += AmmoQtyChanged;
                 
                 break;
             }
         }
 
-        private void BulletsQtyChanged(int qty)
+        private void AmmoQtyChanged(int ammoInMagazine, int ammo)
         {
-            bulletsQty.text = qty.ToString();
+            ammoQtyInMagazine.text = ammoInMagazine.ToString();
+            ammoQty.text = ammo.ToString();
         }
 
         private void LevelDifficultyIncreased(float enemyHlth, float enemyDmg)

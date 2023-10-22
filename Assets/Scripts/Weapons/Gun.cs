@@ -10,6 +10,8 @@ namespace Weapons
         {
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
+            
+            ReloadAmmo();
         }
     }
 }

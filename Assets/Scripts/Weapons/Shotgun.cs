@@ -28,12 +28,14 @@ namespace Weapons
                 .GetComponent<SoundManager>();
         
             _affectedEnemies = new List<GameObject>();
+            
+            ReloadAmmo();
         }
     
         private Vector3 GetShootingDirection()
         {
             var shotPosition = shotPoint.position;
-            Vector3 targetPos = shotPosition + shotPoint.forward * distance;
+            var targetPos = shotPosition + shotPoint.forward * distance;
             targetPos = new Vector3(
                 targetPos.x + Random.Range(-_inaccurancyDistance, _inaccurancyDistance),
                 shotPosition.y,
@@ -87,16 +89,9 @@ namespace Weapons
                 }
             });
 
-            soundManager.Shot(weaponType);
-            timeBtwShots = startTimeBtwShots;
-            
-            if (weaponType == WeaponType.Default || weaponPurpose == WeaponPurpose.Enemy) 
-                return;
-
             Instantiate(shootEffect, shotPoint.position, Quaternion.identity);
-            
-            bulletsQty--;
-            bulletsQtyChanged?.Invoke(bulletsQty);
+
+            base.Shoot();
         }
     }
 }

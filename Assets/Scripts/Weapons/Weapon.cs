@@ -11,10 +11,15 @@ namespace Weapons
         [SerializeField] protected GameObject bullet;
         [SerializeField] protected Transform shotPoint;
     
-        [SerializeField] protected float startTimeBtwShots;
+        [SerializeField] protected float fireRate;
+        [SerializeField] protected int magazineCapacity;
+        [SerializeField] protected float reloadTime;
         protected float timeBtwShots;
-        protected int bulletsQty;
-    
+        protected bool reloading;
+        protected float timeBtwReloading;
+        protected int ammoQtyInMagazine;
+        protected int ammo;
+
         public enum WeaponPurpose
         {
             Player,
@@ -29,7 +34,7 @@ namespace Weapons
             Mortar
         }
     
-        public Action<int> bulletsQtyChanged;
+        public Action<int, int> ammoQtyChanged;
 
         protected SoundManager soundManager;
     
@@ -38,6 +43,8 @@ namespace Weapons
         {
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
+            
+            ReloadAmmo();
         }
 
         // Update is called once per frame
@@ -45,7 +52,7 @@ namespace Weapons
         {
             if (timeBtwShots <= 0)
             {
-                if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && bulletsQty > 0 
+                if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && ammoQtyInMagazine > 0 && !reloading
                     || Input.GetMouseButton(0) && weaponType == WeaponType.Default 
                     || weaponPurpose == WeaponPurpose.Enemy)
                 {
@@ -56,32 +63,71 @@ namespace Weapons
             {
                 timeBtwShots -= Time.deltaTime;
             }
+            
+            if (Input.GetKeyDown(KeyCode.R) && 
+                ammoQtyInMagazine < magazineCapacity &&
+                ammo > 0 &&
+                !reloading)
+            {
+                reloading = true;
+                soundManager.Reload();
+                timeBtwReloading = reloadTime;
+            }
+            
+            if (reloading)
+            {
+                ReloadAmmo();
+            }
         }
-    
+
+        protected void ReloadAmmo()
+        {
+            timeBtwReloading -= Time.deltaTime;
+            
+            if (!(timeBtwReloading <= 0)) return;
+
+            if (ammoQtyInMagazine == magazineCapacity) return;
+            
+            var allAmmo = ammoQtyInMagazine + ammo;
+            if (allAmmo >= magazineCapacity)
+            {
+                ammo = ammo - magazineCapacity + ammoQtyInMagazine; 
+                ammoQtyInMagazine = magazineCapacity;
+            }
+            else
+            {
+                ammoQtyInMagazine = allAmmo;
+                ammo = 0;
+            }
+
+            reloading = false;
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);
+        }
+
         protected virtual void Shoot()
         {
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);
         
             soundManager.Shot(weaponType);
-            timeBtwShots = startTimeBtwShots;
+            timeBtwShots = fireRate;
         
             if (weaponType == WeaponType.Default || weaponPurpose == WeaponPurpose.Enemy) 
                 return;
         
-            bulletsQty--;
-            bulletsQtyChanged?.Invoke(bulletsQty);
+            ammoQtyInMagazine--;
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);
         }
 
-        public int GetBulletsQty()
+        public (int, int) GetAmmo()
         {
-            return bulletsQty;
+            return (ammoQtyInMagazine, ammo);
         }
 
-        public void ChangeBulletsQty(int qty)
+        public void ChangeAmmoQty(int qty)
         {
-            bulletsQty += qty;
-            bulletsQtyChanged?.Invoke(bulletsQty);
+            ammo += qty;
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);;
         }
     }
 }

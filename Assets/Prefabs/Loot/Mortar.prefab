@@ -187,7 +187,7 @@ GameObject:
   - component: {fileID: 3759576482521665571}
   m_Layer: 0
   m_Name: Mortar
-  m_TagString: Weapon
+  m_TagString: Loot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -283,5 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b57a53f574a141acad7e5a2145af7c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lootValue: 20
   destructionTime: 15
   type: 1

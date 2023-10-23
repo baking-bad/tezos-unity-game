@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
         healthChanged?.Invoke(health, damaged);
     }
 
-    private void SwitchWeapon(bool isTaken = false)
+    public void SwitchWeapon(bool isTaken = false)
     {
         for (var i = 0; i < unlockedWeapons.Count; i++)
         {
@@ -176,36 +176,21 @@ public class PlayerController : MonoBehaviour
         return _shieldScript;
     }
 
+    public GameObject[] GetAllWeapons()
+    {
+        return allWeapons;
+    }
+    
+    public List<GameObject> GetUnlockedWeapons()
+    {
+        return unlockedWeapons;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Weapon"))
+        if (other.CompareTag("Loot"))
         {
-            foreach (var w in allWeapons)
-            {
-                if (other.name != w.name) continue;
-                
-                if (!unlockedWeapons.Exists(go => go.name == other.name))
-                {
-                    unlockedWeapons.Add(w);
-                    SwitchWeapon(isTaken: true);
-                }
-                w.GetComponent<Weapon>().ChangeAmmoQty(30); // todo: TEMP
-                
-                break;
-            }
-            Destroy(other.gameObject);
-        }
-        
-        if (other.CompareTag("HP"))
-        {
-            ChangeHealth(30, false);
-            Destroy(other.gameObject);
-        }
-        
-        if (other.CompareTag("Shield"))
-        {
-            shield.SetActive(true);
-            _shieldScript.Activate();
+            other.GetComponent<Loot>().ApplyLoot(gameObject);
             Destroy(other.gameObject);
         }
     }

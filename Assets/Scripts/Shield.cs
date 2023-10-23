@@ -31,8 +31,9 @@ public class Shield : MonoBehaviour
         Deactivate();
     }
 
-    public void Activate()
+    public void Activate(float timeLimit)
     {
+        cooldown = timeLimit;
         _isActivated = true;
         _elapsedTime = 0;
         shieldTimerActivated?.Invoke();

@@ -7,7 +7,15 @@ using Random = UnityEngine.Random;
 
 namespace Managers
 {
-    // !!!! WARNING !!!! Enemies must be different threat values
+    /*--------------------------------------------------
+    
+    
+    !!!! WARNING !!!!
+    
+    Each enemy prefab must have a unique threat value
+    
+    
+    ------------------------------------------------------*/
     public class LevelManager : MonoBehaviour
     {
         public GameObject[] enemies;

@@ -16,7 +16,7 @@ namespace Weapons
         public GameObject damageEffect;
         public GameObject destroyEffect;
 
-        private readonly float _distance = 1;
+        private readonly float _distance = 1f;
         // Start is called before the first frame update
         private void Start()
         {
@@ -34,19 +34,24 @@ namespace Weapons
             Physics.Raycast(transform.position, transform.forward, out var hit, _distance, mask);
 
             if (hit.collider == null) return;
-            
+
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
                 hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
                 Instantiate(damageEffect, transform.position, Quaternion.identity);
+                DestroyBullet();
+                return;
             }
             
             if (hit.collider.CompareTag("Player") && enemyBullet)
             {
                 hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
                 Instantiate(damageEffect, transform.position, Quaternion.identity);
+                DestroyBullet();
+                return;
             }
-
+            
+            Instantiate(destroyEffect, transform.position, Quaternion.identity);
             DestroyBullet();
         }
 

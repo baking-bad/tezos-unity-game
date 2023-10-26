@@ -17,6 +17,7 @@ namespace Managers
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
+        [SerializeField] private TMP_Text waveAlertText;
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image sprintTimer;
@@ -92,6 +93,7 @@ namespace Managers
         {
             waveText.text = "Wave № " + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
+            waveAlertText.gameObject.SetActive(true);
         }
 
         private void ShowRestartPanel()

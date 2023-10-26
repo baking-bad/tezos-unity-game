@@ -186,7 +186,7 @@ namespace Managers
         {
             var enemyScript = enemy.GetComponent<Enemy>();
                         
-            if (_score % lootRate == 0)
+            if (_score != 0 && _score % lootRate == 0)
             {
                 var randomImprovement = Random.Range(0, loots.Length); ;
                 enemyScript.SetKillAward(loots[randomImprovement]);

@@ -3915,7 +3915,7 @@ MonoBehaviour:
   - {fileID: 3142594558069246637, guid: d9928689a638f4abea041d9a96aaf604, type: 3}
   - {fileID: 2967996262974227715, guid: d248a9325e2c64466bda6247a13ebae1, type: 3}
   lootRate: 10
-  waveRate: 10
+  waveRate: 12
   waveThreatEnhancement: 100
 --- !u!1 &868611930
 GameObject:
@@ -9654,7 +9654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  moveSpeed: 8
+  moveSpeed: 10
   sprintSpeed: 32
   sprintCooldown: 5
   sprintDuration: 0.2
@@ -9694,7 +9694,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.2, y: 2, z: 2.2}
+  m_Size: {x: 1.8, y: 2, z: 1.8}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!136 &1972444686
 CapsuleCollider:
@@ -9706,7 +9706,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.1
+  m_Radius: 1
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}

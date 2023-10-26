@@ -134,19 +134,21 @@ namespace Managers
                                 Quaternion.identity);
                         }
                         
-                        SubscribeToKillEvents(lastEnemy);;
-
-                        break;
+                        SubscribeToKillEvents(lastEnemy);
+                        
+                        totalThreat += lastEnemy.GetComponent<Enemy>().threat;
                     }
+                    else
+                    {
+                        var enemy = Instantiate(
+                            enemyKeyValuePair.Value,
+                            spawnPoints[randomPoint].position,
+                            Quaternion.identity);
 
-                    var enemy = Instantiate(
-                        enemyKeyValuePair.Value,
-                        spawnPoints[randomPoint].position,
-                        Quaternion.identity);
-
-                    SubscribeToKillEvents(enemy);
+                        SubscribeToKillEvents(enemy);
                     
-                    totalThreat += enemyKeyValuePair.Key;
+                        totalThreat += enemyKeyValuePair.Key;   
+                    }
                 }
 
                 newWaveHasBegun?.Invoke(_wave, _waveThreat);

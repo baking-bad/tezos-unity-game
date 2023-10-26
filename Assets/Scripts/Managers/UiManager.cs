@@ -15,8 +15,8 @@ namespace Managers
         [SerializeField] private TMP_Text ammoQty;
         [SerializeField] private GameObject restartPanel;
         [SerializeField] private TMP_Text resultText;
-        [SerializeField] private TMP_Text enemyHp;
-        [SerializeField] private TMP_Text enemyDamage;
+        [SerializeField] private TMP_Text waveText;
+        [SerializeField] private TMP_Text waveThreatText;
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image sprintTimer;
@@ -32,7 +32,7 @@ namespace Managers
         
             levelManager.scoreUpdated += ScoreUpdated;
             levelManager.playerDied += ShowRestartPanel;
-            levelManager.levelDifficultyIncreased += LevelDifficultyIncreased;
+            levelManager.newWaveHasBegun += NewWaveHasBegun;
             _player.healthChanged += PlayerHealthChanged;
             _player.weaponSwitched += WeaponSwitched;
             _player.sprintCooldownContinues += SprintTimerChanged;
@@ -88,10 +88,10 @@ namespace Managers
             ammoQty.text = ammo.ToString();
         }
 
-        private void LevelDifficultyIncreased(float enemyHlth, float enemyDmg)
+        private void NewWaveHasBegun(int wave, int waveThreat)
         {
-            enemyHp.text = "Enemy HP: " + enemyHlth;
-            enemyDamage.text = "Enemy Damage: " + enemyDmg;
+            waveText.text = "Wave № " + wave;
+            waveThreatText.text = "Wave threat: " + waveThreat;
         }
 
         private void ShowRestartPanel()

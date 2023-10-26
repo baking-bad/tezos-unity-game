@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float health;
-    public float speed;
+    [SerializeField] private float health;
+    [SerializeField] private float speed;
+    [SerializeField] public int threat;
     [SerializeField] private bool canMeleeDamage;
     [SerializeField] private float meleeAttackRate;
-    public float meleeDamage;
+    [SerializeField] private float meleeDamage;
     
     private float _timeBtwAttack;
     private float _stopTime;
     private bool _isStunned;
     private float _normalSpeed;
-
-    public GameObject damageEffect;
+    
     private PlayerController _player;
-    
     private SoundManager _soundManager;
-    
     private GameObject _killAward;
+    
+    public GameObject damageEffect;
     public Action<Transform, GameObject> enemyKilled;
 
 

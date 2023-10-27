@@ -35,7 +35,6 @@ namespace Managers
         private int _score;
         private int _wave;
         private int _waveThreat;
-        private int[] _threatOptions;
 
         private Dictionary<int, GameObject> _enemiesWithThreat;
         
@@ -77,16 +76,10 @@ namespace Managers
 
         private void InitEnemiesThreat()
         {
-            _threatOptions = new int [enemies.Length];
-            
             _enemiesWithThreat = new Dictionary<int, GameObject>();
             
             for (var i = 0; i < enemies.Length; i++)
             {
-                _threatOptions[i] = enemies[i]
-                    .GetComponent<Enemy>()
-                    .threat;
-                
                 _enemiesWithThreat.Add(
                     enemies[i].GetComponent<Enemy>().threat, 
                     enemies[i]);

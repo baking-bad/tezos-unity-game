@@ -3828,6 +3828,8 @@ MonoBehaviour:
   - {fileID: 7512836089440099253, guid: 1a6853245fae74f4e9d0e2055a8dfbc7, type: 3}
   - {fileID: 5571817670563859609, guid: 4ab1ec29b87fe44e2b30903bcd689ada, type: 3}
   - {fileID: 3326501013474673108, guid: e5674e4f9ea934e6a97646b7f1f85df0, type: 3}
+  bosses:
+  - {fileID: 8467768040279084109, guid: 7d6d1239f57314da684e26aaa32c6328, type: 3}
   spawnPoints:
   - {fileID: 1496604725}
   - {fileID: 1368846465}
@@ -3909,16 +3911,18 @@ MonoBehaviour:
   - {fileID: 1119776106}
   - {fileID: 1245054877}
   - {fileID: 1381373795}
-  loots:
-  - {fileID: 5089687832732005661, guid: c9caac04b12e34080a829587dd1fab65, type: 3}
-  - {fileID: 3270076870304686373, guid: cee874ee3090b40b8b586cc6d6fbfb53, type: 3}
-  - {fileID: 7930680257687005231, guid: 4488ff86ac9c3497e9420a56f3f1c2e8, type: 3}
+  supplyItems:
   - {fileID: 9248175748599024, guid: 3748137420fd841228e8e47040b3d275, type: 3}
   - {fileID: 3142594558069246637, guid: d9928689a638f4abea041d9a96aaf604, type: 3}
+  weapons:
+  - {fileID: 5089687832732005661, guid: c9caac04b12e34080a829587dd1fab65, type: 3}
+  - {fileID: 3270076870304686373, guid: cee874ee3090b40b8b586cc6d6fbfb53, type: 3}
   - {fileID: 2967996262974227715, guid: d248a9325e2c64466bda6247a13ebae1, type: 3}
+  - {fileID: 7930680257687005231, guid: 4488ff86ac9c3497e9420a56f3f1c2e8, type: 3}
   lootRate: 10
-  waveRate: 12
+  waveRateInSec: 12
   waveThreatEnhancement: 100
+  bossRateMod: 10
 --- !u!1 &868611930
 GameObject:
   m_ObjectHideFlags: 0

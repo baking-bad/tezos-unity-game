@@ -19,15 +19,18 @@ namespace Managers
     public class LevelManager : MonoBehaviour
     {
         public GameObject[] enemies;
+        public GameObject[] bosses;
         public Transform[] spawnPoints;
         
         [Header("LOOT:")]
-        [SerializeField] private GameObject[] loots;
+        [SerializeField] private GameObject[] supplyItems;
+        [SerializeField] private GameObject[] weapons;
         [SerializeField] private int lootRate;
-        
+
         [Header("WAVES PARAMS:")]
-        [SerializeField] private float waveRate;
+        [SerializeField] private float waveRateInSec;
         [SerializeField] private int waveThreatEnhancement;
+        [SerializeField] private int bossRateMod;
 
         private int _score;
         private int _wave;
@@ -68,7 +71,7 @@ namespace Managers
             }
             else
             {
-                Spawn();
+                SpawnWave();
             }
         }
 
@@ -96,14 +99,21 @@ namespace Managers
             return value;
         }
 
-        private void Spawn()
+        private void SpawnWave()
         {
             if (_timeBtwSpawn <= 0)
             {
-                _timeBtwSpawn = waveRate;
+                _timeBtwSpawn = waveRateInSec;
                 _wave++;
                 _waveThreat += waveThreatEnhancement;
-                
+
+                if (_wave % bossRateMod == 0)
+                {
+                    SpawnBoss();
+                    
+                    return;
+                }
+
                 var totalThreat = 0;
                 
                 while (totalThreat < _waveThreat)
@@ -170,6 +180,23 @@ namespace Managers
             Time.timeScale = 1;
         }
 
+        private void SpawnBoss()
+        {
+            var rnd = Random.Range(0, bosses.Length);
+            var randomPoint = Random.Range(0, spawnPoints.Length);
+                    
+            var boss = Instantiate(bosses[rnd], 
+                spawnPoints[randomPoint].position,
+                Quaternion.identity);
+                    
+            var bossScript = boss.GetComponent<Enemy>();
+            bossScript.health = bossScript.health * _wave / bossRateMod; 
+            var rndWeapon = Random.Range(0, weapons.Length);
+            bossScript.SetKillAward(weapons[rndWeapon]);
+                    
+            bossScript.enemyKilled += EnemyKilled;
+        }
+
         private void EnemyKilled(Transform killPosition, GameObject killAward)
         {
             _score++;
@@ -188,8 +215,8 @@ namespace Managers
                         
             if (_score != 0 && _score % lootRate == 0)
             {
-                var randomImprovement = Random.Range(0, loots.Length); ;
-                enemyScript.SetKillAward(loots[randomImprovement]);
+                var rndImprovement = Random.Range(0, supplyItems.Length); ;
+                enemyScript.SetKillAward(supplyItems[rndImprovement]);
             }
 
             enemyScript.enemyKilled += EnemyKilled;

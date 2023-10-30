@@ -63,11 +63,9 @@ namespace Weapons
             {
                 timeBtwShots -= Time.deltaTime;
             }
-            
-            if (Input.GetKeyDown(KeyCode.R) && 
-                ammoQtyInMagazine < magazineCapacity &&
-                ammo > 0 &&
-                !reloading)
+
+            if (Input.GetKeyDown(KeyCode.R) && ammoQtyInMagazine < magazineCapacity && ammo > 0 && !reloading 
+                || ammoQtyInMagazine == 0 && ammo > 0 && !reloading && weaponPurpose != WeaponPurpose.Enemy)
             {
                 reloading = true;
                 soundManager.Reload();
@@ -127,6 +125,9 @@ namespace Weapons
         public void ChangeAmmoQty(int qty)
         {
             ammo += qty;
+            
+            if (!gameObject.activeInHierarchy) return;
+            
             ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);;
         }
     }

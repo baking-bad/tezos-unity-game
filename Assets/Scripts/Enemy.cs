@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     private GameObject _killAward;
     
     public GameObject damageEffect;
-    public Action<Transform, GameObject> enemyKilled;
+    public Action<Enemy, Transform, GameObject> enemyKilled;
 
 
     // Start is called before the first frame update
@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled?.Invoke(transform, _killAward);
+            enemyKilled?.Invoke(this, transform, _killAward);
             Destroy(gameObject);
         }
 

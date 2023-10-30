@@ -21,31 +21,34 @@ namespace Managers
         public GameObject[] enemies;
         public GameObject[] bosses;
         public Transform[] spawnPoints;
-        
-        [Header("LOOT:")]
-        [SerializeField] private GameObject[] supplyItems;
+
+        [Header("LOOT:")] [SerializeField] private GameObject[] supplyItems;
         [SerializeField] private GameObject[] weapons;
         [SerializeField] private int lootRate;
 
-        [Header("WAVES PARAMS:")]
+        [Header("WAVES PARAMS:")] 
         [SerializeField] private float waveRateInSec;
         [SerializeField] private int waveThreatEnhancement;
+        [SerializeField] private int minThreatInPercent;
         [SerializeField] private int bossRateMod;
+        [SerializeField] private int increasedBossHealthInPercent;
 
         private int _score;
         private int _wave;
         private int _waveThreat;
+        private int _currentThreat;
 
         private Dictionary<int, GameObject> _enemiesWithThreat;
-        
-        public Action<int> scoreUpdated;
+
+        public Action<int, int> gameScoreUpdated;
         public Action playerDied;
         public Action<int, int> newWaveHasBegun;
+        public Action<int, int> bossSpawned;
 
         private SoundManager _soundManager;
         private PlayerController _player;
         private float _timeBtwSpawn;
-    
+
 
         // Start is called before the first frame update
         void Start()
@@ -53,12 +56,10 @@ namespace Managers
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _soundManager = GetComponent<SoundManager>();
-            InitEnemiesThreat();
+            InitEnemies();
             _score = 0;
-            
         }
 
-    
         // Update is called once per frame
         void Update()
         {
@@ -70,18 +71,18 @@ namespace Managers
             }
             else
             {
-                SpawnWave();
+                CheckWave();
             }
         }
 
-        private void InitEnemiesThreat()
+        private void InitEnemies()
         {
             _enemiesWithThreat = new Dictionary<int, GameObject>();
-            
+
             for (var i = 0; i < enemies.Length; i++)
             {
                 _enemiesWithThreat.Add(
-                    enemies[i].GetComponent<Enemy>().threat, 
+                    enemies[i].GetComponent<Enemy>().threat,
                     enemies[i]);
             }
         }
@@ -92,69 +93,26 @@ namespace Managers
             return value;
         }
 
-        private void SpawnWave()
+        private void CheckWave()
         {
-            if (_timeBtwSpawn <= 0)
+            if (_timeBtwSpawn <= 0 ||
+                _currentThreat <= _waveThreat * minThreatInPercent / 100)
             {
                 _timeBtwSpawn = waveRateInSec;
                 _wave++;
                 _waveThreat += waveThreatEnhancement;
+                _currentThreat += _waveThreat;
 
                 if (_wave % bossRateMod == 0)
                 {
                     SpawnBoss();
-                    
-                    return;
                 }
-
-                var totalThreat = 0;
-                
-                while (totalThreat < _waveThreat)
+                else
                 {
-                    var rnd = Random.Range(0, _enemiesWithThreat.Count);
-                    var enemyKeyValuePair = _enemiesWithThreat.ElementAt(rnd);
-                    var randomPoint = Random.Range(0, spawnPoints.Length);
-                    
-                    if (totalThreat + enemyKeyValuePair.Key > _waveThreat)
-                    {
-                        var lastEnemy = GetEnemyByThreat(_waveThreat - totalThreat);
-                        if (lastEnemy != null)
-                        {
-                            lastEnemy = Instantiate(
-                                lastEnemy,
-                                spawnPoints[randomPoint].position,
-                                Quaternion.identity);
-                        }
-                        else
-                        {
-                            enemyKeyValuePair = _enemiesWithThreat
-                                .Aggregate((l, r) => 
-                                    l.Key < r.Key ? l : r);
-                            
-                            lastEnemy = Instantiate(
-                                enemyKeyValuePair.Value,
-                                spawnPoints[randomPoint].position,
-                                Quaternion.identity);
-                        }
-                        
-                        SubscribeToKillEvents(lastEnemy);
-                        
-                        totalThreat += lastEnemy.GetComponent<Enemy>().threat;
-                    }
-                    else
-                    {
-                        var enemy = Instantiate(
-                            enemyKeyValuePair.Value,
-                            spawnPoints[randomPoint].position,
-                            Quaternion.identity);
-
-                        SubscribeToKillEvents(enemy);
-                    
-                        totalThreat += enemyKeyValuePair.Key;   
-                    }
+                    SpawnEnemies();
                 }
-
-                newWaveHasBegun?.Invoke(_wave, _waveThreat);
+                
+                gameScoreUpdated?.Invoke(_score, _currentThreat);
             }
             else
             {
@@ -177,27 +135,86 @@ namespace Managers
         {
             var rnd = Random.Range(0, bosses.Length);
             var randomPoint = Random.Range(0, spawnPoints.Length);
-                    
-            var boss = Instantiate(bosses[rnd], 
+
+            var boss = Instantiate(
+                bosses[rnd],
                 spawnPoints[randomPoint].position,
                 Quaternion.identity);
-                    
+
             var bossScript = boss.GetComponent<Enemy>();
-            bossScript.health = bossScript.health * _wave / bossRateMod; 
+            bossScript.health = bossScript.health * _wave * increasedBossHealthInPercent / 100;
+            
             var rndWeapon = Random.Range(0, weapons.Length);
             bossScript.SetKillAward(weapons[rndWeapon]);
-                    
+
+            bossScript.threat = _waveThreat;
             bossScript.enemyKilled += EnemyKilled;
+
+            bossSpawned?.Invoke(_wave, _waveThreat);
         }
 
-        private void EnemyKilled(Transform killPosition, GameObject killAward)
+        private void SpawnEnemies()
+        {
+            var totalWaveThreat = 0;
+
+            while (totalWaveThreat < _waveThreat)
+            {
+                var rnd = Random.Range(0, _enemiesWithThreat.Count);
+                var enemyKeyValuePair = _enemiesWithThreat.ElementAt(rnd);
+                var randomPoint = Random.Range(0, spawnPoints.Length);
+
+                if (totalWaveThreat + enemyKeyValuePair.Key > _waveThreat)
+                {
+                    var lastEnemy = GetEnemyByThreat(_waveThreat - totalWaveThreat);
+                    if (lastEnemy != null)
+                    {
+                        lastEnemy = Instantiate(
+                            lastEnemy,
+                            spawnPoints[randomPoint].position,
+                            Quaternion.identity);
+                    }
+                    else
+                    {
+                        enemyKeyValuePair = _enemiesWithThreat
+                            .Aggregate((l, r) =>
+                                l.Key < r.Key ? l : r);
+
+                        lastEnemy = Instantiate(
+                            enemyKeyValuePair.Value,
+                            spawnPoints[randomPoint].position,
+                            Quaternion.identity);
+                    }
+
+                    SubscribeToKillEvents(lastEnemy);
+
+                    totalWaveThreat += lastEnemy.GetComponent<Enemy>().threat;
+                }
+                else
+                {
+                    var enemy = Instantiate(
+                        enemyKeyValuePair.Value,
+                        spawnPoints[randomPoint].position,
+                        Quaternion.identity);
+
+                    SubscribeToKillEvents(enemy);
+
+                    totalWaveThreat += enemyKeyValuePair.Key;
+                }
+            }
+
+            newWaveHasBegun?.Invoke(_wave, _waveThreat);
+        }
+
+        private void EnemyKilled(Enemy enemy, Transform killPosition, GameObject killAward)
         {
             _score++;
-            scoreUpdated?.Invoke(_score);
+            _currentThreat -= enemy.threat;
+            gameScoreUpdated?.Invoke(_score, _currentThreat);
+
             _soundManager.Death();
-            
+
             if (killAward == null) return;
-            
+
             var award = Instantiate(killAward, killPosition.position, Quaternion.identity);
             award.name = killAward.name;
         }
@@ -205,10 +222,11 @@ namespace Managers
         private void SubscribeToKillEvents(GameObject enemy)
         {
             var enemyScript = enemy.GetComponent<Enemy>();
-                        
+
             if (_score != 0 && _score % lootRate == 0)
             {
-                var rndImprovement = Random.Range(0, supplyItems.Length); ;
+                var rndImprovement = Random.Range(0, supplyItems.Length);
+                ;
                 enemyScript.SetKillAward(supplyItems[rndImprovement]);
             }
 

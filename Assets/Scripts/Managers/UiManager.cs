@@ -10,6 +10,7 @@ namespace Managers
     {
         [SerializeField] private TMP_Text health;
         [SerializeField] private TMP_Text score;
+        [SerializeField] private TMP_Text currentThreat;
         [SerializeField] private Image weaponIcon;
         [SerializeField] private TMP_Text ammoQtyInMagazine;
         [SerializeField] private TMP_Text ammoQty;
@@ -18,6 +19,7 @@ namespace Managers
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
         [SerializeField] private TMP_Text waveAlertText;
+        [SerializeField] private TMP_Text bossAlertText;
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image sprintTimer;
@@ -31,9 +33,10 @@ namespace Managers
                 .GetComponent<PlayerController>();
             var levelManager = GetComponent<LevelManager>();
         
-            levelManager.scoreUpdated += ScoreUpdated;
+            levelManager.gameScoreUpdated += ScoreUpdated;
             levelManager.playerDied += ShowRestartPanel;
             levelManager.newWaveHasBegun += NewWaveHasBegun;
+            levelManager.bossSpawned += BossSpawned;
             _player.healthChanged += PlayerHealthChanged;
             _player.weaponSwitched += WeaponSwitched;
             _player.sprintCooldownContinues += SprintTimerChanged;
@@ -48,9 +51,10 @@ namespace Managers
             health.text = "HP: " + _player.GetPlayerHealth();
         }
 
-        private void ScoreUpdated(int scr)
+        private void ScoreUpdated(int scr, int threat)
         {
             score.text = "Score: " + scr;
+            currentThreat.text = "Current threat: " + threat;
         }
 
         private void PlayerHealthChanged(int hlth, bool _)
@@ -94,6 +98,13 @@ namespace Managers
             waveText.text = "Wave № " + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
             waveAlertText.gameObject.SetActive(true);
+        }
+        
+        private void BossSpawned(int wave, int waveThreat)
+        {
+            waveText.text = "Wave № " + wave;
+            waveThreatText.text = "Wave threat: " + waveThreat;
+            bossAlertText.gameObject.SetActive(true);
         }
 
         private void ShowRestartPanel()

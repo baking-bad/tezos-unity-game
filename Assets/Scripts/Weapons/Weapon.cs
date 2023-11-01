@@ -30,22 +30,33 @@ namespace Weapons
         {
             Gun,
             Shotgun,
-            Mortar,
+            Explosive,
             Smg
         }
     
         public Action<int, int, WeaponType> ammoQtyChanged;
 
         protected SoundManager soundManager;
-
-        void Awake()
-        {
-            ReloadAmmo();
-        }
+        
 
         // Start is called before the first frame update
         void Start()
         {
+            
+            /*
+             * Test case
+             */
+            if (weaponType == WeaponType.Explosive)
+            {
+                ammo = 20;
+            }
+            /*
+           * Test case
+           */
+            
+            
+
+            ReloadAmmo();
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
         }

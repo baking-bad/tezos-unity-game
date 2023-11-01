@@ -29,7 +29,7 @@ namespace Managers
                     AudioSource.PlayClipAtPoint(smgShot, _listener.transform.position);
                     break;
             
-                case WeaponType.Mortar:
+                case WeaponType.Explosive:
                     break;
 
                 default:

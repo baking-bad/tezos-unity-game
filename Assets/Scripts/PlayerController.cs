@@ -106,6 +106,10 @@ public class PlayerController : MonoBehaviour
             SwitchWeaponByName("Peacock");
         if (Input.GetKeyDown(KeyCode.Alpha9))
             SwitchWeaponByName("Sealer");
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            SwitchWeaponByName("Mines");
+        if (Input.GetKeyDown(KeyCode.Comma))
+            SwitchWeaponByName("Roaster");
         /*
         *
         * Test case

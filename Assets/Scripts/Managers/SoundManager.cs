@@ -5,7 +5,7 @@ namespace Managers
 {
     public class SoundManager : MonoBehaviour
     {
-        [SerializeField] private AudioClip shot, takeDamage, death, lose, shotgunShot, reload;
+        [SerializeField] private AudioClip shot, takeDamage, death, lose, shotgunShot, smgShot, reload;
         private GameObject _listener;
 
         private void Start()
@@ -23,6 +23,10 @@ namespace Managers
             
                 case WeaponType.Shotgun:
                     AudioSource.PlayClipAtPoint(shotgunShot, _listener.transform.position);
+                    break;
+                
+                case WeaponType.Smg:
+                    AudioSource.PlayClipAtPoint(smgShot, _listener.transform.position);
                     break;
             
                 case WeaponType.Mortar:

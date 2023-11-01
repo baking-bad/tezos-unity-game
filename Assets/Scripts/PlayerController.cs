@@ -100,6 +100,12 @@ public class PlayerController : MonoBehaviour
             SwitchWeaponByName("Defender");
         if (Input.GetKeyDown(KeyCode.Alpha6))
             SwitchWeaponByName("DoomGuy");
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+            SwitchWeaponByName("Fuzzy");
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+            SwitchWeaponByName("Peacock");
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+            SwitchWeaponByName("Sealer");
         /*
         *
         * Test case

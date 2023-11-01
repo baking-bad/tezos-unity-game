@@ -30,7 +30,8 @@ namespace Weapons
         {
             Gun,
             Shotgun,
-            Mortar
+            Mortar,
+            Smg
         }
     
         public Action<int, int, WeaponType> ammoQtyChanged;

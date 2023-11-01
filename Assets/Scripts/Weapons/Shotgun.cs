@@ -20,7 +20,20 @@ namespace Weapons
         [SerializeField] private GameObject laser;
     
         private List<GameObject> _affectedEnemies;
-    
+
+        void Awake()
+        {
+            /*
+            * Test case
+            */
+            ammo = 30;
+            /*
+            * Test case
+            */
+            
+            ReloadAmmo();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -28,8 +41,6 @@ namespace Weapons
                 .GetComponent<SoundManager>();
         
             _affectedEnemies = new List<GameObject>();
-            
-            ReloadAmmo();
         }
     
         private Vector3 GetShootingDirection()
@@ -42,14 +53,14 @@ namespace Weapons
                 targetPos.z + Random.Range(-_inaccurancyDistance, _inaccurancyDistance)
             );
 
-            Vector3 dir = targetPos - shotPosition;
+            var dir = targetPos - shotPosition;
         
             return dir.normalized;
         }
 
         void TestLaser(Vector3 end)
         {
-            LineRenderer lr = Instantiate(laser).GetComponent<LineRenderer>();
+            var lr = Instantiate(laser).GetComponent<LineRenderer>();
             lr.SetPositions(new Vector3[] {shotPoint.position, end});
         }
 

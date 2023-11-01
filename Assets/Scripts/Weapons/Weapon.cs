@@ -36,14 +36,17 @@ namespace Weapons
         public Action<int, int, WeaponType> ammoQtyChanged;
 
         protected SoundManager soundManager;
-    
+
+        void Awake()
+        {
+            ReloadAmmo();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
-            
-            ReloadAmmo();
         }
 
         // Update is called once per frame

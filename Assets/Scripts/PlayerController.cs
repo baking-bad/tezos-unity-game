@@ -80,6 +80,27 @@ public class PlayerController : MonoBehaviour
             _timeBtwSprints = 0;
             sprintCooldownStarted?.Invoke();
         }
+        
+        
+        
+        /*
+        *
+        * Test case
+        *     
+        */
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SwitchWeaponByName("Walky");
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            SwitchWeaponByName("Viper");
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            SwitchWeaponByName("Claw");
+        /*
+        *
+        * Test case
+        *     
+        */
+        
+        
 
         if (_isSprinting)
         {
@@ -156,6 +177,27 @@ public class PlayerController : MonoBehaviour
                     _currentWeapon = unlockedWeapons[i + 1].GetComponent<Weapon>();
                 }
             }
+            weaponSwitched?.Invoke(_currentWeapon);
+            break;
+        }
+    }
+    
+    public void SwitchWeaponByName(string weaponName)
+    {
+        for (var i = 0; i < unlockedWeapons.Count; i++)
+        {
+            if (!unlockedWeapons[i].activeInHierarchy) continue;
+            
+            unlockedWeapons[i].SetActive(false);
+
+            var weapon = unlockedWeapons
+                .FirstOrDefault(w => w.name == weaponName);
+            
+            if (weapon == null) return;
+
+            weapon.SetActive(true);
+            _currentWeapon = weapon.GetComponent<Weapon>();
+            
             weaponSwitched?.Invoke(_currentWeapon);
             break;
         }

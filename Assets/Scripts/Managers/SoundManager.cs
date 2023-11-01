@@ -27,11 +27,7 @@ namespace Managers
             
                 case WeaponType.Mortar:
                     break;
-            
-                case WeaponType.Default:
-                    AudioSource.PlayClipAtPoint(shot, _listener.transform.position);
-                    break;
-            
+
                 default:
                     break;
             }

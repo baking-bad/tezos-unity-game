@@ -28,13 +28,12 @@ namespace Weapons
     
         public enum WeaponType
         {
-            Default,
             Gun,
             Shotgun,
             Mortar
         }
     
-        public Action<int, int> ammoQtyChanged;
+        public Action<int, int, WeaponType> ammoQtyChanged;
 
         protected SoundManager soundManager;
     
@@ -53,7 +52,6 @@ namespace Weapons
             if (timeBtwShots <= 0)
             {
                 if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && ammoQtyInMagazine > 0 && !reloading
-                    || Input.GetMouseButton(0) && weaponType == WeaponType.Default 
                     || weaponPurpose == WeaponPurpose.Enemy)
                 {
                     Shoot(); 
@@ -99,7 +97,7 @@ namespace Weapons
             }
 
             reloading = false;
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
         }
 
         protected virtual void Shoot()
@@ -110,11 +108,11 @@ namespace Weapons
             soundManager.Shot(weaponType);
             timeBtwShots = fireRate;
         
-            if (weaponType == WeaponType.Default || weaponPurpose == WeaponPurpose.Enemy) 
+            if (weaponPurpose == WeaponPurpose.Enemy) 
                 return;
         
             ammoQtyInMagazine--;
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
         }
 
         public (int, int) GetAmmo()
@@ -128,7 +126,7 @@ namespace Weapons
             
             if (!gameObject.activeInHierarchy) return;
             
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo);;
+            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);;
         }
     }
 }

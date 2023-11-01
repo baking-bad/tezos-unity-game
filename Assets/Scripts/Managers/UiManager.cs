@@ -72,11 +72,9 @@ namespace Managers
 
                 var ammo = weapon.GetAmmo();
 
-                ammoQtyInMagazine.text = weapon.weaponType == WeaponType.Default
-                    ? "Inf"
-                    : ammo.Item1.ToString();
+                ammoQtyInMagazine.text = ammo.Item1.ToString();
                 
-                ammoQty.text = weapon.weaponType == WeaponType.Default
+                ammoQty.text = weapon.weaponType == WeaponType.Gun
                     ? "Inf"
                     : ammo.Item2.ToString();
 
@@ -87,10 +85,12 @@ namespace Managers
             }
         }
 
-        private void AmmoQtyChanged(int ammoInMagazine, int ammo)
+        private void AmmoQtyChanged(int ammoInMagazine, int ammo, WeaponType weaponType)
         {
             ammoQtyInMagazine.text = ammoInMagazine.ToString();
-            ammoQty.text = ammo.ToString();
+            ammoQty.text = weaponType == WeaponType.Gun
+                ? "Inf"
+                : ammo.ToString();
         }
 
         private void NewWaveHasBegun(int wave, int waveThreat)

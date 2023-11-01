@@ -1,0 +1,46 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Weapons
+{
+    public class Missile : Bullet
+    {
+
+        private List<GameObject> _affectedEnemies;
+        
+        void Start()
+        {
+            _affectedEnemies = new List<GameObject>();   
+        }
+
+        protected override void DestroyBullet()
+        {
+            _affectedEnemies.ForEach(e =>
+            {
+                if (e.gameObject != null)
+                {
+                    e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                    Instantiate(damageEffect, e.gameObject.transform.position, Quaternion.identity);
+                }
+            });
+            
+            Destroy(gameObject);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Enemy"))
+            {
+                _affectedEnemies.Add(other.gameObject);
+            }
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Enemy"))
+            {
+                _affectedEnemies.Remove(other.gameObject);
+            }   
+        }
+    }
+}

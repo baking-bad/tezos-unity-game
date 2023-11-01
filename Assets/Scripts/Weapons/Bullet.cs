@@ -4,14 +4,14 @@ namespace Weapons
 {
     public class Bullet : MonoBehaviour
     {
-        [SerializeField] private float speed;
-        [SerializeField] private float lifetime;
-        [SerializeField] private int damage;
-        [SerializeField] private float stunTime;
+        [SerializeField] protected float speed;
+        [SerializeField] protected float lifetime;
+        [SerializeField] protected int damage;
+        [SerializeField] protected float stunTime;
     
-        [SerializeField] private LayerMask mask;
+        [SerializeField] protected LayerMask mask;
 
-        [SerializeField] private bool enemyBullet;
+        [SerializeField] protected bool enemyBullet;
 
         public GameObject damageEffect;
         public GameObject destroyEffect;
@@ -55,7 +55,7 @@ namespace Weapons
             DestroyBullet();
         }
 
-        private void DestroyBullet()
+        protected virtual void DestroyBullet()
         {
             // Instantiate(destroyEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);

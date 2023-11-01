@@ -5,7 +5,7 @@ namespace Managers
 {
     public class SoundManager : MonoBehaviour
     {
-        [SerializeField] private AudioClip shot, takeDamage, death, lose, shotgunShot, smgShot, reload;
+        [SerializeField] private AudioClip shot, takeDamage, death, lose, shotgunShot, smgShot, explosion, reload;
         private GameObject _listener;
 
         private void Start()
@@ -30,6 +30,7 @@ namespace Managers
                     break;
             
                 case WeaponType.Explosive:
+                    AudioSource.PlayClipAtPoint(explosion, _listener.transform.position);
                     break;
 
                 default:

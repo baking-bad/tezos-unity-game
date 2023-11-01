@@ -110,6 +110,8 @@ public class PlayerController : MonoBehaviour
             SwitchWeaponByName("Mines");
         if (Input.GetKeyDown(KeyCode.Comma))
             SwitchWeaponByName("Roaster");
+        if (Input.GetKeyDown(KeyCode.Period))
+            SwitchWeaponByName("Zoooka");
         /*
         *
         * Test case

@@ -136,9 +136,14 @@ namespace Managers
             var rnd = Random.Range(0, bosses.Length);
             var randomPoint = Random.Range(0, spawnPoints.Length);
 
+            var rndBoss = bosses[rnd];
+            
             var boss = Instantiate(
-                bosses[rnd],
-                spawnPoints[randomPoint].position,
+                rndBoss,
+                new Vector3(
+                    spawnPoints[randomPoint].position.x,
+                    spawnPoints[randomPoint].position.y + rndBoss.transform.localScale.y / 2,
+                    spawnPoints[randomPoint].position.z),
                 Quaternion.identity);
 
             var bossScript = boss.GetComponent<Enemy>();

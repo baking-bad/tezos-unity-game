@@ -13,6 +13,7 @@ namespace Managers
         [SerializeField] private TMP_Text score;
         [SerializeField] private TMP_Text currentThreat;
         [SerializeField] private Image weaponIcon;
+        [SerializeField] private TMP_Text weaponName;
         [SerializeField] private TMP_Text ammoQtyInMagazine;
         [SerializeField] private TMP_Text ammoQty;
         [SerializeField] private GameObject restartPanel;
@@ -73,6 +74,7 @@ namespace Managers
                 if (w.name != weapon.name) continue;
             
                 weaponIcon.sprite = w;
+                weaponName.text = w.name;
 
                 var ammo = weapon.GetAmmo();
 

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,9 @@ namespace Managers
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image sprintTimer;
 
+        [SerializeField] private TMP_Text timerText;
+        private float _timer;
+        
         private PlayerController _player;
 
         // Start is called before the first frame update
@@ -91,6 +95,13 @@ namespace Managers
             ammoQty.text = weaponType == WeaponType.Gun
                 ? "Inf"
                 : ammo.ToString();
+        }
+
+        private void FixedUpdate()
+        {
+            _timer += Time.deltaTime;
+            timerText.text = $"{(int) _timer / 60:00}:{(int) _timer % 60:00}";
+
         }
 
         private void NewWaveHasBegun(int wave, int waveThreat)

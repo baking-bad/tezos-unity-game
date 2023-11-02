@@ -4630,14 +4630,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91147f24519204a9fa8001fcdc310489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shot: {fileID: 8300000, guid: c3ff3c445af0f495394e63ec6bd6b17d, type: 3}
-  takeDamage: {fileID: 8300000, guid: aa64cda4882e048b09dea933c1ce01a6, type: 3}
+  gunFire: {fileID: 8300000, guid: 671433365c45f41f9b32ce2666c2431c, type: 3}
+  gunReload: {fileID: 8300000, guid: 936b7580b945c4e29bfc9ce6c632d473, type: 3}
+  shotgunFire: {fileID: 8300000, guid: 3d267e065a27d4ad1b2e00f189eeb825, type: 3}
+  shotgunReload: {fileID: 8300000, guid: 5bae89ddbc4a94ea7b097b626bc3b0e3, type: 3}
+  smgFire: {fileID: 8300000, guid: 6b3a7d42e8e3c43f4aa753479df5867d, type: 3}
+  smgReload: {fileID: 8300000, guid: 83120662ca396415a9701b1d540b2d5c, type: 3}
+  minePlanted: {fileID: 8300000, guid: 065a731a4a31e406eb77f6baad9c7e7e, type: 3}
+  mineDetonate: {fileID: 8300000, guid: 10ebbbfbe34024ea9910457f58530613, type: 3}
+  explosiveFire: {fileID: 8300000, guid: a601511a2045249a28d93beb8ea4a595, type: 3}
+  explosiveReload: {fileID: 8300000, guid: 83120662ca396415a9701b1d540b2d5c, type: 3}
   death: {fileID: 8300000, guid: aa64cda4882e048b09dea933c1ce01a6, type: 3}
   lose: {fileID: 8300000, guid: 391950a80347044f29e4c4b02b2cc9be, type: 3}
-  shotgunShot: {fileID: 8300000, guid: 3d267e065a27d4ad1b2e00f189eeb825, type: 3}
-  smgShot: {fileID: 8300000, guid: 6b3a7d42e8e3c43f4aa753479df5867d, type: 3}
-  explosion: {fileID: 8300000, guid: a601511a2045249a28d93beb8ea4a595, type: 3}
-  reload: {fileID: 8300000, guid: 5bae89ddbc4a94ea7b097b626bc3b0e3, type: 3}
 --- !u!114 &861501779
 MonoBehaviour:
   m_ObjectHideFlags: 0

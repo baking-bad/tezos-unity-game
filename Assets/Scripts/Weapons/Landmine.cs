@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Managers;
 using UnityEngine;
 
 namespace Weapons
@@ -13,10 +14,14 @@ namespace Weapons
         public float explosionDelay;
         private List<GameObject> _affectedEnemies;
         private bool _isTimeDetonate;
+        
+        private SoundManager _soundManager;
 
         private void Start()
         {
             _affectedEnemies = new List<GameObject>();
+            _soundManager = GameObject.FindGameObjectWithTag("Manager")
+                .GetComponent<SoundManager>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -55,6 +60,7 @@ namespace Weapons
             });
         
             Instantiate(damageEffect, transform.position, Quaternion.identity);
+            _soundManager.MineDetanate();
             DestroyMine();   
         }
     }

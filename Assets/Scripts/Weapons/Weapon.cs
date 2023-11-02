@@ -81,7 +81,7 @@ namespace Weapons
                 || ammoQtyInMagazine == 0 && ammo > 0 && !reloading && weaponPurpose != WeaponPurpose.Enemy)
             {
                 reloading = true;
-                soundManager.Reload();
+                soundManager.Reload(weaponType, name);
                 timeBtwReloading = reloadTime;
             }
             
@@ -120,7 +120,7 @@ namespace Weapons
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);
         
-            soundManager.Shot(weaponType);
+            soundManager.Shot(weaponType, name);
             timeBtwShots = fireRate;
         
             if (weaponPurpose == WeaponPurpose.Enemy) 

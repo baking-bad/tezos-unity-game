@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,9 +26,16 @@ namespace Managers
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image sprintTimer;
+        
+        [SerializeField] private Sprite[] valueSprites;
+        [SerializeField] private Image nftHealthIcon;
+        [SerializeField] private Image nftSpeedIcon;
+        [SerializeField] private Image nftDamageIcon;
 
         [SerializeField] private TMP_Text timerText;
         private float _timer;
+        
+        private Dictionary<string, Sprite> _spriteValues;
         
         private PlayerController _player;
 
@@ -51,9 +59,50 @@ namespace Managers
             _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
             _player.GetPlayerShield().shieldTimerDeactivated += ShieldTimerDeactivated;
             _player.GetPlayerShield().shieldTimerChanged += ShieldTimerChanged;
+            _player.nftsReceived += DrawUserNfts;
 
             score.text = "Score: " + levelManager.GetScore();
             health.text = "HP: " + _player.GetPlayerHealth();
+
+            InitSpriteValues();
+        }
+        
+        private void InitSpriteValues()
+        {
+            _spriteValues = new Dictionary<string, Sprite>();
+
+            foreach (var s in valueSprites)
+            {
+                _spriteValues.Add(
+                    s.name,
+                    s);
+            }
+        }
+
+        private void DrawUserNfts(List<Nft> nfts)
+        {
+            try
+            {
+                foreach (var t in nfts)
+                {
+                    switch (t.Name)
+                    {
+                        case "Health":
+                            nftHealthIcon.sprite = _spriteValues[t.Value];
+                            break;
+                        case "Speed":
+                            nftSpeedIcon.sprite = _spriteValues[t.Value];
+                            break;
+                        case "Damage":
+                            nftDamageIcon.sprite = _spriteValues[t.Value];
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Invalid dictionary key");
+            }
         }
 
         private void ScoreUpdated(int scr, int threat)

@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private List<GameObject> unlockedWeapons;
     [SerializeField] private GameObject[] allWeapons;
     [SerializeField] private GameObject shield;
-    
+
+    private int _maxHealth;
     private Weapon _currentWeapon;
     private Shield _shieldScript;
     private Vector3 _movement;
@@ -28,8 +29,15 @@ public class PlayerController : MonoBehaviour
     private float _timeBtwSprints;
     private bool _isSprinting;
     private bool _canSprint;
-    
+
+    private List<Nft> _userNfts;
+
+    private int _healthIncreaseInPercent;
+    private int _speedIncreaseInPercent;
+    private int _damageIncreaseInPercent;
+
     public Action<int, bool> healthChanged;
+    public Action<List<Nft>> nftsReceived;
     public Action<Weapon> weaponSwitched;
     public Action<float> sprintCooldownContinues;
     public Action sprintCooldownStarted;
@@ -53,6 +61,75 @@ public class PlayerController : MonoBehaviour
         weaponSwitched?.Invoke(_currentWeapon);
         _normalSpeed = moveSpeed;
         _timeBtwSprints = sprintCooldown;
+        
+        /*
+        *
+        * Test case
+        *     
+        */
+        _userNfts = new List<Nft>();
+        _userNfts.Add(new Nft 
+        {
+            Name = "Health",
+            Description = "This module increases the initial health level by 5%.",
+            Value = "5"
+        });
+        _userNfts.Add(new Nft 
+        {
+            Name = "Damage",
+            Description = "This module increases the initial damage level by 10%.",
+            Value = "10"
+        });
+        _userNfts.Add(new Nft 
+        {
+            Name = "Speed",
+            Description = "This module increases the initial speed level by 15%.",
+            Value = "15"
+        });
+
+        for (var i = 0; i < _userNfts.Count; i++)
+        {
+            switch (_userNfts[i].Name)
+            {
+                case "Health":
+                    int.TryParse(_userNfts[i].Value, out var healthValue);
+                    _healthIncreaseInPercent = healthValue;
+                    break;
+                
+                case "Speed":
+                    int.TryParse(_userNfts[i].Value, out var speedValue);
+                    _speedIncreaseInPercent = speedValue;
+                    break;
+                
+                case "Damage":
+                    int.TryParse(_userNfts[i].Value, out var damageValue);
+                    _damageIncreaseInPercent = damageValue;
+                    break;
+            }
+        }
+        
+        nftsReceived?.Invoke(_userNfts);
+
+        UpdateSkillsByNfts();
+        /*
+        *
+        * Test case
+        *     
+        */
+
+
+    }
+
+    private void UpdateSkillsByNfts()
+    {
+        _maxHealth = health + health * _healthIncreaseInPercent / 100;
+        health = _maxHealth;
+        healthChanged?.Invoke(health, false);
+        
+        var speedIncrease = moveSpeed * _speedIncreaseInPercent / 100;
+        moveSpeed += speedIncrease;
+        
+        // todo: increase all bullet damage
     }
 
     // Update is called once per frame
@@ -164,8 +241,12 @@ public class PlayerController : MonoBehaviour
     public void ChangeHealth(int healthValue, bool damaged = true)
     {
         if (shield.activeInHierarchy && (!shield.activeInHierarchy || healthValue <= 0)) return;
-        
-        health += healthValue; ;
+
+        var newValue = health + healthValue;
+        health = newValue > _maxHealth 
+            ? _maxHealth
+            : newValue;
+
         healthChanged?.Invoke(health, damaged);
     }
 

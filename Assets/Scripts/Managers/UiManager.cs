@@ -111,9 +111,9 @@ namespace Managers
             currentThreat.text = "Current threat: " + threat;
         }
 
-        private void PlayerHealthChanged(int hlth, bool _)
+        private void PlayerHealthChanged(float playerHealth, bool _)
         {
-            health.text = "HP: " + hlth;
+            health.text = "HP: " + playerHealth;
         }
 
         private void WeaponSwitched(Weapon weapon)

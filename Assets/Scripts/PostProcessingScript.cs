@@ -31,7 +31,7 @@ public class PostProcessingScript : MonoBehaviour
     }
 
     
-    private void ChangeHealth(int _, bool damaged)
+    private void ChangeHealth(float _, bool damaged)
     {
         if (!damaged) return;
         

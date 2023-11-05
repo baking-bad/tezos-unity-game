@@ -88,15 +88,18 @@ public class Enemy : MonoBehaviour
     private void OnEnemyAttack()
     {
         Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
-        _player.ChangeHealth((int)Math.Round(-meleeDamage));
+        _player.ChangeHealth(-meleeDamage);
         _timeBtwAttack = meleeAttackRate;
     }
 
-    public void TakeDamage(int damage, float stunTime)
+    public void TakeDamage(float damage, float stunTime)
     {
         _isStunned = true;
         _stopTime = stunTime;
-        health -= damage;
+
+        var playerDamage = damage + damage * _player.GetPlayerDamageIncrease() / 100f;
+
+        health -= playerDamage;
     }
 
     public void SetKillAward(GameObject award)

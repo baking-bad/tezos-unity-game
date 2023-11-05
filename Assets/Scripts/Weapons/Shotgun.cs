@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Managers;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ namespace Weapons
         [Header("Laser for shot test")]
         [SerializeField] private GameObject laser;
     
-        private List<GameObject> _affectedEnemies;
+        // private List<GameObject> _affectedEnemies;
 
         void Awake()
         {
@@ -40,7 +39,7 @@ namespace Weapons
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
         
-            _affectedEnemies = new List<GameObject>();
+            // _affectedEnemies = new List<GameObject>();
         }
     
         private Vector3 GetShootingDirection()
@@ -74,8 +73,9 @@ namespace Weapons
                     {
                         if (hit.collider.CompareTag("Enemy"))
                         {
-                            _affectedEnemies.Add(hit.collider.gameObject);
-                            // hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                            // _affectedEnemies.Add(hit.collider.gameObject);
+                            hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                            Instantiate(damageEffect, hit.transform.position, Quaternion.identity);
                         }
                         // TestLaser(hit.point);
                     }
@@ -91,14 +91,14 @@ namespace Weapons
 
             }
         
-            _affectedEnemies.ForEach(e =>
-            {
-                if (e.gameObject != null)
-                {
-                    Instantiate(damageEffect, e.transform.position, Quaternion.identity);
-                    e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-                }
-            });
+            // _affectedEnemies.ForEach(e =>
+            // {
+            //     if (e.gameObject != null)
+            //     {
+            //         Instantiate(damageEffect, e.transform.position, Quaternion.identity);
+            //         e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+            //     }
+            // });
 
             Instantiate(shootEffect, shotPoint.position, Quaternion.identity);
 

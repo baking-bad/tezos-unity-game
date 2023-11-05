@@ -6,7 +6,7 @@ using Weapons;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private int health;
+    [SerializeField] private float health;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float sprintCooldown;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject[] allWeapons;
     [SerializeField] private GameObject shield;
 
-    private int _maxHealth;
+    private float _maxHealth;
     private Weapon _currentWeapon;
     private Shield _shieldScript;
     private Vector3 _movement;
@@ -32,11 +32,11 @@ public class PlayerController : MonoBehaviour
 
     private List<Nft> _userNfts;
 
-    private int _healthIncreaseInPercent;
-    private int _speedIncreaseInPercent;
-    private int _damageIncreaseInPercent;
+    private float _healthIncreaseInPercent;
+    private float _speedIncreaseInPercent;
+    private float _damageIncreaseInPercent;
 
-    public Action<int, bool> healthChanged;
+    public Action<float, bool> healthChanged;
     public Action<List<Nft>> nftsReceived;
     public Action<Weapon> weaponSwitched;
     public Action<float> sprintCooldownContinues;
@@ -92,17 +92,17 @@ public class PlayerController : MonoBehaviour
             switch (_userNfts[i].Name)
             {
                 case "Health":
-                    int.TryParse(_userNfts[i].Value, out var healthValue);
+                    float.TryParse(_userNfts[i].Value, out var healthValue);
                     _healthIncreaseInPercent = healthValue;
                     break;
                 
                 case "Speed":
-                    int.TryParse(_userNfts[i].Value, out var speedValue);
+                    float.TryParse(_userNfts[i].Value, out var speedValue);
                     _speedIncreaseInPercent = speedValue;
                     break;
                 
                 case "Damage":
-                    int.TryParse(_userNfts[i].Value, out var damageValue);
+                    float.TryParse(_userNfts[i].Value, out var damageValue);
                     _damageIncreaseInPercent = damageValue;
                     break;
             }
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateSkillsByNfts()
     {
-        _maxHealth = health + health * _healthIncreaseInPercent / 100;
+        _maxHealth = health + health * _healthIncreaseInPercent / 100f;
         health = _maxHealth;
         healthChanged?.Invoke(health, false);
         
@@ -238,7 +238,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ChangeHealth(int healthValue, bool damaged = true)
+    public void ChangeHealth(float healthValue, bool damaged = true)
     {
         if (shield.activeInHierarchy && (!shield.activeInHierarchy || healthValue <= 0)) return;
 
@@ -325,6 +325,11 @@ public class PlayerController : MonoBehaviour
     public List<GameObject> GetUnlockedWeapons()
     {
         return unlockedWeapons;
+    }
+
+    public float GetPlayerDamageIncrease()
+    {
+        return _damageIncreaseInPercent;
     }
 
     private void OnTriggerEnter(Collider other)

@@ -4628,6 +4628,7 @@ MonoBehaviour:
   - {fileID: 1119776106}
   - {fileID: 1245054877}
   - {fileID: 1381373795}
+  minSpawnDistanceToPlayer: 8
   supplyItems:
   - {fileID: 9248175748599024, guid: 3748137420fd841228e8e47040b3d275, type: 3}
   - {fileID: 3142594558069246637, guid: d9928689a638f4abea041d9a96aaf604, type: 3}
@@ -5382,7 +5383,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.195
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

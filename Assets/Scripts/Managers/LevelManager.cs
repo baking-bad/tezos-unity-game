@@ -21,6 +21,7 @@ namespace Managers
         public GameObject[] enemies;
         public GameObject[] bosses;
         public Transform[] spawnPoints;
+        public int minSpawnDistanceToPlayer;
 
         [Header("LOOT:")] [SerializeField] private GameObject[] supplyItems;
         [SerializeField] private GameObject[] weapons;
@@ -133,16 +134,16 @@ namespace Managers
         private void SpawnBoss()
         {
             var rnd = Random.Range(0, bosses.Length);
-            var randomPoint = Random.Range(0, spawnPoints.Length);
+            var spawnPoint = GetRandomSpawnPoint();
 
             var rndBoss = bosses[rnd];
             
             var boss = Instantiate(
                 rndBoss,
                 new Vector3(
-                    spawnPoints[randomPoint].position.x,
-                    spawnPoints[randomPoint].position.y + rndBoss.transform.localScale.y / 2,
-                    spawnPoints[randomPoint].position.z),
+                    spawnPoint.x,
+                    spawnPoint.y + rndBoss.transform.localScale.y / 2,
+                    spawnPoint.z),
                 Quaternion.identity);
 
             var bossScript = boss.GetComponent<Enemy>();
@@ -165,7 +166,7 @@ namespace Managers
             {
                 var rnd = Random.Range(0, _enemiesWithThreat.Count);
                 var enemyKeyValuePair = _enemiesWithThreat.ElementAt(rnd);
-                var randomPoint = Random.Range(0, spawnPoints.Length);
+                var spawnPoint = GetRandomSpawnPoint();
 
                 if (totalWaveThreat + enemyKeyValuePair.Key > _waveThreat)
                 {
@@ -174,7 +175,7 @@ namespace Managers
                     {
                         lastEnemy = Instantiate(
                             lastEnemy,
-                            spawnPoints[randomPoint].position,
+                            spawnPoint,
                             Quaternion.identity);
                     }
                     else
@@ -185,7 +186,7 @@ namespace Managers
 
                         lastEnemy = Instantiate(
                             enemyKeyValuePair.Value,
-                            spawnPoints[randomPoint].position,
+                            spawnPoint,
                             Quaternion.identity);
                     }
 
@@ -197,7 +198,7 @@ namespace Managers
                 {
                     var enemy = Instantiate(
                         enemyKeyValuePair.Value,
-                        spawnPoints[randomPoint].position,
+                        spawnPoint,
                         Quaternion.identity);
 
                     SubscribeToKillEvents(enemy);
@@ -207,6 +208,20 @@ namespace Managers
             }
 
             newWaveHasBegun?.Invoke(_wave, _waveThreat);
+        }
+
+        private Vector3 GetRandomSpawnPoint()
+        {
+            var randomPoint = Random.Range(0, spawnPoints.Length);
+            while (Vector3.Distance(
+                       _player.transform.position,
+                       spawnPoints[randomPoint].position) 
+                   < minSpawnDistanceToPlayer)
+            {
+                randomPoint = Random.Range(0, spawnPoints.Length);
+            }
+
+            return spawnPoints[randomPoint].position;
         }
 
         private void EnemyKilled(Enemy enemy, Transform killPosition, GameObject killAward)

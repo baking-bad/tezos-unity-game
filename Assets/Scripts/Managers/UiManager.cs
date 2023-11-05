@@ -10,7 +10,7 @@ namespace Managers
 {
     public class UiManager : MonoBehaviour
     {
-        [SerializeField] private TMP_Text health;
+        [SerializeField] private Image healthBarValue;
         [SerializeField] private TMP_Text score;
         [SerializeField] private TMP_Text currentThreat;
         [SerializeField] private Image weaponIcon;
@@ -62,7 +62,6 @@ namespace Managers
             _player.nftsReceived += DrawUserNfts;
 
             score.text = "Score: " + levelManager.GetScore();
-            health.text = "HP: " + _player.GetPlayerHealth();
 
             InitSpriteValues();
         }
@@ -111,9 +110,9 @@ namespace Managers
             currentThreat.text = "Current threat: " + threat;
         }
 
-        private void PlayerHealthChanged(float playerHealth, bool _)
+        private void PlayerHealthChanged(float maxHealth, float health, bool _)
         {
-            health.text = "HP: " + playerHealth;
+            healthBarValue.fillAmount = health / maxHealth;
         }
 
         private void WeaponSwitched(Weapon weapon)

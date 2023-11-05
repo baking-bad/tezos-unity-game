@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     private float _speedIncreaseInPercent;
     private float _damageIncreaseInPercent;
 
-    public Action<float, bool> healthChanged;
+    public Action<float, float, bool> healthChanged;
     public Action<List<Nft>> nftsReceived;
     public Action<Weapon> weaponSwitched;
     public Action<float> sprintCooldownContinues;
@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
     {
         _maxHealth = health + health * _healthIncreaseInPercent / 100f;
         health = _maxHealth;
-        healthChanged?.Invoke(health, false);
+        healthChanged?.Invoke(_maxHealth, health, false);
         
         var speedIncrease = moveSpeed * _speedIncreaseInPercent / 100;
         moveSpeed += speedIncrease;
@@ -247,7 +247,7 @@ public class PlayerController : MonoBehaviour
             ? _maxHealth
             : newValue;
 
-        healthChanged?.Invoke(health, damaged);
+        healthChanged?.Invoke(_maxHealth, health, damaged);
     }
 
     public void SwitchWeapon(bool isTaken = false)

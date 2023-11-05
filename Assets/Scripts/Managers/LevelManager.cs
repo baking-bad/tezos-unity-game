@@ -59,9 +59,8 @@ namespace Managers
             InitEnemies();
             _score = 0;
         }
-
-        // Update is called once per frame
-        void Update()
+        
+        void FixedUpdate()
         {
             if (_player.GetPlayerHealth() <= 0)
             {

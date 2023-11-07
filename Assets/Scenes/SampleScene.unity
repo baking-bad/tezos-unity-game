@@ -2721,8 +2721,8 @@ MonoBehaviour:
   bullet: {fileID: 0}
   shotPoint: {fileID: 1408439622}
   fireRate: 0.4
-  magazineCapacity: 8
-  reloadTime: 1.2
+  magazineCapacity: 12
+  reloadTime: 2
   damage: 5
   stunTime: 0.2
   distance: 10
@@ -4351,9 +4351,9 @@ MonoBehaviour:
   weaponType: 0
   bullet: {fileID: 4396219951089590315, guid: 11350f69f75854055bee92fbc3a258cf, type: 3}
   shotPoint: {fileID: 471827688}
-  fireRate: 0.24
+  fireRate: 0.272
   magazineCapacity: 15
-  reloadTime: 0.5
+  reloadTime: 1
 --- !u!23 &858766524
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4542,7 +4542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemies:
   - {fileID: 4707008592775298471, guid: cd9b7e8c6e9834c5885db67410a34093, type: 3}
-  - {fileID: 7512836089440099253, guid: 1a6853245fae74f4e9d0e2055a8dfbc7, type: 3}
+  - {fileID: 5783150157123333719, guid: 1a6853245fae74f4e9d0e2055a8dfbc7, type: 3}
   - {fileID: 5571817670563859609, guid: 4ab1ec29b87fe44e2b30903bcd689ada, type: 3}
   - {fileID: 3326501013474673108, guid: e5674e4f9ea934e6a97646b7f1f85df0, type: 3}
   bosses:
@@ -11083,7 +11083,7 @@ MonoBehaviour:
   weaponType: 1
   bullet: {fileID: 0}
   shotPoint: {fileID: 733691880}
-  fireRate: 0.2
+  fireRate: 0.4
   magazineCapacity: 2
   reloadTime: 0.8
   damage: 2
@@ -11612,9 +11612,9 @@ MonoBehaviour:
   weaponType: 0
   bullet: {fileID: 4396219951089590315, guid: 7ba0ae82a04ef426fa83bc41c45987ca, type: 3}
   shotPoint: {fileID: 2064553649}
-  fireRate: 0.3
+  fireRate: 0.375
   magazineCapacity: 8
-  reloadTime: 0.5
+  reloadTime: 1
 --- !u!23 &1884962664
 MeshRenderer:
   m_ObjectHideFlags: 0

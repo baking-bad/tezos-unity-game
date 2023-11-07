@@ -10,7 +10,7 @@ namespace Weapons
             /*
             * Test case
             */
-            ammo = 60;
+            ammo = 999;
             /*
             * Test case
             */

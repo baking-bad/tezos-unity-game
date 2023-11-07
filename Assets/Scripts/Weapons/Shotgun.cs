@@ -67,8 +67,6 @@ namespace Weapons
 
         protected override void Shoot()
         {
-            base.Shoot();
-
             if (ammoQtyInMagazine <= 0) return;
 
             for (var i = 0; i < bulletsPerShot; i++)
@@ -96,6 +94,8 @@ namespace Weapons
             }
 
             Instantiate(shootEffect, shotPoint.position, Quaternion.identity);
+            
+            base.Shoot();
         }
     }
 }

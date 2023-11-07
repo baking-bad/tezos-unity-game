@@ -19,6 +19,7 @@ namespace Weapons
         protected float timeBtwReloading;
         protected int ammoQtyInMagazine;
         protected int ammo;
+        protected float triggerFallInSec = 1f;
 
         public enum WeaponPurpose
         {
@@ -66,7 +67,7 @@ namespace Weapons
         {
             if (timeBtwShots <= 0)
             {
-                if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && ammoQtyInMagazine > 0 && !reloading
+                if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && !reloading
                     || weaponPurpose == WeaponPurpose.Enemy)
                 {
                     Shoot(); 
@@ -117,12 +118,20 @@ namespace Weapons
 
         protected virtual void Shoot()
         {
+            timeBtwShots = fireRate;
+            
+            if (ammoQtyInMagazine <= 0 && weaponPurpose != WeaponPurpose.Enemy)
+            {
+                soundManager.TriggerFall();
+                timeBtwShots = triggerFallInSec;
+                return;
+            }
+            
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);
         
             soundManager.Shot(weaponType, name);
-            timeBtwShots = fireRate;
-        
+
             if (weaponPurpose == WeaponPurpose.Enemy) 
                 return;
         

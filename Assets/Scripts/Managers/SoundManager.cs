@@ -16,6 +16,7 @@ namespace Managers
             mineDetonate,
             explosiveFire,
             explosiveReload,
+            triggerFall,
             death,
             lose;
 
@@ -57,6 +58,11 @@ namespace Managers
                 default:
                     break;
             }
+        }
+
+        public void TriggerFall()
+        {
+            AudioSource.PlayClipAtPoint(triggerFall, _listener.transform.position);
         }
 
         public void Death()

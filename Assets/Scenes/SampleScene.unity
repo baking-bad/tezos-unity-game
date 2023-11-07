@@ -343,9 +343,10 @@ MonoBehaviour:
   stunTime: 0.2
   distance: 10
   bulletsPerShot: 12
+  buckshotLifeTime: 0.1
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
-  laser: {fileID: 2122807544601713854, guid: 2e803309b6ab04644935b0d73b2f6ae3, type: 3}
+  buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}
 --- !u!1 &29782639
 GameObject:
   m_ObjectHideFlags: 0
@@ -2726,9 +2727,10 @@ MonoBehaviour:
   stunTime: 0.2
   distance: 10
   bulletsPerShot: 10
+  buckshotLifeTime: 0.1
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
-  laser: {fileID: 2122807544601713854, guid: 2e803309b6ab04644935b0d73b2f6ae3, type: 3}
+  buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}
 --- !u!23 &608034986
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4523,6 +4525,7 @@ MonoBehaviour:
   mineDetonate: {fileID: 8300000, guid: 10ebbbfbe34024ea9910457f58530613, type: 3}
   explosiveFire: {fileID: 8300000, guid: a601511a2045249a28d93beb8ea4a595, type: 3}
   explosiveReload: {fileID: 8300000, guid: 83120662ca396415a9701b1d540b2d5c, type: 3}
+  triggerFall: {fileID: 8300000, guid: b804ed8300694484586ee8f3e428b640, type: 3}
   death: {fileID: 8300000, guid: aa64cda4882e048b09dea933c1ce01a6, type: 3}
   lose: {fileID: 8300000, guid: 391950a80347044f29e4c4b02b2cc9be, type: 3}
 --- !u!114 &861501779
@@ -11087,9 +11090,10 @@ MonoBehaviour:
   stunTime: 1
   distance: 10
   bulletsPerShot: 25
+  buckshotLifeTime: 0.1
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
-  laser: {fileID: 2122807544601713854, guid: 2e803309b6ab04644935b0d73b2f6ae3, type: 3}
+  buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}
 --- !u!23 &1841505639
 MeshRenderer:
   m_ObjectHideFlags: 0

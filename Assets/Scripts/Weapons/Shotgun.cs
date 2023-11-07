@@ -9,16 +9,14 @@ namespace Weapons
         [SerializeField] private float stunTime;
         [SerializeField] private int distance;
         [SerializeField] private int bulletsPerShot;
+        [SerializeField] private float buckshotLifeTime;
 
-        private readonly float _inaccurancyDistance = 5f;
+        private readonly float _inaccurancyDistance = 2f;
 
         public GameObject damageEffect;
         public GameObject shootEffect;
-    
-        [Header("Laser for shot test")]
-        [SerializeField] private GameObject laser;
-    
-        // private List<GameObject> _affectedEnemies;
+        
+        [SerializeField] private GameObject buckshot;
 
         void Awake()
         {
@@ -38,8 +36,6 @@ namespace Weapons
         {
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
-        
-            // _affectedEnemies = new List<GameObject>();
         }
     
         private Vector3 GetShootingDirection()
@@ -54,17 +50,27 @@ namespace Weapons
 
             var dir = targetPos - shotPosition;
         
-            return dir.normalized;
+            return dir;
         }
 
-        void TestLaser(Vector3 end)
+        private void DrawBuckshot(Vector3 end)
         {
-            var lr = Instantiate(laser).GetComponent<LineRenderer>();
+            var lr = Instantiate(buckshot).GetComponent<LineRenderer>();
             lr.SetPositions(new Vector3[] {shotPoint.position, end});
+            DestroyBuckshot(lr.gameObject);
+        }
+
+        private void DestroyBuckshot(GameObject go)
+        {
+            Destroy(go, buckshotLifeTime);
         }
 
         protected override void Shoot()
         {
+            base.Shoot();
+
+            if (ammoQtyInMagazine <= 0) return;
+
             for (var i = 0; i < bulletsPerShot; i++)
             {
                 if (Physics.Raycast(shotPoint.position, GetShootingDirection(), out var hit, distance))
@@ -73,36 +79,23 @@ namespace Weapons
                     {
                         if (hit.collider.CompareTag("Enemy"))
                         {
-                            // _affectedEnemies.Add(hit.collider.gameObject);
                             hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
                             Instantiate(damageEffect, hit.transform.position, Quaternion.identity);
                         }
-                        // TestLaser(hit.point);
+                        DrawBuckshot(hit.point);
                     }
                     else
                     {
-                        // TestLaser(shotPoint.position + GetShootingDirection());
+                        DrawBuckshot(shotPoint.position + GetShootingDirection());
                     }
                 }
                 else
                 {
-                    // TestLaser(shotPoint.position + GetShootingDirection());
+                    DrawBuckshot(shotPoint.position + GetShootingDirection());   
                 }
-
             }
-        
-            // _affectedEnemies.ForEach(e =>
-            // {
-            //     if (e.gameObject != null)
-            //     {
-            //         Instantiate(damageEffect, e.transform.position, Quaternion.identity);
-            //         e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-            //     }
-            // });
 
             Instantiate(shootEffect, shotPoint.position, Quaternion.identity);
-
-            base.Shoot();
         }
     }
 }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3011464618341957459}
   - component: {fileID: 6300108695528877651}
   - component: {fileID: 3079900931478057262}
+  - component: {fileID: -5120487597826033667}
   m_Layer: 8
   m_Name: Fuzzy Bullet
   m_TagString: Untagged
@@ -93,7 +94,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6776415664810884338}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -120,3 +121,19 @@ MonoBehaviour:
   enemyBullet: 0
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   destroyEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
+--- !u!54 &-5120487597826033667
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6776415664810884338}
+  serializedVersion: 2
+  m_Mass: 0.01
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 4
+  m_CollisionDetection: 0

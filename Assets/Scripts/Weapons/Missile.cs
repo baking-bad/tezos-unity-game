@@ -5,23 +5,22 @@ namespace Weapons
 {
     public class Missile : Bullet
     {
-
         private List<GameObject> _affectedEnemies;
         
-        void Start()
+        protected override void Start()
         {
-            _affectedEnemies = new List<GameObject>();   
+            _affectedEnemies = new List<GameObject>();
+            base.Start();
         }
 
         protected override void DestroyBullet()
         {
             _affectedEnemies.ForEach(e =>
             {
-                if (e.gameObject != null)
-                {
-                    e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-                    Instantiate(damageEffect, e.gameObject.transform.position, Quaternion.identity);
-                }
+                if (e.gameObject == null) return;
+                
+                e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                Instantiate(damageEffect, e.gameObject.transform.position, Quaternion.identity);
             });
             
             Destroy(gameObject);

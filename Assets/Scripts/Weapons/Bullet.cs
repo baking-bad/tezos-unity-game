@@ -16,25 +16,23 @@ namespace Weapons
         public GameObject damageEffect;
         public GameObject destroyEffect;
 
+        private Rigidbody _rb;
         private readonly float _distance = 1f;
+        
         // Start is called before the first frame update
-        private void Start()
+        protected virtual void Start()
         {
+            _rb = GetComponent<Rigidbody>();
             Invoke(nameof(DestroyBullet), lifetime);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }
 
         private void FixedUpdate()
         {
+            _rb.velocity = transform.forward * speed;
             Physics.Raycast(transform.position, transform.forward, out var hit, _distance, mask);
-
+            
             if (hit.collider == null) return;
-
+            
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
                 hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);

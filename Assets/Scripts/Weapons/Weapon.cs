@@ -49,7 +49,7 @@ namespace Weapons
              */
             if (weaponType == WeaponType.Explosive)
             {
-                ammo = 20;
+                ammo = 100;
             }
             /*
            * Test case

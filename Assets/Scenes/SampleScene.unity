@@ -344,6 +344,7 @@ MonoBehaviour:
   distance: 10
   bulletsPerShot: 12
   buckshotLifeTime: 0.1
+  inaccurancyDistanceBtwBuckshot: 3
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
   buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}
@@ -2728,6 +2729,7 @@ MonoBehaviour:
   distance: 10
   bulletsPerShot: 10
   buckshotLifeTime: 0.1
+  inaccurancyDistanceBtwBuckshot: 3
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
   buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}
@@ -11091,6 +11093,7 @@ MonoBehaviour:
   distance: 10
   bulletsPerShot: 25
   buckshotLifeTime: 0.1
+  inaccurancyDistanceBtwBuckshot: 3
   damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   shootEffect: {fileID: 5946723896271964237, guid: 9a39742a3158940fe99b58a321855ca5, type: 3}
   buckshot: {fileID: 2122807544601713854, guid: aef268d95ac474163bbe5f00b8973faa, type: 3}

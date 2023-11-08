@@ -10,8 +10,7 @@ namespace Weapons
         [SerializeField] private int distance;
         [SerializeField] private int bulletsPerShot;
         [SerializeField] private float buckshotLifeTime;
-
-        private readonly float _inaccurancyDistance = 2f;
+        [SerializeField] private float inaccurancyDistanceBtwBuckshot;
 
         public GameObject damageEffect;
         public GameObject shootEffect;
@@ -43,14 +42,12 @@ namespace Weapons
             var shotPosition = shotPoint.position;
             var targetPos = shotPosition + shotPoint.forward * distance;
             targetPos = new Vector3(
-                targetPos.x + Random.Range(-_inaccurancyDistance, _inaccurancyDistance),
+                targetPos.x + Random.Range(-inaccurancyDistanceBtwBuckshot, inaccurancyDistanceBtwBuckshot),
                 shotPosition.y,
-                targetPos.z + Random.Range(-_inaccurancyDistance, _inaccurancyDistance)
+                targetPos.z + Random.Range(-inaccurancyDistanceBtwBuckshot, inaccurancyDistanceBtwBuckshot)
             );
 
-            var dir = targetPos - shotPosition;
-        
-            return dir;
+            return targetPos - shotPosition;
         }
 
         private void DrawBuckshot(Vector3 end)
@@ -67,7 +64,12 @@ namespace Weapons
 
         protected override void Shoot()
         {
-            if (ammoQtyInMagazine <= 0) return;
+            if (ammoQtyInMagazine <= 0 && weaponPurpose != WeaponPurpose.Enemy)
+            {
+                soundManager.TriggerFall();
+                timeBtwShots = triggerFallInSec;
+                return;
+            }
 
             for (var i = 0; i < bulletsPerShot; i++)
             {

@@ -62,26 +62,24 @@ public class Enemy : MonoBehaviour
         transform.position = Vector3.MoveTowards(
             transform.position,
             _player.transform.position,
-            speed * Time.deltaTime);
+            speed * Time.fixedDeltaTime);
         
         transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
     }
 
-
     private void OnTriggerStay(Collider other)
     {
         if (!canMeleeDamage) return;
+
+        if (!other.CompareTag("Player")) return;
         
-        if (other.CompareTag("Player"))
+        if (_timeBtwAttack <= 0)
         {
-            if (_timeBtwAttack <= 0)
-            {
-                OnEnemyAttack();
-            }
-            else
-            {
-                _timeBtwAttack -= Time.deltaTime;
-            }
+            OnEnemyAttack();
+        }
+        else
+        {
+            _timeBtwAttack -= Time.deltaTime;
         }
     }
 

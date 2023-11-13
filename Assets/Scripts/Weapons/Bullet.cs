@@ -8,14 +8,17 @@ namespace Weapons
         [SerializeField] protected float lifetime;
         [SerializeField] protected int damage;
         [SerializeField] protected float stunTime;
-        // [SerializeField] protected LayerMask mask;
+    
+        [SerializeField] protected LayerMask mask;
+
         [SerializeField] protected bool enemyBullet;
 
         public GameObject damageEffect;
         public GameObject destroyEffect;
 
         private Rigidbody _rb;
-
+        private readonly float _distance = 1f;
+        
         // Start is called before the first frame update
         protected virtual void Start()
         {
@@ -26,21 +29,23 @@ namespace Weapons
         private void FixedUpdate()
         {
             _rb.velocity = transform.forward * speed;
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Enemy") && !enemyBullet)
+            Physics.Raycast(transform.position, transform.forward, out var hit, _distance, mask);
+            
+            if (hit.collider == null) return;
+            
+            if (hit.collider.CompareTag("Bullet")) return;
+            
+            if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
-                collision.gameObject.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
                 Instantiate(damageEffect, transform.position, Quaternion.identity);
                 DestroyBullet();
                 return;
             }
             
-            if (collision.gameObject.CompareTag("Player") && enemyBullet)
+            if (hit.collider.CompareTag("Player") && enemyBullet)
             {
-                collision.gameObject.GetComponent<PlayerController>().ChangeHealth(-damage);
+                hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
                 Instantiate(damageEffect, transform.position, Quaternion.identity);
                 DestroyBullet();
                 return;
@@ -52,9 +57,7 @@ namespace Weapons
 
         protected virtual void DestroyBullet()
         {
-            // Instantiate(destroyEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
 }
- 

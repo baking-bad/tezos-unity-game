@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  buildWebGL:
+    name: Build for WebGL
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-WebGL
+          restore-keys: Library-
+
+      - name: Build Unity WebGL
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: WebGL
+
+      - name: Upload Unity WebGL build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build-WebGL
+          path: build/WebGL
+
+      - name: Set up commit message to file
+        run: echo "${{ github.event.head_commit.message }}" > commit_message
+
+      - name: Save commit message as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: commit_message_artifact
+          path: commit_message

@@ -1,0 +1,35 @@
+name: Notify
+
+on:
+  workflow_run:
+    workflows: [ "Deploy" ]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Download artifacts with commit message info
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: build.yml
+          workflow_conclusion: success
+          name: commit_message_artifact
+
+      - name: Create commit message env variable
+        run: |
+          COMMIT_MESSAGE=$(cat commit_message)
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
+      - name: Notify on telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit: "${{ env.COMMIT_MESSAGE }}"
+            Latest build: https://${{ secrets.NETLIFY_SITE_ID }}.netlify.app/

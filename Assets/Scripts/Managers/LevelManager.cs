@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -264,6 +265,26 @@ namespace Managers
             }
 
             enabled = false;
+        }
+        
+        public void LoadScene(string scene){
+            if (scene != "")
+            {
+                StartCoroutine(LoadAsynchronously(scene));
+            }
+        }
+        
+        private IEnumerator LoadAsynchronously(string scene)
+        {
+            if (scene == "") yield break;
+            
+            Time.timeScale = 1;
+            var asyncLoad = SceneManager.LoadSceneAsync(scene);
+            
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace UI
         public GameObject panelGame;
 
         public GameObject panelInventory;
-        public GameObject panelEquipment;
+        public GameObject panelEffects;
         public GameObject panelStats;
 
 
@@ -46,8 +46,8 @@ namespace UI
         [Header("INVENTORY SCREEN")]
         [Tooltip("Highlight Image for when INVENTORY Tab is selected in Inventory")]
         public GameObject lineInventory;
-        [Tooltip("Highlight Image for when EQUIPMENT Tab is selected in Inventory")]
-        public GameObject lineEquipment;
+        [Tooltip("Highlight Image for when EFFECTS Tab is selected in Inventory")]
+        public GameObject lineEffects;
         [Tooltip("Highlight Image for when STATS Tab is selected in Inventory")]
         public GameObject lineStats;
 
@@ -186,9 +186,10 @@ namespace UI
 		{
 			panelStats.SetActive(false);
 			panelInventory.SetActive(false);
+			panelEffects.SetActive(false);
 			
 			lineInventory.SetActive(false);
-			lineEquipment.SetActive(false);
+			lineEffects.SetActive(false);
 			lineStats.SetActive(false);
 		}
 
@@ -197,6 +198,13 @@ namespace UI
 			DisableInventoryPanels();
 			panelInventory.SetActive(true);
 			lineInventory.SetActive(true);
+		}
+		
+		public void EffectsPanel()
+		{
+			DisableInventoryPanels();
+			panelEffects.SetActive(true);
+			lineEffects.SetActive(true);
 		}
 		
 		public void StatsPanel()

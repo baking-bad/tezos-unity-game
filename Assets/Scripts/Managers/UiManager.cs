@@ -87,13 +87,13 @@ namespace Managers
                     switch (t.Name)
                     {
                         case "Health":
-                            nftHealthIcon.sprite = _spriteValues[t.Value];
+                            nftHealthIcon.sprite = _spriteValues[t.Value.ToString()];
                             break;
                         case "Speed":
-                            nftSpeedIcon.sprite = _spriteValues[t.Value];
+                            nftSpeedIcon.sprite = _spriteValues[t.Value.ToString()];
                             break;
                         case "Damage":
-                            nftDamageIcon.sprite = _spriteValues[t.Value];
+                            nftDamageIcon.sprite = _spriteValues[t.Value.ToString()];
                             break;
                     }
                 }
@@ -156,14 +156,14 @@ namespace Managers
 
         private void NewWaveHasBegun(int wave, int waveThreat)
         {
-            waveText.text = "Wave № " + wave;
+            waveText.text = "Wave #" + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
             waveAlertText.gameObject.SetActive(true);
         }
         
         private void BossSpawned(int wave, int waveThreat)
         {
-            waveText.text = "Wave № " + wave;
+            waveText.text = "Wave #" + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
             bossAlertText.gameObject.SetActive(true);
         }

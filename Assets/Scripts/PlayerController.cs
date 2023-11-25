@@ -72,19 +72,19 @@ public class PlayerController : MonoBehaviour
         {
             Name = "Health",
             Description = "This module increases the initial health level by 5%.",
-            Value = "5"
+            Value = 5
         });
         _userNfts.Add(new Nft 
         {
             Name = "Damage",
             Description = "This module increases the initial damage level by 10%.",
-            Value = "10"
+            Value = 10
         });
         _userNfts.Add(new Nft 
         {
             Name = "Speed",
             Description = "This module increases the initial speed level by 15%.",
-            Value = "15"
+            Value = 15
         });
 
         for (var i = 0; i < _userNfts.Count; i++)
@@ -92,18 +92,15 @@ public class PlayerController : MonoBehaviour
             switch (_userNfts[i].Name)
             {
                 case "Health":
-                    float.TryParse(_userNfts[i].Value, out var healthValue);
-                    _healthIncreaseInPercent = healthValue;
+                    _healthIncreaseInPercent = _userNfts[i].Value;
                     break;
                 
                 case "Speed":
-                    float.TryParse(_userNfts[i].Value, out var speedValue);
-                    _speedIncreaseInPercent = speedValue;
+                    _speedIncreaseInPercent = _userNfts[i].Value;
                     break;
                 
                 case "Damage":
-                    float.TryParse(_userNfts[i].Value, out var damageValue);
-                    _damageIncreaseInPercent = damageValue;
+                    _damageIncreaseInPercent = _userNfts[i].Value;
                     break;
             }
         }

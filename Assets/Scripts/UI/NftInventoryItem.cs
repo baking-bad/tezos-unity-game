@@ -1,20 +1,23 @@
 using System;
 using Helpers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using NftType = Managers.UserDataManager.NftType;
 
 namespace UI
 {
-    public class NftInventoryItem : MonoBehaviour
+    public class NftInventoryItem : MonoBehaviour, IPointerDownHandler
     {
-        private string _title;
-        private string _description;
-        private string _value;
+        public string title;
+        public string description;
+        public float value;
         private string _spriteUri;
+        public NftType type;
         
         [SerializeField] private Image img;
 
-        public Action<(string, string, string, Sprite)> itemSelected;
+        public Action<(string, string, float, NftType, Sprite)> itemSelected;
         
         void DrawSprite(Sprite sprite)
         {
@@ -24,11 +27,19 @@ namespace UI
         public void InitNft(
             (string nftTitle,
             string nftDescription,
-            string nftValue,
-            string nftSpriteUri) nft)
+            float nftValue,
+            string nftSpriteUri,
+            NftType nftType) nft)
         {
-            (_title, _description, _value, _spriteUri) = (nft.nftTitle, nft.nftDescription, nft.nftValue, nft.nftSpriteUri);
-            
+            (title, description, value, _spriteUri, type) = 
+                (nft.nftTitle, nft.nftDescription, nft.nftValue, nft.nftSpriteUri, nft.nftType);
+
+            transform.parent.TryGetComponent<InventorySlot>(out var component);
+            if (component != null)
+            {
+                component.type = type;
+            }
+
             var cacheHelper = new CacheHelper();
             cacheHelper.ImageLoaded += DrawSprite;
 
@@ -41,10 +52,13 @@ namespace UI
                 StartCoroutine(cacheHelper.LoadImageFromUrl(_spriteUri));
             }
         }
-
-        public void ShowNftInfo()
+        
+        public void OnPointerDown(PointerEventData eventData)
         {
-            itemSelected?.Invoke((_title, _description, _value, img.sprite));
+            if (eventData.clickCount != 2) return;
+            
+            itemSelected?.Invoke((title, description, value, type, img.sprite));
+            eventData.clickCount = 0;
         }
     }
 }

@@ -22,6 +22,8 @@ namespace Helpers
 
         public IEnumerator LoadImageFromUrl(string url)
         {
+            if (string.IsNullOrEmpty(url)) yield break;
+            
             var www = UnityWebRequestTexture.GetTexture(url);
             yield return www.SendWebRequest();
 

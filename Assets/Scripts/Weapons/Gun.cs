@@ -16,6 +16,8 @@ namespace Weapons
         {
             soundManager = GameObject.FindGameObjectWithTag("Manager")
                 .GetComponent<SoundManager>();
+            
+            timeBtwShots = reloadTime;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Weapons
         private void Start()
         {
             _affectedEnemies = new List<GameObject>();
-            _soundManager = GameObject.FindGameObjectWithTag("Manager")
+            _soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
         }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using Weapons;
 
@@ -23,47 +24,46 @@ public class Loot : MonoBehaviour
 
     public void ApplyLoot(GameObject owner)
     {
-        owner.TryGetComponent<PlayerController>(out var script);
+        owner.TryGetComponent<PlayerController>(out var playerScript);
         
-        if (script == null) return;
+        if (playerScript == null) return;
         
         switch (type)
         {
             case LootType.Weapon:
-                foreach (var w in script.GetAllWeapons())
+                var weapons = playerScript.GetEquippedWeapons();
+                foreach (var weapon in weapons)
                 {
-                    if (name != w.name) continue;
-                
-                    if (!script
-                            .GetUnlockedWeapons()
-                            .Exists(go => go.name == name))
-                    {
-                        script.GetUnlockedWeapons().Add(w);
-                        script.SwitchWeapon(isTaken: true);
-                    }
+                    if (name != weapon.Key) continue;
                     
-                    w.GetComponent<Weapon>().ChangeAmmoQty((int)lootValue);
+                    var weaponScript = weapon.Value.GetComponent<Weapon>();
+                    weaponScript.isUnlocked = false;
+                    playerScript.SwitchWeapon(
+                        weapon: weapon.Value,
+                        isTaken: true);
+                    weaponScript.ChangeAmmoQty((int)lootValue);
                     break;
                 }
                 break;
             
             case LootType.Ammo:
-                foreach (var w in script.GetAllWeapons())
+                foreach (var w in playerScript.GetEquippedWeapons())
                 {
-                    if (name != w.name) continue;
-                    w.GetComponent<Weapon>().ChangeAmmoQty((int)lootValue);
+                    if (name != w.Key) continue;
+                    
+                    w.Value.GetComponent<Weapon>().ChangeAmmoQty((int)lootValue);
                     break;
                 }
                 break;
             
             case LootType.Health:
-                script.ChangeHealth(
+                playerScript.ChangeHealth(
                     healthValue: (int) lootValue,
                     damaged: false);
                 break;
             
             case LootType.Shield:
-                var shield = script.GetPlayerShield();
+                var shield = playerScript.GetPlayerShield();
                 shield.gameObject.SetActive(true);
                 shield.Activate(lootValue);
                 break;

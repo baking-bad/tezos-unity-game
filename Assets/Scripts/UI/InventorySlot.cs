@@ -1,5 +1,5 @@
 using System;
-using Type = Managers.UserDataManager.NftType;
+using Type = Nft.NftType;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,12 +14,14 @@ namespace UI
         public void OnDrop(PointerEventData eventData)
         {
             var dropped = eventData.pointerDrag;
-            if (type != dropped.GetComponent<NftInventoryItem>().type ||
-                gameObject.GetComponentInChildren<DraggableItem>()) return;
+            var nftItem = eventData.pointerDrag.GetComponent<NftInventoryItem>();
+            
+            if (type != nftItem.type || gameObject.GetComponentInChildren<DraggableItem>()) return;
 
             var draggableItem = dropped.GetComponent<DraggableItem>();
             draggableItem.parentAfterDrag = transform;
-            ApplyNft?.Invoke(dropped.GetComponent<NftInventoryItem>());
+
+            ApplyNft?.Invoke(nftItem);
         }
     }
 }

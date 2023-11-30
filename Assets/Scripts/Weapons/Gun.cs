@@ -14,8 +14,10 @@ namespace Weapons
         // Start is called before the first frame update
         void Start()
         {
-            soundManager = GameObject.FindGameObjectWithTag("Manager")
+            soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
+            
+            if (weaponPurpose == WeaponPurpose.Player) return;
             
             timeBtwShots = reloadTime;
         }

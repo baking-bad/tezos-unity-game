@@ -8,15 +8,10 @@ using Random = UnityEngine.Random;
 
 namespace Managers
 {
-    /*--------------------------------------------------
-    
-    
-    !!!! WARNING !!!!
-    
-    Each enemy prefab must have a unique threat value
-    
-    
-    ------------------------------------------------------*/
+    /// !!! WARNING !!!
+    /// <summary>
+    /// Each enemy prefab must have a unique threat value
+    /// </summary>
     public class LevelManager : MonoBehaviour
     {
         public GameObject[] enemies;
@@ -40,6 +35,11 @@ namespace Managers
         private int _waveThreat;
         private int _currentThreat;
 
+        /// <summary>
+        /// Store enemies by threat
+        /// </summary>
+        /// <typeparam name="int">Enemy threat</typeparam>
+        /// <typeparam name="GameObject">Enemy prefab</typeparam>
         private Dictionary<int, GameObject> _enemiesWithThreat;
 
         public Action<int, int> gameScoreUpdated;

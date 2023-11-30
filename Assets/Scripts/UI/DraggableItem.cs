@@ -7,7 +7,7 @@ namespace UI
     public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private Transform _rootPanel;
-        private InventoryController _inventoryController;
+        private SlotController _slotController;
         [SerializeField] private Image image;
         [HideInInspector] public Transform parentAfterDrag;
 
@@ -24,7 +24,7 @@ namespace UI
             }
             
             _rootPanel = GameObject.FindGameObjectWithTag("Inventory-panel").transform;
-            _inventoryController = _rootPanel.GetComponent<InventoryController>();
+            _slotController = _rootPanel.GetComponent<SlotController>();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -46,7 +46,7 @@ namespace UI
             _cg.alpha = 0.7f;
             image.raycastTarget = false;
             
-            _inventoryController.AvailableSlotsForItem(
+            _slotController.AvailableSlotsForItem(
                 item: gameObject.GetComponent<NftInventoryItem>(),
                 display: true);
         }
@@ -72,7 +72,7 @@ namespace UI
             _cg.alpha = 1f;
             image.raycastTarget = true;
             
-            _inventoryController.AvailableSlotsForItem(
+            _slotController.AvailableSlotsForItem(
                 item: gameObject.GetComponent<NftInventoryItem>(), 
                 display: false);
         }

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using NftType = Managers.UserDataManager.NftType;
+using Type = Nft.NftType;
 
 namespace UI
 {
@@ -9,15 +9,20 @@ namespace UI
     {
         [SerializeField] private TMP_Text itemName;
         [SerializeField] private TMP_Text itemDescription;
-        [SerializeField] private TMP_Text itemValue;
         [SerializeField] private Image itemImage;
 
-        public void ShowSelectedItem((string name, string desc, float value, NftType type, Sprite sprite) nftItem)
+        public void ShowSelectedItem((string name, string desc, Sprite sprite) nftItem)
         {
-            (itemName.text, itemDescription.text, itemValue.text, itemImage.sprite) = 
-                (nftItem.name, nftItem.desc, nftItem.value.ToString(), nftItem.sprite);
+            (itemName.text, itemDescription.text, itemImage.sprite) = 
+                (nftItem.name, nftItem.desc, nftItem.sprite);
             
+
             gameObject.SetActive(true);
+        }
+
+        public void HideSelectedItem()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

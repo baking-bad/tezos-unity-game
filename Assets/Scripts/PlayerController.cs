@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Helpers;
+using Managers;
+using UI;
 using UnityEngine;
 using Weapons;
+using Type = Nft.NftType;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,12 +16,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sprintCooldown;
     [SerializeField] private float sprintDuration;
 
-    [SerializeField] private List<GameObject> unlockedWeapons;
+    /// <summary>
+    /// Represent equipped weapons
+    /// </summary>
+    /// <typeparam name="string">Key by weapon type</typeparam>
+    /// <typeparam name="GameObject">Equipped weapon</typeparam>
+    private Dictionary<string, GameObject> _equippedWeapons;
+    
     [SerializeField] private GameObject[] allWeapons;
     [SerializeField] private GameObject shield;
 
     private float _maxHealth;
     private Weapon _currentWeapon;
+    private Weapon.WeaponType _currentType;
     private Shield _shieldScript;
     private Vector3 _movement;
     private Vector3 _moveVector;
@@ -31,107 +42,124 @@ public class PlayerController : MonoBehaviour
     private bool _canSprint;
 
     private List<Nft> _userNfts;
-
-    private float _healthIncreaseInPercent;
-    private float _speedIncreaseInPercent;
+    
     private float _damageIncreaseInPercent;
 
     public Action<float, float, bool> healthChanged;
-    public Action<List<Nft>> nftsReceived;
     public Action<Weapon> weaponSwitched;
     public Action<float> sprintCooldownContinues;
     public Action sprintCooldownStarted;
     public Action sprintCooldownEnded;
+    public Action playerInitialized;
 
     private void Awake()
     {
         _shieldScript = shield.GetComponent<Shield>();
-
-        foreach (var weapon in unlockedWeapons
-                     .Where(w => w.activeInHierarchy))
-        {
-            _currentWeapon = weapon.GetComponent<Weapon>();
-            break;
-        }
+        EquipPlayer();
+        
+        playerInitialized?.Invoke();
     }
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _currentType = _currentWeapon.weaponType;
         weaponSwitched?.Invoke(_currentWeapon);
         _normalSpeed = moveSpeed;
         _timeBtwSprints = sprintCooldown;
-        
-        /*
-        *
-        * Test case
-        *     
-        */
-        _userNfts = new List<Nft>();
-        _userNfts.Add(new Nft 
-        {
-            Name = "Health",
-            Description = "This module increases the initial health level by 5%.",
-            Value = 5
-        });
-        _userNfts.Add(new Nft 
-        {
-            Name = "Damage",
-            Description = "This module increases the initial damage level by 10%.",
-            Value = 10
-        });
-        _userNfts.Add(new Nft 
-        {
-            Name = "Speed",
-            Description = "This module increases the initial speed level by 15%.",
-            Value = 15
-        });
+        _maxHealth = health;
+    }
 
-        for (var i = 0; i < _userNfts.Count; i++)
+    private void EquipPlayer()
+    {
+        _equippedWeapons = new Dictionary<string, GameObject>();
+        var baseWeapons = GetAllWeapons()
+            .Where(w => w.GetComponent<Weapon>().baseWeapon);
+        
+        foreach (var weapon in baseWeapons)
         {
-            switch (_userNfts[i].Name)
+            var weaponType = weapon.GetComponent<Weapon>().weaponType.ToString();
+            if (_equippedWeapons.ContainsKey(weaponType))
+                return;
+            
+            _equippedWeapons.Add(weaponType, weapon);
+        }
+        
+        var equipment = UserDataManager.Instance.GetEquipment();
+        UpdateSkillsByEquipment(equipment);
+        
+        EnableDefaultGun();
+    }
+
+    private void EnableDefaultGun()
+    {
+        var gunType = Weapon.WeaponType.Gun.ToString();
+        foreach (var weapon in _equippedWeapons
+                     .Where(w => w.Key == gunType))
+        {
+            weapon.Value.SetActive(true);
+            var weaponScript = weapon.Value.GetComponent<Weapon>();
+            weaponScript.isUnlocked = false;
+            _currentWeapon = weaponScript;
+            _currentType = _currentWeapon.weaponType;
+            break;
+        }   
+    }
+
+    private void UpdateSkillsByEquipment(Dictionary<string, object> equipment)
+    {
+        
+        foreach (var item in equipment)
+        {
+            if (item.Value is not NftInventoryItem nft) return;
+            
+            switch (item.Key)
             {
                 case "Health":
-                    _healthIncreaseInPercent = _userNfts[i].Value;
+                    _maxHealth = health + health * nft.value / 100f;
+                    health = _maxHealth;
+                    healthChanged?.Invoke(_maxHealth, health, false);
                     break;
                 
                 case "Speed":
-                    _speedIncreaseInPercent = _userNfts[i].Value;
+                    var speedIncrease = moveSpeed * nft.value / 100f;
+                    moveSpeed += speedIncrease;
                     break;
                 
                 case "Damage":
-                    _damageIncreaseInPercent = _userNfts[i].Value;
+                    _damageIncreaseInPercent = nft.value;
+                    break;
+                
+                case "Armor":
+                    break;
+                
+                default:
+                    AddWeapon(nft);
                     break;
             }
         }
-        
-        nftsReceived?.Invoke(_userNfts);
-
-        UpdateSkillsByNfts();
-        /*
-        *
-        * Test case
-        *     
-        */
-
-
     }
 
-    private void UpdateSkillsByNfts()
+    private void AddWeapon(NftInventoryItem nft)
     {
-        _maxHealth = health + health * _healthIncreaseInPercent / 100f;
-        health = _maxHealth;
-        healthChanged?.Invoke(_maxHealth, health, false);
+        if (nft.type is not (Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)) return;
         
-        var speedIncrease = moveSpeed * _speedIncreaseInPercent / 100;
-        moveSpeed += speedIncrease;
-        
-        // todo: increase all bullet damage
+        var weapons = GetAllWeapons();
+        foreach (var w in weapons)
+        {
+            if (nft.title != w.name) continue;
+
+            if (nft.type.ToString() != w.GetComponent<Weapon>().weaponType.ToString()) continue;
+            
+            GetEquippedWeapons()[nft.type.ToString()] = w;
+            break;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         _moveVector = new Vector3(
             Input.GetAxis("Horizontal"),
             0f,
@@ -162,30 +190,30 @@ public class PlayerController : MonoBehaviour
         * Test case
         *     
         */
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            SwitchWeaponByName("Walky");
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            SwitchWeaponByName("Viper");
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            SwitchWeaponByName("Claw");
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-            SwitchWeaponByName("Tiny");
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-            SwitchWeaponByName("Defender");
-        if (Input.GetKeyDown(KeyCode.Alpha6))
-            SwitchWeaponByName("DoomGuy");
-        if (Input.GetKeyDown(KeyCode.Alpha7))
-            SwitchWeaponByName("Fuzzy");
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-            SwitchWeaponByName("Peacock");
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-            SwitchWeaponByName("Sealer");
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-            SwitchWeaponByName("Mines");
-        if (Input.GetKeyDown(KeyCode.Comma))
-            SwitchWeaponByName("Roaster");
-        if (Input.GetKeyDown(KeyCode.Period))
-            SwitchWeaponByName("Zoooka");
+        // if (Input.GetKeyDown(KeyCode.Alpha1))
+        //     SwitchWeaponByName("Walky");
+        // if (Input.GetKeyDown(KeyCode.Alpha2))
+        //     SwitchWeaponByName("Viper");
+        // if (Input.GetKeyDown(KeyCode.Alpha3))
+        //     SwitchWeaponByName("Claw");
+        // if (Input.GetKeyDown(KeyCode.Alpha4))
+        //     SwitchWeaponByName("Tiny");
+        // if (Input.GetKeyDown(KeyCode.Alpha5))
+        //     SwitchWeaponByName("Defender");
+        // if (Input.GetKeyDown(KeyCode.Alpha6))
+        //     SwitchWeaponByName("DoomGuy");
+        // if (Input.GetKeyDown(KeyCode.Alpha7))
+        //     SwitchWeaponByName("Fuzzy");
+        // if (Input.GetKeyDown(KeyCode.Alpha8))
+        //     SwitchWeaponByName("Peacock");
+        // if (Input.GetKeyDown(KeyCode.Alpha9))
+        //     SwitchWeaponByName("Sealer");
+        // if (Input.GetKeyDown(KeyCode.Alpha0))
+        //     SwitchWeaponByName("Mines");
+        // if (Input.GetKeyDown(KeyCode.Comma))
+        //     SwitchWeaponByName("Roaster");
+        // if (Input.GetKeyDown(KeyCode.Period))
+        //     SwitchWeaponByName("Zoooka");
         /*
         *
         * Test case
@@ -247,57 +275,62 @@ public class PlayerController : MonoBehaviour
         healthChanged?.Invoke(_maxHealth, health, damaged);
     }
 
-    public void SwitchWeapon(bool isTaken = false)
+    public void SwitchWeapon(GameObject weapon = null, bool isTaken = false)
     {
-        for (var i = 0; i < unlockedWeapons.Count; i++)
-        {
-            if (!unlockedWeapons[i].activeInHierarchy) continue;
-            
-            unlockedWeapons[i].SetActive(false);
+        if (_equippedWeapons.Count(w => !w.Value.GetComponent<Weapon>().isUnlocked) <= 1)
+            return;
 
-            if (isTaken)
+        foreach (var w in _equippedWeapons
+                     .Where(w => w.Value.activeInHierarchy))
+        {
+            w.Value.SetActive(false);
+        
+            if (isTaken && weapon != null)
             {
-                unlockedWeapons[^1].SetActive(true);
-                _currentWeapon = unlockedWeapons[^1].GetComponent<Weapon>();
+                weapon.SetActive(true);
+                _currentWeapon = weapon.GetComponent<Weapon>();
+                _currentType = _currentWeapon.weaponType;
             }
             else
             {
-                if (i >= unlockedWeapons.Count - 1)
+                foreach (var t in _equippedWeapons)
                 {
-                    unlockedWeapons[0].SetActive(true);
-                    _currentWeapon = unlockedWeapons[0].GetComponent<Weapon>();
-                }
-                else
-                {
-                    unlockedWeapons[i + 1].SetActive(true);
-                    _currentWeapon = unlockedWeapons[i + 1].GetComponent<Weapon>();
+                    _currentType = _currentType.Next();
+                    var nextWeapon = _equippedWeapons[_currentType.ToString()].GetComponent<Weapon>();
+                    if (nextWeapon.isUnlocked) continue;
+                    
+                    nextWeapon.gameObject.SetActive(true);
+                    _currentWeapon = nextWeapon;
+                    break;
                 }
             }
+
             weaponSwitched?.Invoke(_currentWeapon);
+
             break;
         }
     }
     
-    public void SwitchWeaponByName(string weaponName)
-    {
-        for (var i = 0; i < unlockedWeapons.Count; i++)
-        {
-            if (!unlockedWeapons[i].activeInHierarchy) continue;
-            
-            unlockedWeapons[i].SetActive(false);
-
-            var weapon = unlockedWeapons
-                .FirstOrDefault(w => w.name == weaponName);
-            
-            if (weapon == null) return;
-
-            weapon.SetActive(true);
-            _currentWeapon = weapon.GetComponent<Weapon>();
-            
-            weaponSwitched?.Invoke(_currentWeapon);
-            break;
-        }
-    }
+    // public void SwitchWeaponByName(string weaponName)
+    // {
+    //     for (var i = 0; i < _unlockedWeapons.Count; i++)
+    //     {
+    //         if (!_unlockedWeapons[i].activeInHierarchy) continue;
+    //         
+    //         _unlockedWeapons[i].SetActive(false);
+    //     
+    //         var weapon = _unlockedWeapons
+    //             .FirstOrDefault(w => w.name == weaponName);
+    //         
+    //         if (weapon == null) return;
+    //     
+    //         weapon.SetActive(true);
+    //         _currentWeapon = weapon.GetComponent<Weapon>();
+    //         
+    //         weaponSwitched?.Invoke(_currentWeapon);
+    //         break;
+    //     }
+    // }
 
     public float GetPlayerHealth()
     {
@@ -318,10 +351,10 @@ public class PlayerController : MonoBehaviour
     {
         return allWeapons;
     }
-    
-    public List<GameObject> GetUnlockedWeapons()
+
+    public Dictionary<string, GameObject> GetEquippedWeapons()
     {
-        return unlockedWeapons;
+        return _equippedWeapons;
     }
 
     public float GetPlayerDamageIncrease()

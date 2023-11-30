@@ -7,21 +7,13 @@ namespace Weapons
     {
         private void Awake()
         {
-            /*
-            * Test case
-            */
-            ammo = 999;
-            /*
-            * Test case
-            */
-            
             ReloadAmmo();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            soundManager = GameObject.FindGameObjectWithTag("Manager")
+            soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
         }
     }

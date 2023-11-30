@@ -6,7 +6,12 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] public float health;
     [SerializeField] private float speed;
+    
+    /// <summary>
+    /// Each enemy prefab must have a unique threat value
+    /// </summary>
     [SerializeField] public int threat;
+    
     [SerializeField] private bool canMeleeDamage;
     [SerializeField] private float meleeAttackRate;
     [SerializeField] private float meleeDamage;
@@ -30,7 +35,8 @@ public class Enemy : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
         _normalSpeed = speed;
-        _soundManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<SoundManager>();
+        _soundManager = GameObject.FindGameObjectWithTag("GameController")
+            .GetComponent<SoundManager>();
     }
 
     // Update is called once per frame

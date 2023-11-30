@@ -14,10 +14,13 @@ namespace UI
         public Action<NftInventoryItem> nftDropped;
         void Awake()
         {
-            var userDataManager = GameObject.FindGameObjectWithTag("Manager")
-                .GetComponent<UserDataManager>();
+            // UserDataManager.Instance.nftsReceived += DrawInventory;
+        }
 
-            userDataManager.nftsReceived += DrawInventory;
+        private void Start()
+        {
+            var nfts = UserDataManager.Instance.GetUserNfts();
+            DrawInventory(nfts);
         }
 
         private void DrawInventory(List<Nft> userNfts)
@@ -25,6 +28,7 @@ namespace UI
             foreach (var t in userNfts)
             {
                 var item = Instantiate(nftInventoryPrefab, transform);
+                item.name = nftInventoryPrefab.name;
                 var script = item.GetComponentInChildren<NftInventoryItem>();
                 script.InitNft((t.Name, t.Description, t.Value, t.ThumbnailUri, t.Type));
                 script.itemSelected += selectedItemPanel.ShowSelectedItem;
@@ -34,7 +38,6 @@ namespace UI
         public void OnDrop(PointerEventData eventData)
         {
             var dropped = eventData.pointerDrag;
-            
             var draggableItem = dropped.GetComponent<DraggableItem>();
             draggableItem.parentAfterDrag = transform;
             

@@ -14,6 +14,9 @@ namespace Weapons
         [SerializeField] protected float fireRate;
         [SerializeField] protected int magazineCapacity;
         [SerializeField] protected float reloadTime;
+        [SerializeField] public bool baseWeapon;
+        [HideInInspector] public bool isUnlocked = true;
+        
         protected float timeBtwShots;
         protected bool reloading;
         protected float timeBtwReloading;
@@ -43,23 +46,11 @@ namespace Weapons
         // Start is called before the first frame update
         void Start()
         {
-            
-            /*
-             * Test case
-             */
-            if (weaponType == WeaponType.Explosive)
-            {
-                ammo = 100;
-            }
-            /*
-           * Test case
-           */
-            
-            
-
             ReloadAmmo();
-            soundManager = GameObject.FindGameObjectWithTag("Manager")
+            soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
+            
+            if (weaponPurpose == WeaponPurpose.Player) return;
             
             timeBtwShots = reloadTime;
         }

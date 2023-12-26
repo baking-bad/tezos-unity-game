@@ -11,10 +11,11 @@ namespace UI
         [SerializeField] private TMP_Text itemDescription;
         [SerializeField] private Image itemImage;
 
-        public void ShowSelectedItem((string name, string desc, Sprite sprite) nftItem)
+        public void ShowSelectedItem(Nft nftItem, Sprite nftSprite)
         {
+            
             (itemName.text, itemDescription.text, itemImage.sprite) = 
-                (nftItem.name, nftItem.desc, nftItem.sprite);
+                (nftItem.Name, nftItem.Description, nftSprite);
             
 
             gameObject.SetActive(true);

@@ -15,7 +15,14 @@ namespace UI
         public GameObject mainMenu;
         public GameObject playMenu;
         public GameObject exitMenu;
+        public GameObject connectMenu;
         public GameObject walletMenu;
+        
+        [Header("BUTTONS")]
+        public GameObject startGameButton;
+        public GameObject connectWalletButton;
+        public GameObject changeWalletButton;
+        public GameObject inventoryButton;
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -69,11 +76,16 @@ namespace UI
 		public AudioClip swooshSound;
 
 		void Start()
-        {
-	        if (Camera.main == null) return;
+		{
+			SetThemeColors();
+			
+			var address = PlayerPrefs.GetString("Address", null);
+			if (!string.IsNullOrEmpty(address)) 
+				EnableGameMenu(address);
+
+			if (Camera.main == null) return;
 
 	        _listener = Camera.main.gameObject;
-
 	        _listener.GetComponent<UiSettingsManager>().soundVolumeChanged += ChangeVolume;
 	        
 			_cameraAnimator = Camera.main
@@ -83,9 +95,29 @@ namespace UI
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
+		}
+		
+		public void EnableGameMenu(string address)
+		{
+			connectWalletButton.SetActive(false);
+			changeWalletButton.GetComponentInChildren<TMP_Text>().text = 
+				address.Substring(0,5) + "..." + address.Substring(address.Length - 5, 5);
+			changeWalletButton.SetActive(true);
 
-			SetThemeColors();
-        }
+			EnableButton(startGameButton, true);
+			EnableButton(inventoryButton, true);
+		}
+
+		public void DisableGameMenu()
+		{
+			changeWalletButton.SetActive(false);
+			connectWalletButton.SetActive(true);
+
+			EnableButton(startGameButton, false);
+			EnableButton(inventoryButton, false);
+				
+			DisableAllMenu();
+		}
 
 		void SetThemeColors()
 		{
@@ -114,32 +146,48 @@ namespace UI
 			_sfxVolume = sfxVolume;
 		}
 
-		public void ConnectWallet()
+		private void EnableButton(GameObject button, bool flag)
+		{
+			var imgComponent = button.GetComponent<Image>();
+			imgComponent.color = flag
+				? themeController.currentColor
+				: Color.gray;
+			imgComponent.raycastTarget = flag;
+			button.GetComponent<Button>().interactable = flag;
+			button.GetComponentInChildren<TMP_Text>().color = flag
+				? themeController.textColor
+				: Color.gray;
+		}
+
+		private void DisableAllMenu()
 		{
 			exitMenu.SetActive(false);
 			playMenu.SetActive(false);
+			walletMenu.SetActive(false);
+			connectMenu.SetActive(false);
+		}
+
+		public void ConnectWallet()
+		{
+			DisableAllMenu();
+			connectMenu.SetActive(true);
+		}
+		
+		public void ChangeWallet()
+		{
+			DisableAllMenu();
 			walletMenu.SetActive(true);
 		}
 
 		public void PlayCampaign()
 		{
-			exitMenu.SetActive(false);
-			walletMenu.SetActive(false);
-			playMenu.SetActive(true);
-		}
-		
-		public void PlayCampaignMobile()
-		{
-			exitMenu.SetActive(false);
-			walletMenu.SetActive(false);
+			DisableAllMenu();
 			playMenu.SetActive(true);
 		}
 
 		public void ReturnMenu()
 		{
-			playMenu.SetActive(false);
-			walletMenu.SetActive(false);
-			exitMenu.SetActive(false);
+			DisableAllMenu();
 			mainMenu.SetActive(true);
 		}
 
@@ -151,20 +199,13 @@ namespace UI
 			}
 		}
 
-		private void DisablePlayCampaign()
-		{
-			playMenu.SetActive(false);
-		}
-		
 		public void Position3()
 		{
-			DisablePlayCampaign();
 			_cameraAnimator.SetFloat("Animate",-1);
 		}
 
 		public void Position2()
 		{
-			DisablePlayCampaign();
 			_cameraAnimator.SetFloat("Animate",1);
 		}
 
@@ -173,7 +214,7 @@ namespace UI
 			_cameraAnimator.SetFloat("Animate",0);
 		}
 
-		void DisablePanels()
+		void DisableSettingsPanels()
 		{
 			panelVideo.SetActive(false);
 			panelGame.SetActive(false);
@@ -216,30 +257,22 @@ namespace UI
 
 		public void GamePanel()
 		{
-			DisablePanels();
+			DisableSettingsPanels();
 			panelGame.SetActive(true);
 			lineGame.SetActive(true);
 		}
 
 		public void VideoPanel()
 		{
-			DisablePanels();
+			DisableSettingsPanels();
 			panelVideo.SetActive(true);
 			lineVideo.SetActive(true);
 		}
 
 		public void AreYouSure()
 		{
+			DisableAllMenu();
 			exitMenu.SetActive(true);
-			playMenu.SetActive(false);
-			walletMenu.SetActive(false);
-			DisablePlayCampaign();
-		}
-
-		public void AreYouSureMobile()
-		{
-			exitMenu.SetActive(true);
-			DisablePlayCampaign();
 		}
 
 		public void QuitGame()
@@ -265,7 +298,7 @@ namespace UI
 		{
 			AudioSource.PlayClipAtPoint(swooshSound, _listener.transform.position, _sfxVolume);
 		}
-		
+
 		IEnumerator LoadAsynchronously(string sceneName)
 		{
 			var operation = SceneManager.LoadSceneAsync(sceneName);

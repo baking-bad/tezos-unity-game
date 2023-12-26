@@ -13,8 +13,8 @@ namespace UI
         {
             foreach (var slot in slots)
             {
-                if (slot.type == item.type && !slot.gameObject.GetComponentInChildren<DraggableItem>() && slot.enabled ||
-                    slot.type == item.type && !display && slot.enabled)
+                if (slot.type == item.nft.Type && !slot.gameObject.GetComponentInChildren<DraggableItem>() && slot.enabled ||
+                    slot.type == item.nft.Type && !display && slot.enabled)
                     slot.gameObject.GetComponent<Image>().color = display 
                         ? Color.cyan
                         : Color.white;

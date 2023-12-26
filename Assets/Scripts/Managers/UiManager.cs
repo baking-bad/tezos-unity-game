@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -38,8 +39,7 @@ namespace Managers
         
         private PlayerController _player;
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
@@ -55,9 +55,12 @@ namespace Managers
             _player.sprintCooldownContinues += SprintTimerChanged;
             _player.sprintCooldownStarted += SprintTimerStarted;
             _player.sprintCooldownEnded += SprintTimerEnded;
-
+            
             score.text = "Score: " + levelManager.GetScore();
-
+        }
+        
+        void Start()
+        {
             // InitSpriteValues();
         }
 

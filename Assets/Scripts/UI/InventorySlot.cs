@@ -16,7 +16,9 @@ namespace UI
             var dropped = eventData.pointerDrag;
             var nftItem = eventData.pointerDrag.GetComponent<NftInventoryItem>();
             
-            if (type != nftItem.type || gameObject.GetComponentInChildren<DraggableItem>()) return;
+            if (nftItem == null ||
+                type != nftItem.nft.Type ||
+                gameObject.GetComponentInChildren<DraggableItem>()) return;
 
             var draggableItem = dropped.GetComponent<DraggableItem>();
             draggableItem.parentAfterDrag = transform;

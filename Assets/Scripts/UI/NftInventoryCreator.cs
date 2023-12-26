@@ -12,25 +12,22 @@ namespace UI
         [SerializeField] private SelectedItemPanel selectedItemPanel;
 
         public Action<NftInventoryItem> nftDropped;
-        void Awake()
-        {
-            // UserDataManager.Instance.nftsReceived += DrawInventory;
-        }
 
         private void Start()
         {
-            var nfts = UserDataManager.Instance.GetUserNfts();
-            DrawInventory(nfts);
+            UserDataManager.Instance.TokensReceived += DrawInventory;
         }
 
         private void DrawInventory(List<Nft> userNfts)
         {
+            if (userNfts == null) return;
+            
             foreach (var t in userNfts)
             {
                 var item = Instantiate(nftInventoryPrefab, transform);
                 item.name = nftInventoryPrefab.name;
                 var script = item.GetComponentInChildren<NftInventoryItem>();
-                script.InitNft((t.Name, t.Description, t.Value, t.ThumbnailUri, t.Type));
+                script.InitNft(t);
                 script.itemSelected += selectedItemPanel.ShowSelectedItem;
             }
         }
@@ -39,9 +36,17 @@ namespace UI
         {
             var dropped = eventData.pointerDrag;
             var draggableItem = dropped.GetComponent<DraggableItem>();
+            
+            if (draggableItem == null) return;
+            
             draggableItem.parentAfterDrag = transform;
             
             nftDropped?.Invoke(dropped.GetComponent<NftInventoryItem>());
+        }
+        
+        private void OnDisable()
+        {
+            UserDataManager.Instance.TokensReceived -= DrawInventory;
         }
     }
 }

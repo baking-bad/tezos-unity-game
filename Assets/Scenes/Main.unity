@@ -7748,7 +7748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b34a11c0bbb4c9e9c3c933d831d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rawImage: {fileID: 1364523360}
+  rawImage: {fileID: 0}
 --- !u!114 &1364523360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9797,6 +9797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTokenCount: 100
   contract: KT1DTJEAte2SE1dTJNWS1qSck8pCmGpVpD6X
+  serverApiUrl: http://45.66.248.137:6011/api
 --- !u!1 &1770346136
 GameObject:
   m_ObjectHideFlags: 0
@@ -27821,12 +27822,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a36293c38484941be89b83a6e75aadaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  qrCodeView: {fileID: 1364523359}
-  contentPanel: {fileID: 0}
+  qrCodeGenerator: {fileID: 1364523359}
   deepLinkButton: {fileID: 196892305}
   socialLoginButton: {fileID: 450842808}
   logoutButton: {fileID: 1393807771}
-  qrCodePanel: {fileID: 1364523357}
+  darkBG: {fileID: 450842811}
 --- !u!4 &3713326635660004300
 Transform:
   m_ObjectHideFlags: 0

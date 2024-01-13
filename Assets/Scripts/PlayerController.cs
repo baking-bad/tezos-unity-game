@@ -6,6 +6,7 @@ using Managers;
 using UnityEngine;
 using Weapons;
 using Type = Nft.NftType;
+using WeaponType = Weapons.Weapon.WeaponType;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private float _maxHealth;
     private Weapon _currentWeapon;
-    private Weapon.WeaponType _currentType;
+    private WeaponType _weaponType;
     private Shield _shieldScript;
     private Vector3 _movement;
     private Vector3 _moveVector;
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _currentType = _currentWeapon.weaponType;
+        _weaponType = _currentWeapon.weaponType;
         weaponSwitched?.Invoke(_currentWeapon);
         _normalSpeed = moveSpeed;
         _timeBtwSprints = sprintCooldown;
@@ -86,14 +87,25 @@ public class PlayerController : MonoBehaviour
         }
         
         var equipment = UserDataManager.Instance.GetEquipment();
-        UpdateSkillsByEquipment(equipment);
-        
+
+        foreach (var item in equipment)
+        {
+            if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
+            {
+                AddWeapon(item);   
+            }
+            else
+            {
+                UpdatePlayerSkills(item);
+            }
+        }
+
         EnableDefaultGun();
     }
 
     private void EnableDefaultGun()
     {
-        var gunType = Weapon.WeaponType.Gun.ToString();
+        var gunType = WeaponType.Gun.ToString();
         foreach (var weapon in _equippedWeapons
                      .Where(w => w.Key == gunType))
         {
@@ -101,47 +113,48 @@ public class PlayerController : MonoBehaviour
             var weaponScript = weapon.Value.GetComponent<Weapon>();
             weaponScript.isUnlocked = false;
             _currentWeapon = weaponScript;
-            _currentType = _currentWeapon.weaponType;
+            _weaponType = _currentWeapon.weaponType;
             break;
         }   
     }
 
-    private void UpdateSkillsByEquipment(Dictionary<string, object> equipment)
+    private void UpdatePlayerSkills(Nft module)
     {
-        foreach (var item in equipment)
+        if (module.Type is not (Type.Module or Type.Ability or Type.Armor) 
+            || module.GameParameters == null) return;
+
+        if (module.GameParameters.Exists(p => p.Name == "Health"))
         {
-            if (item.Value is not Nft nft) return;
-            
-            switch (item.Key)
-            {
-                case "Health":
-                    var healthParam = nft.GameParameters.First(p => p.Name == "Health");
-                    _maxHealth = healthParam.MeasureType == GameParameters.Type.Percent
-                        ? health + health * healthParam.Value / 100f
-                        : health + healthParam.Value;
-                    health = _maxHealth;
-                    healthChanged?.Invoke(_maxHealth, health, false);
-                    break;
-                
-                case "Speed":
-                    var speedParam = nft.GameParameters.First(p => p.Name == "Speed");
-                    moveSpeed = speedParam.MeasureType == GameParameters.Type.Percent
-                        ? moveSpeed + moveSpeed * speedParam.Value / 100f
-                        : moveSpeed + speedParam.Value;
-                    break;
-                
-                case "Damage":
-                    _damageIncreaseInPercent = nft.GameParameters.First(p => p.Name == "Damage").Value;
-                    break;
-                
-                case "Armor":
-                    _damageReflectionInPercent = nft.GameParameters.First(p => p.Name == "Armor").Value;
-                    break;
-                
-                default:
-                    AddWeapon(nft);
-                    break;
-            }
+            var healthParam = module.GameParameters
+                .First(p => p.Name == "Health");
+            _maxHealth = healthParam.MeasureType == GameParameters.Type.Percent
+                ? health + health * healthParam.Value / 100f
+                : health + healthParam.Value;
+            health = _maxHealth;
+            healthChanged?.Invoke(_maxHealth, health, false);
+        }
+        
+        if (module.GameParameters.Exists(p => p.Name == "Speed"))
+        {
+            var speedParam = module.GameParameters
+                .First(p => p.Name == "Speed");
+            moveSpeed = speedParam.MeasureType == GameParameters.Type.Percent
+                ? moveSpeed + moveSpeed * speedParam.Value / 100f
+                : moveSpeed + speedParam.Value;
+        }
+        
+        if (module.GameParameters.Exists(p => p.Name == "Damage"))
+        {
+            _damageIncreaseInPercent = module.GameParameters
+                .First(p => p.Name == "Damage")
+                .Value;
+        }
+        
+        if (module.GameParameters.Exists(p => p.Name == "Armor"))
+        {
+            _damageReflectionInPercent = module.GameParameters
+                .First(p => p.Name == "Armor")
+                .Value;
         }
     }
 
@@ -257,14 +270,14 @@ public class PlayerController : MonoBehaviour
             {
                 weapon.SetActive(true);
                 _currentWeapon = weapon.GetComponent<Weapon>();
-                _currentType = _currentWeapon.weaponType;
+                _weaponType = _currentWeapon.weaponType;
             }
             else
             {
                 foreach (var t in _equippedWeapons)
                 {
-                    _currentType = _currentType.Next();
-                    var nextWeapon = _equippedWeapons[_currentType.ToString()].GetComponent<Weapon>();
+                    _weaponType = _weaponType.Next();
+                    var nextWeapon = _equippedWeapons[_weaponType.ToString()].GetComponent<Weapon>();
                     if (nextWeapon.isUnlocked) continue;
                     
                     nextWeapon.gameObject.SetActive(true);

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Common;
-using TezosSDK.Helpers;
+using TezosSDK.Helpers.Coroutines;
 using UnityEngine;
 using UnityEngine.Networking;
 

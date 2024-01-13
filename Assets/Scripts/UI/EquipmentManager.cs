@@ -13,14 +13,14 @@ namespace UI
         [SerializeField] private GameObject effectRowPrefab;
         [SerializeField] private NftInventoryCreator inventoryPanel;
 
-        private Dictionary<string, object> _equipNfts;
+        private List<Nft> _equipNfts;
         private Dictionary<string, GameObject> _appliedEffects;
         
         private SlotController _slotController;
 
         private void Awake()
         {
-            _equipNfts = new Dictionary<string, object>();
+            _equipNfts = new List<Nft>();
             _appliedEffects = new Dictionary<string, GameObject>();
         }
 
@@ -101,77 +101,19 @@ namespace UI
 
         private void Equip(object item)
         {
-            if (item is NftInventoryItem module)
-            {
-                switch (module.nft.Type)
-                {
-                    case Type.Module:
-                        _equipNfts.Add(module.nft.Name, module.nft);       
-                        break;
-                    
-                    case Type.Gun:
-                        _equipNfts.Add(Type.Gun.ToString(), module.nft);
-                        break;
-                    
-                    case Type.Smg:
-                        _equipNfts.Add(Type.Smg.ToString(), module.nft);
-                        break;
-                    
-                    case Type.Shotgun:
-                        _equipNfts.Add(Type.Shotgun.ToString(), module.nft);
-                        break;
-                    
-                    case Type.Armor:
-                        _equipNfts.Add(Type.Armor.ToString(), module.nft);
-                        break;
-                    
-                    case Type.Explosive:
-                        _equipNfts.Add(Type.Explosive.ToString(), module.nft);
-                        break;
-                    
-                    case Type.Ability:
-                        _equipNfts.Add(module.nft.Name, module.nft);
-                        break;
-                }
-            }
+            if (item is not NftInventoryItem module) return;
+            
+            _equipNfts.Add(module.nft);
+
             UserDataManager.Instance.SetEquipment(_equipNfts);
         }
 
         private void Unequip(object item)
         {
-            if (item is NftInventoryItem module)
-            {
-                switch (module.nft.Type)
-                {
-                    case Type.Module:
-                        _equipNfts.Remove(module.nft.Name);       
-                        break;
-                    
-                    case Type.Gun:
-                        _equipNfts.Remove(Type.Gun.ToString());
-                        break;
-                    
-                    case Type.Smg:
-                        _equipNfts.Remove(Type.Smg.ToString());
-                        break;
-                    
-                    case Type.Shotgun:
-                        _equipNfts.Remove(Type.Shotgun.ToString());
-                        break;
-                    
-                    case Type.Armor:
-                        _equipNfts.Remove(Type.Armor.ToString());
-                        break;
-                    
-                    case Type.Explosive:
-                        _equipNfts.Remove(Type.Explosive.ToString());
-                        break;
-                    
-                    case Type.Ability:
-                        _equipNfts.Remove(module.nft.Name);
-                        break;
-                }
-            }
+            if (item is not NftInventoryItem module) return;
+            
+            _equipNfts.Remove(module.nft);
+
             UserDataManager.Instance.SetEquipment(_equipNfts);
         }
     }

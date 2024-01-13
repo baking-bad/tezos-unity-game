@@ -78,10 +78,6 @@ namespace UI
 		void Start()
 		{
 			SetThemeColors();
-			
-			var address = PlayerPrefs.GetString("Address", null);
-			if (!string.IsNullOrEmpty(address)) 
-				EnableGameMenu(address);
 
 			if (Camera.main == null) return;
 

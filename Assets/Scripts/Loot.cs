@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using Weapons;
 
@@ -9,7 +8,8 @@ public class Loot : MonoBehaviour
         Ammo,
         Weapon,
         Health,
-        Shield
+        Shield,
+        Nft
     }
     
     [SerializeField] private float lootValue;
@@ -66,6 +66,10 @@ public class Loot : MonoBehaviour
                 var shield = playerScript.GetPlayerShield();
                 shield.gameObject.SetActive(true);
                 shield.Activate(lootValue);
+                break;
+            
+            case LootType.Nft:
+                // todo: action of picking up an item
                 break;
         }
     }

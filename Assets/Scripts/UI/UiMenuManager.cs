@@ -91,10 +91,14 @@ namespace UI
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
+			
+			EnableGameMenu();
 		}
 		
-		public void EnableGameMenu(string address)
+		public void EnableGameMenu()
 		{
+			var address = PlayerPrefs.GetString("Address", null);
+			if (string.IsNullOrEmpty(address)) return;
 			connectWalletButton.SetActive(false);
 			changeWalletButton.GetComponentInChildren<TMP_Text>().text = 
 				address.Substring(0,5) + "..." + address.Substring(address.Length - 5, 5);

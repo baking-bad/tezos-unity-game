@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Managers;
 using UnityEngine;
 
@@ -20,14 +21,21 @@ public class Enemy : MonoBehaviour
     private float _stopTime;
     private bool _isStunned;
     private float _normalSpeed;
+
+    private bool _isTheBoss;
+    private int _bossIndex;
     
     private PlayerController _player;
     private SoundManager _soundManager;
-    private GameObject _killAward;
+    private List<GameObject> _killAwards;
     
     public GameObject damageEffect;
-    public Action<Enemy, Transform, GameObject> enemyKilled;
+    public Action<Enemy, Transform, List<GameObject>> enemyKilled;
 
+    private void Awake()
+    {
+        _killAwards = new List<GameObject>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +53,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled?.Invoke(this, transform, _killAward);
+            enemyKilled?.Invoke(this, transform, _killAwards);
             Destroy(gameObject);
         }
 
@@ -106,8 +114,24 @@ public class Enemy : MonoBehaviour
         health -= playerDamage;
     }
 
-    public void SetKillAward(GameObject award)
+    public void AddKillAward(GameObject award)
     {
-        _killAward = award;
+        _killAwards.Add(award);
+    }
+
+    public void AppointBoss(int bossIndex)
+    {
+        _isTheBoss = true;
+        _bossIndex = bossIndex;
+    }
+
+    public bool IsTheBoss()
+    {
+        return _isTheBoss;
+    }
+    
+    public int GetBossIndex()
+    {
+        return _bossIndex;
     }
 }

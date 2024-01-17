@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using UnityEngine;
 
 namespace Api.Models
@@ -5,6 +6,7 @@ namespace Api.Models
     [SerializeField]
     public class SignPayload
     {
-        public string payload;
+        [JsonPropertyName("payload")] 
+        public string Payload { get; set; }
     }
 }

@@ -16,7 +16,8 @@ public class Nft
         Module,
         Ability
     }
-    
+
+    public int TokenId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string ThumbnailUri { get; set; }

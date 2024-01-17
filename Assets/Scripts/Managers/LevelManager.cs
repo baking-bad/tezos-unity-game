@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Api.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -21,6 +22,7 @@ namespace Managers
 
         [Header("LOOT:")] [SerializeField] private GameObject[] supplyItems;
         [SerializeField] private GameObject[] weapons;
+        [SerializeField] private GameObject nftItem;
         [SerializeField] private int lootRate;
 
         [Header("WAVES PARAMS:")] 
@@ -50,25 +52,34 @@ namespace Managers
         private SoundManager _soundManager;
         private PlayerController _player;
         private float _timeBtwSpawn;
+        private float _distanceBtwItemDrop = 2f;
+
+        private GameSession _gameSession;
 
 
         // Start is called before the first frame update
         void Start()
         {
+            UserDataManager.Instance.GameStarted += GameStarted;
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _soundManager = GetComponent<SoundManager>();
             InitEnemies();
             _score = 0;
         }
-        
-        void FixedUpdate()
+
+        private void GameStarted(GameSession session)
+        {
+            if (!session.IsNew) return;
+            
+            _gameSession = session;
+        }
+
+        private void FixedUpdate()
         {
             if (_player.GetPlayerHealth() <= 0)
             {
-                _soundManager.Lose();
-                playerDied?.Invoke();
-                Stop();
+                EndGame();
             }
             else
             {
@@ -149,9 +160,20 @@ namespace Managers
 
             var bossScript = boss.GetComponent<Enemy>();
             bossScript.health = bossScript.health * _wave * increasedBossHealthInPercent / 100;
-            
+
             var rndWeapon = Random.Range(0, weapons.Length);
-            bossScript.SetKillAward(weapons[rndWeapon]);
+            bossScript.AddKillAward(weapons[rndWeapon]);
+
+            if (_gameSession != null)
+            {
+                var bossIndex = _wave / bossRateMod;
+                bossScript.AppointBoss(bossIndex);
+                var drop = _gameSession
+                    .GameDrop
+                    .FirstOrDefault(gd => gd.Boss == bossIndex);
+                if (drop != null)
+                    bossScript.AddKillAward(nftItem);
+            }
 
             bossScript.threat = _waveThreat;
             bossScript.enemyKilled += EnemyKilled;
@@ -225,7 +247,7 @@ namespace Managers
             return spawnPoints[randomPoint].position;
         }
 
-        private void EnemyKilled(Enemy enemy, Transform killPosition, GameObject killAward)
+        private void EnemyKilled(Enemy enemy, Transform killPosition, List<GameObject> killAwards)
         {
             _score++;
             _currentThreat -= enemy.threat;
@@ -233,10 +255,24 @@ namespace Managers
 
             _soundManager.Death();
 
-            if (killAward == null) return;
+            for (var i = 0; i < killAwards.Count; i++)
+            {
+                var position = killPosition.position;
+                
+                position = new Vector3(
+                    position.x + _distanceBtwItemDrop * i,
+                    position.y, 
+                    position.z + _distanceBtwItemDrop * i);
 
-            var award = Instantiate(killAward, killPosition.position, Quaternion.identity);
-            award.name = killAward.name;
+                var award = Instantiate(killAwards[i], position, Quaternion.identity);
+                award.name = killAwards[i].name;
+            }
+            
+            if (!enemy.IsTheBoss()) return;
+            
+            UserDataManager.Instance.KillBoss(
+                _gameSession.GameId,
+                enemy.GetBossIndex());
         }
 
         private void SubscribeToKillEvents(GameObject enemy)
@@ -246,27 +282,33 @@ namespace Managers
             if (_score != 0 && _score % lootRate == 0)
             {
                 var rndImprovement = Random.Range(0, supplyItems.Length);
-                ;
-                enemyScript.SetKillAward(supplyItems[rndImprovement]);
+                enemyScript.AddKillAward(supplyItems[rndImprovement]);
             }
 
             enemyScript.enemyKilled += EnemyKilled;
         }
 
-        private void Stop()
+        private void StopSceneScripts()
         {
             Time.timeScale = 0;
 
             _player.enabled = false;
+            
             var enemiesGo = GameObject.FindGameObjectsWithTag("Enemy");
             foreach (var e in enemiesGo)
-            {
                 e.GetComponent<Enemy>().enabled = false;
-            }
 
             enabled = false;
         }
-        
+
+        private void EndGame()
+        {
+            UserDataManager.Instance.EndGame(_gameSession.GameId);
+            _soundManager.Lose();
+            playerDied?.Invoke();
+            StopSceneScripts();
+        }
+
         public void LoadScene(string scene){
             if (scene != "")
             {

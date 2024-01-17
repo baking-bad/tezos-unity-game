@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
+using System.Text.Json;
 using Api.Models;
 using Dynamic.Json;
 using Helpers;
-using UnityEngine;
 
 namespace Api
 {
@@ -21,16 +21,22 @@ namespace Api
             Action<string> callback)
         {
             var routine = HttpHelper.GetRequest<string>(
-                $"{_apiUri}/payload/get/?pub_key={publicKey}");
+                $"{_apiUri}/payload/get/?public_key={publicKey}");
             yield return routine;
 
             if (routine.Current is not DJsonObject dJsonObject)
             {
                 yield break;
             }
-
-            var result = JsonUtility.FromJson<SignPayload>(dJsonObject.ToString());
-            callback?.Invoke(result.payload);
+            
+            var response = JsonSerializer.Deserialize<SignPayload>(dJsonObject.ToString());
+            
+            if (response == null)
+            {
+                yield break;
+            }
+            
+            callback?.Invoke(response.Payload);
         }
         
         public IEnumerator VerifyPayload(
@@ -38,18 +44,105 @@ namespace Api
             string signature,
             Action<bool> callback)
         {
-            var routine = HttpHelper.GetRequest<string>(
-                $"{_apiUri}/payload/verify/?pub_key={publicKey}&signature={signature}");
-            yield return routine;
-
-            if (routine.Current is not DJsonObject dJsonObject)
+            var data = new
             {
-                callback?.Invoke(false);
-                yield break;
-            }
-    
-            var response = JsonUtility.FromJson<SignPayloadResult>(dJsonObject.ToString());
-            callback?.Invoke(response.result.Contains("Success"));
+                public_key = publicKey,
+                signature
+            };
+            
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/payload/verify/",
+                data);
+            yield return routine;
+            
+            if (routine.Current == null) yield break;
+
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(routine.Current.ToString());
+            jsonElement.TryGetProperty("response", out var response);
+
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+            
+            var result = response.GetString()?.Contains("Success") ?? false;
+            callback?.Invoke(result);
+        }
+
+        public IEnumerator CreateGameSession(
+            string address,
+            Action<GameSession> callback)
+        {
+            
+            var data = new
+            {
+                address
+            };
+            
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/game/start/", data);
+            yield return routine;
+            
+            if (routine.Current == null) yield break;
+
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(routine.Current.ToString());
+            jsonElement.TryGetProperty("response", out var response);
+
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+            
+            var gameSession = response.Deserialize<GameSession>();
+            callback?.Invoke(gameSession);
+        }
+
+        public IEnumerator KillBoss(
+            string gameId, 
+            int boss)
+        {
+            var data = new
+            {
+                game_id = gameId,
+                boss
+            };
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/game/boss/kill/", data);
+            
+            yield return routine;
+        }
+        
+        public IEnumerator EndGameSession(
+            string gameId)
+        {
+            var data = new
+            {
+                game_id = gameId
+            };
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/game/end/", data);
+            
+            yield return routine;
+        }
+        
+        public IEnumerator PauseGame(
+            string gameId)
+        {
+            var data = new
+            {
+                game_id = gameId
+            };
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/game/pause/", data);
+            
+            yield return routine;
+        }
+        
+        public IEnumerator UnpauseGame(
+            string gameId)
+        {
+            var data = new
+            {
+                game_id = gameId
+            };
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/game/unpause/", data);
+            
+            yield return routine;
         }
     }
 }

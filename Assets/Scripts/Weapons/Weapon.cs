@@ -38,7 +38,7 @@ namespace Weapons
             Smg
         }
     
-        public Action<int, int, WeaponType> ammoQtyChanged;
+        public Action<int, int, WeaponType> AmmoQtyChanged;
 
         protected SoundManager soundManager;
         
@@ -106,7 +106,7 @@ namespace Weapons
             }
 
             reloading = false;
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
+            AmmoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
         }
 
         protected virtual void Shoot()
@@ -129,7 +129,7 @@ namespace Weapons
                 return;
         
             ammoQtyInMagazine--;
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
+            AmmoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);
         }
 
         public (int, int) GetAmmo()
@@ -143,7 +143,7 @@ namespace Weapons
             
             if (!gameObject.activeInHierarchy) return;
             
-            ammoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);;
+            AmmoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);;
         }
     }
 }

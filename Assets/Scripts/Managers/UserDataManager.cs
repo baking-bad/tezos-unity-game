@@ -100,7 +100,7 @@ namespace Managers
             GetMenuManager()?.DisableGameMenu();
         }
 
-        private void StartGame()
+        public void StartGame()
         {
             var routine = _api.CreateGameSession(_connectedAddress, session =>
                 GameStarted?.Invoke(session));
@@ -230,6 +230,7 @@ namespace Managers
                 _userNfts.Clear();
                 _equipment.Clear();
                 LoadGameNfts();
+                GetMenuManager()?.EnableGameMenu();
             }
         }
 
@@ -250,6 +251,8 @@ namespace Managers
             TezosManager.Instance.Wallet.EventManager.WalletDisconnected -= WalletDisconnected;
             TezosManager.Instance.Wallet.EventManager.WalletConnected -= WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned -= PayloadSigned;
+            
+            SceneManager.activeSceneChanged -= ChangedActiveScene;
         }
     }
 }

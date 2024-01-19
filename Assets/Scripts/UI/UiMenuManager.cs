@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using SlimUI.ModernMenu;
 using TMPro;
 using UnityEngine;
@@ -75,10 +76,13 @@ namespace UI
 		public AudioClip sliderSound;
 		public AudioClip swooshSound;
 
-		void Start()
+		private void Awake()
 		{
 			SetThemeColors();
+		}
 
+		void Start()
+		{
 			if (Camera.main == null) return;
 
 	        _listener = Camera.main.gameObject;
@@ -91,8 +95,6 @@ namespace UI
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
-			
-			EnableGameMenu();
 		}
 		
 		public void EnableGameMenu()
@@ -103,7 +105,7 @@ namespace UI
 			changeWalletButton.GetComponentInChildren<TMP_Text>().text = 
 				address.Substring(0,5) + "..." + address.Substring(address.Length - 5, 5);
 			changeWalletButton.SetActive(true);
-
+			
 			EnableButton(startGameButton, true);
 			EnableButton(inventoryButton, true);
 		}
@@ -328,6 +330,11 @@ namespace UI
 
 				yield return null;
 			}
+		}
+
+		protected void OnDisable()
+		{
+			_listener.GetComponent<UiSettingsManager>().soundVolumeChanged -= ChangeVolume;
 		}
 	}
 }

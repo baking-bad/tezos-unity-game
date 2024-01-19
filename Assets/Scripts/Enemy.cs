@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
     private List<GameObject> _killAwards;
     
     public GameObject damageEffect;
-    public Action<Enemy, Transform, List<GameObject>> enemyKilled;
+    public Action<Enemy, Transform, List<GameObject>> EnemyKilled;
 
     private void Awake()
     {
@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             _soundManager.Death();
-            enemyKilled?.Invoke(this, transform, _killAwards);
+            EnemyKilled?.Invoke(this, transform, _killAwards);
             Destroy(gameObject);
         }
 

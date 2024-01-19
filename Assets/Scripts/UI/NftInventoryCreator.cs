@@ -28,7 +28,7 @@ namespace UI
                 item.name = nftInventoryPrefab.name;
                 var script = item.GetComponentInChildren<NftInventoryItem>();
                 script.InitNft(t);
-                script.itemSelected += selectedItemPanel.ShowSelectedItem;
+                script.ItemSelected += selectedItemPanel.ShowSelectedItem;
             }
         }
 

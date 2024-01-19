@@ -45,16 +45,16 @@ namespace Managers
                 .GetComponent<PlayerController>();
             var levelManager = GetComponent<LevelManager>();
         
-            levelManager.gameScoreUpdated += ScoreUpdated;
-            levelManager.playerDied += ShowRestartPanel;
-            levelManager.newWaveHasBegun += NewWaveHasBegun;
-            levelManager.bossSpawned += BossSpawned;
-            _player.playerInitialized += SubscribeToPlayerEvents;
-            _player.healthChanged += PlayerHealthChanged;
-            _player.weaponSwitched += WeaponSwitched;
-            _player.sprintCooldownContinues += SprintTimerChanged;
-            _player.sprintCooldownStarted += SprintTimerStarted;
-            _player.sprintCooldownEnded += SprintTimerEnded;
+            levelManager.GameScoreUpdated += ScoreUpdated;
+            levelManager.PlayerDied += ShowRestartPanel;
+            levelManager.NewWaveHasBegun += NewWaveHasBegun;
+            levelManager.BossSpawned += BossSpawned;
+            _player.PlayerInitialized += SubscribeToPlayerEvents;
+            _player.HealthChanged += PlayerHealthChanged;
+            _player.WeaponSwitched += WeaponSwitched;
+            _player.SprintCooldownContinues += SprintTimerChanged;
+            _player.SprintCooldownStarted += SprintTimerStarted;
+            _player.SprintCooldownEnded += SprintTimerEnded;
             
             score.text = "Score: " + levelManager.GetScore();
         }
@@ -66,10 +66,10 @@ namespace Managers
 
         private void SubscribeToPlayerEvents()
         {
-            _player.GetCurrentWeapon().ammoQtyChanged += AmmoQtyChanged;
-            _player.GetPlayerShield().shieldTimerActivated += ShieldTimerActivated;
-            _player.GetPlayerShield().shieldTimerDeactivated += ShieldTimerDeactivated;
-            _player.GetPlayerShield().shieldTimerChanged += ShieldTimerChanged;
+            _player.GetCurrentWeapon().AmmoQtyChanged += AmmoQtyChanged;
+            _player.GetPlayerShield().ShieldTimerActivated += ShieldTimerActivated;
+            _player.GetPlayerShield().ShieldTimerDeactivated += ShieldTimerDeactivated;
+            _player.GetPlayerShield().ShieldTimerChanged += ShieldTimerChanged;
         }
 
         // private void InitSpriteValues()
@@ -138,8 +138,8 @@ namespace Managers
                     ? "Inf"
                     : ammo.Item2.ToString();
 
-                _player.GetCurrentWeapon().ammoQtyChanged -= AmmoQtyChanged;
-                weapon.ammoQtyChanged += AmmoQtyChanged;
+                _player.GetCurrentWeapon().AmmoQtyChanged -= AmmoQtyChanged;
+                weapon.AmmoQtyChanged += AmmoQtyChanged;
                 
                 break;
             }
@@ -210,6 +210,26 @@ namespace Managers
         private void SprintTimerEnded()
         {
             sprintTimer.fillAmount = 1;
+        }
+
+        protected void OnDisable()
+        {
+            var levelManager = GetComponent<LevelManager>();
+            
+            levelManager.GameScoreUpdated -= ScoreUpdated;
+            levelManager.PlayerDied -= ShowRestartPanel;
+            levelManager.NewWaveHasBegun -= NewWaveHasBegun;
+            levelManager.BossSpawned -= BossSpawned;
+            
+            if (_player == null) return;
+
+            _player.GetCurrentWeapon().AmmoQtyChanged -= AmmoQtyChanged;
+            _player.PlayerInitialized -= SubscribeToPlayerEvents;
+            _player.HealthChanged -= PlayerHealthChanged;
+            _player.WeaponSwitched -= WeaponSwitched;
+            _player.SprintCooldownContinues -= SprintTimerChanged;
+            _player.SprintCooldownStarted -= SprintTimerStarted;
+            _player.SprintCooldownEnded -= SprintTimerEnded;
         }
     }
 }

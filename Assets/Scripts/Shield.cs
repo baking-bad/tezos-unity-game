@@ -8,9 +8,9 @@ public class Shield : MonoBehaviour
     private bool _isActivated;
     private float _elapsedTime;
 
-    public Action shieldTimerActivated;
-    public Action shieldTimerDeactivated;
-    public Action<float> shieldTimerChanged;
+    public Action ShieldTimerActivated;
+    public Action ShieldTimerDeactivated;
+    public Action<float> ShieldTimerChanged;
     
     // Start is called before the first frame update
     void Start()
@@ -24,7 +24,7 @@ public class Shield : MonoBehaviour
         if (!_isActivated) return;
         
         _elapsedTime += Time.deltaTime;
-        shieldTimerChanged?.Invoke(cooldown);
+        ShieldTimerChanged?.Invoke(cooldown);
         
         if (!(_elapsedTime >= cooldown)) return;
         
@@ -36,7 +36,7 @@ public class Shield : MonoBehaviour
         cooldown = timeLimit;
         _isActivated = true;
         _elapsedTime = 0;
-        shieldTimerActivated?.Invoke();
+        ShieldTimerActivated?.Invoke();
     }
 
     private void Deactivate()
@@ -44,6 +44,6 @@ public class Shield : MonoBehaviour
         _isActivated = false;
         _elapsedTime = 0f;
         gameObject.SetActive(false);
-        shieldTimerDeactivated?.Invoke();
+        ShieldTimerDeactivated?.Invoke();
     }
 }

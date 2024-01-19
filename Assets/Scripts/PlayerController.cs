@@ -46,12 +46,12 @@ public class PlayerController : MonoBehaviour
     private float _damageIncreaseInPercent;
     private float _damageReflectionInPercent;
 
-    public Action<float, float, bool> healthChanged;
-    public Action<Weapon> weaponSwitched;
-    public Action<float> sprintCooldownContinues;
-    public Action sprintCooldownStarted;
-    public Action sprintCooldownEnded;
-    public Action playerInitialized;
+    public Action<float, float, bool> HealthChanged;
+    public Action<Weapon> WeaponSwitched;
+    public Action<float> SprintCooldownContinues;
+    public Action SprintCooldownStarted;
+    public Action SprintCooldownEnded;
+    public Action PlayerInitialized;
 
     private void Awake()
     {
@@ -63,12 +63,12 @@ public class PlayerController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _weaponType = _currentWeapon.weaponType;
-        weaponSwitched?.Invoke(_currentWeapon);
+        WeaponSwitched?.Invoke(_currentWeapon);
         _normalSpeed = moveSpeed;
         _timeBtwSprints = sprintCooldown;
         _maxHealth = health;
         
-        playerInitialized?.Invoke();
+        PlayerInitialized?.Invoke();
     }
 
     private void EquipPlayer()
@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
                 ? health + health * healthParam.Value / 100f
                 : health + healthParam.Value;
             health = _maxHealth;
-            healthChanged?.Invoke(_maxHealth, health, false);
+            HealthChanged?.Invoke(_maxHealth, health, false);
         }
         
         if (module.GameParameters.Exists(p => p.Name == "Speed"))
@@ -198,7 +198,7 @@ public class PlayerController : MonoBehaviour
             moveSpeed = sprintSpeed;
             _sprintTime = sprintDuration;
             _timeBtwSprints = 0;
-            sprintCooldownStarted?.Invoke();
+            SprintCooldownStarted?.Invoke();
         }
 
         if (_isSprinting)
@@ -218,12 +218,12 @@ public class PlayerController : MonoBehaviour
         
         if (_timeBtwSprints < sprintCooldown)
         {
-            sprintCooldownContinues?.Invoke(sprintCooldown);
+            SprintCooldownContinues?.Invoke(sprintCooldown);
             _timeBtwSprints += Time.deltaTime;
         }
         else
         {
-            sprintCooldownEnded?.Invoke();
+            SprintCooldownEnded?.Invoke();
             _canSprint = true;
         }
     }
@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
             ? _maxHealth
             : newValue;
 
-        healthChanged?.Invoke(_maxHealth, health, damaged);
+        HealthChanged?.Invoke(_maxHealth, health, damaged);
     }
 
     public void SwitchWeapon(GameObject weapon = null, bool isTaken = false)
@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            weaponSwitched?.Invoke(_currentWeapon);
+            WeaponSwitched?.Invoke(_currentWeapon);
 
             break;
         }

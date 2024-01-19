@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Managers;
@@ -115,6 +116,19 @@ namespace UI
             _equipNfts.Remove(module.nft);
 
             UserDataManager.Instance.SetEquipment(_equipNfts);
+        }
+
+        protected void OnDisable()
+        {
+            if (_slotController != null)
+            {
+                foreach (var slot in _slotController.slots)
+                {
+                    slot.ApplyNft -= AddNft;
+                }
+            }
+
+            inventoryPanel.nftDropped -= RemoveNft;
         }
     }
 }

@@ -13,7 +13,9 @@ namespace UI
         
         [SerializeField] private Image img;
 
-        public Action<Nft, Sprite> itemSelected;
+        public Action<Nft, Sprite> ItemSelected;
+
+        private ThumbnailResolver _thumbnailResolver;
         
         void DrawSprite(Sprite sprite)
         {
@@ -29,17 +31,22 @@ namespace UI
                 component.type = nft.Type;
             }
             
-            var thumbnailResolver = new ThumbnailResolver();
-            thumbnailResolver.ImageLoaded += DrawSprite;
-            thumbnailResolver.LoadThumbnail(nft.ThumbnailUri);
+            _thumbnailResolver = new ThumbnailResolver();
+            _thumbnailResolver.ImageLoaded += DrawSprite;
+            _thumbnailResolver.LoadThumbnail(nft.ThumbnailUri);
         }
         
         public void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.clickCount != 2) return;
             
-            itemSelected?.Invoke(nft, img.sprite);
+            ItemSelected?.Invoke(nft, img.sprite);
             eventData.clickCount = 0;
+        }
+
+        protected void OnDisable()
+        {
+            _thumbnailResolver.ImageLoaded -= DrawSprite;
         }
     }
 }

@@ -14,7 +14,7 @@ public class PostProcessingScript : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
-        _player.healthChanged += ChangeHealth;
+        _player.HealthChanged += ChangeHealth;
         
         _player.GetComponentInChildren<PostProcessVolume>()
             .profile

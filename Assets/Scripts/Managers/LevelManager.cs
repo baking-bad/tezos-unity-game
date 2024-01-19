@@ -44,10 +44,10 @@ namespace Managers
         /// <typeparam name="GameObject">Enemy prefab</typeparam>
         private Dictionary<int, GameObject> _enemiesWithThreat;
 
-        public Action<int, int> gameScoreUpdated;
-        public Action playerDied;
-        public Action<int, int> newWaveHasBegun;
-        public Action<int, int> bossSpawned;
+        public Action<int, int> GameScoreUpdated;
+        public Action<int, int> NewWaveHasBegun;
+        public Action<int, int> BossSpawned;
+        public Action PlayerDied;
 
         private SoundManager _soundManager;
         private PlayerController _player;
@@ -55,7 +55,6 @@ namespace Managers
         private float _distanceBtwItemDrop = 2f;
 
         private GameSession _gameSession;
-
 
         // Start is called before the first frame update
         void Start()
@@ -124,7 +123,7 @@ namespace Managers
                     SpawnEnemies();
                 }
                 
-                gameScoreUpdated?.Invoke(_score, _currentThreat);
+                GameScoreUpdated?.Invoke(_score, _currentThreat);
             }
             else
             {
@@ -139,6 +138,7 @@ namespace Managers
 
         public void Restart()
         {
+            UserDataManager.Instance.StartGame();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             Time.timeScale = 1;
         }
@@ -176,9 +176,9 @@ namespace Managers
             }
 
             bossScript.threat = _waveThreat;
-            bossScript.enemyKilled += EnemyKilled;
+            bossScript.EnemyKilled += EnemyKilled;
 
-            bossSpawned?.Invoke(_wave, _waveThreat);
+            BossSpawned?.Invoke(_wave, _waveThreat);
         }
 
         private void SpawnEnemies()
@@ -230,7 +230,7 @@ namespace Managers
                 }
             }
 
-            newWaveHasBegun?.Invoke(_wave, _waveThreat);
+            NewWaveHasBegun?.Invoke(_wave, _waveThreat);
         }
 
         private Vector3 GetRandomSpawnPoint()
@@ -251,7 +251,7 @@ namespace Managers
         {
             _score++;
             _currentThreat -= enemy.threat;
-            gameScoreUpdated?.Invoke(_score, _currentThreat);
+            GameScoreUpdated?.Invoke(_score, _currentThreat);
 
             _soundManager.Death();
 
@@ -285,7 +285,7 @@ namespace Managers
                 enemyScript.AddKillAward(supplyItems[rndImprovement]);
             }
 
-            enemyScript.enemyKilled += EnemyKilled;
+            enemyScript.EnemyKilled += EnemyKilled;
         }
 
         private void StopSceneScripts()
@@ -305,7 +305,7 @@ namespace Managers
         {
             UserDataManager.Instance.EndGame(_gameSession.GameId);
             _soundManager.Lose();
-            playerDied?.Invoke();
+            PlayerDied?.Invoke();
             StopSceneScripts();
         }
 
@@ -327,6 +327,11 @@ namespace Managers
             {
                 yield return null;
             }
+        }
+
+        protected void OnDisable()
+        {
+            UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }
 }

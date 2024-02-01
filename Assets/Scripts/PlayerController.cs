@@ -76,18 +76,18 @@ public class PlayerController : MonoBehaviour
         _equippedWeapons = new Dictionary<string, GameObject>();
         var baseWeapons = GetAllWeapons()
             .Where(w => w.GetComponent<Weapon>().baseWeapon);
-        
+
         foreach (var weapon in baseWeapons)
         {
             var weaponType = weapon.GetComponent<Weapon>().weaponType.ToString();
             if (_equippedWeapons.ContainsKey(weaponType))
                 return;
-            
+
             _equippedWeapons.Add(weaponType, weapon);
         }
-        
-        var equipment = UserDataManager.Instance.GetEquipment();
 
+        var equipment = UserDataManager.Instance.GetEquipment();
+        
         foreach (var item in equipment)
         {
             if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
                 UpdatePlayerSkills(item);
             }
         }
-
+        
         EnableDefaultGun();
     }
 

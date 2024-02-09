@@ -5,9 +5,10 @@ namespace Weapons
 {
     public class SubmachineGun : Weapon
     {
-        private void Awake()
+        protected override void Awake()
         {
             ReloadAmmo();
+            base.Awake();
         }
 
         // Start is called before the first frame update

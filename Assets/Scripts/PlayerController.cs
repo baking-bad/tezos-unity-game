@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Animations;
 using Helpers;
 using Managers;
 using UnityEngine;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
     private float _timeBtwSprints;
     private bool _isSprinting;
     private bool _canSprint;
+    private Animator _animator;
 
     private List<Nft> _userNfts;
     
@@ -62,6 +64,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
         _weaponType = _currentWeapon.weaponType;
         WeaponSwitched?.Invoke(_currentWeapon);
         _normalSpeed = moveSpeed;
@@ -177,7 +180,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         _moveVector = new Vector3(
             Input.GetAxis("Horizontal"),
             0f,
@@ -185,6 +187,13 @@ public class PlayerController : MonoBehaviour
         
         _moveVector.Normalize();
         _movement.Set(moveSpeed * _moveVector.x, 0f, moveSpeed * _moveVector.z);
+
+        var velocityZ = Vector3.Dot(_movement.normalized, transform.forward);
+        var velocityX = Vector3.Dot(_movement.normalized, transform.right);
+        
+        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
+        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
+        _animator.SetBool("isMoving", _moveVector != Vector3.zero);
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -199,6 +208,7 @@ public class PlayerController : MonoBehaviour
             _sprintTime = sprintDuration;
             _timeBtwSprints = 0;
             SprintCooldownStarted?.Invoke();
+            _animator.SetBool("isSprinting", true);
         }
 
         if (_isSprinting)
@@ -211,6 +221,7 @@ public class PlayerController : MonoBehaviour
             {
                 moveSpeed = _normalSpeed;
                 _isSprinting = false;
+                _animator.SetBool("isSprinting", false);
             }
         }
 
@@ -254,11 +265,17 @@ public class PlayerController : MonoBehaviour
             : newValue;
 
         HealthChanged?.Invoke(_maxHealth, health, damaged);
+
+        if (health <= 0)
+        {
+            _animator.SetBool("dead", true);
+        }
     }
 
     public void SwitchWeapon(GameObject weapon = null, bool isTaken = false)
     {
-        if (_equippedWeapons.Count(w => !w.Value.GetComponent<Weapon>().isUnlocked) <= 1)
+        if (_equippedWeapons.Count(w => 
+                !w.Value.GetComponent<Weapon>().isUnlocked) <= 1)
             return;
 
         foreach (var w in _equippedWeapons
@@ -286,15 +303,14 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            _currentWeapon.TryGetComponent<WeaponAnimationInitializer>(out var animInitializer);
+            if (animInitializer != null)
+                animInitializer.Set();
+
             WeaponSwitched?.Invoke(_currentWeapon);
 
             break;
         }
-    }
-
-    public float GetPlayerHealth()
-    {
-        return health;
     }
 
     public Weapon GetCurrentWeapon()
@@ -307,7 +323,7 @@ public class PlayerController : MonoBehaviour
         return _shieldScript;
     }
 
-    public GameObject[] GetAllWeapons()
+    private GameObject[] GetAllWeapons()
     {
         return allWeapons;
     }

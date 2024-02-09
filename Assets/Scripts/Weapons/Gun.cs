@@ -5,10 +5,11 @@ namespace Weapons
 {
     public class Gun : Weapon
     {
-        private void Awake()
+        protected override void Awake()
         {
             ammo = int.MaxValue;
             ReloadAmmo();
+            base.Awake();
         }
 
         // Start is called before the first frame update

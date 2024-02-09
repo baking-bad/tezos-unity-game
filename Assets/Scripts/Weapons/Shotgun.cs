@@ -17,9 +17,10 @@ namespace Weapons
         
         [SerializeField] private GameObject buckshot;
 
-        void Awake()
+        protected override void Awake()
         {
             ReloadAmmo();
+            base.Awake();
         }
 
         // Start is called before the first frame update
@@ -60,6 +61,10 @@ namespace Weapons
             {
                 soundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
+                
+                if (animator == null) return;
+                animator.SetBool("isFiring", false);
+                
                 return;
             }
 

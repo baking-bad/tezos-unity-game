@@ -24,6 +24,8 @@ namespace Weapons
         protected int ammo;
         protected float triggerFallInSec = 1f;
 
+        protected Animator animator;
+
         public enum WeaponPurpose
         {
             Player,
@@ -41,7 +43,11 @@ namespace Weapons
         public Action<int, int, WeaponType> AmmoQtyChanged;
 
         protected SoundManager soundManager;
-        
+
+        protected virtual void Awake()
+        {
+            animator = GetComponentInParent<Animator>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -49,7 +55,7 @@ namespace Weapons
             ReloadAmmo();
             soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
-            
+
             if (weaponPurpose == WeaponPurpose.Player) return;
             
             timeBtwShots = reloadTime;
@@ -63,7 +69,12 @@ namespace Weapons
                 if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && !reloading
                     || weaponPurpose == WeaponPurpose.Enemy)
                 {
-                    Shoot(); 
+                    Shoot();
+                }
+                else
+                {
+                    if (animator != null)
+                        animator.SetBool("isFiring", false);
                 }
             }
             else
@@ -117,8 +128,15 @@ namespace Weapons
             {
                 soundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
+                
+                if (animator != null) 
+                    animator.SetBool("isFiring", false);
+                
                 return;
             }
+            
+            if (animator != null)
+                animator.SetBool("isFiring", true);
             
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);

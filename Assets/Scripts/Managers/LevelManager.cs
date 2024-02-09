@@ -62,6 +62,7 @@ namespace Managers
             UserDataManager.Instance.GameStarted += GameStarted;
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
+            _player.HealthChanged += PlayerHealthChanged;
             _soundManager = GetComponent<SoundManager>();
             InitEnemies();
             _score = 0;
@@ -76,14 +77,7 @@ namespace Managers
 
         private void FixedUpdate()
         {
-            if (_player.GetPlayerHealth() <= 0)
-            {
-                EndGame();
-            }
-            else
-            {
-                CheckWave();
-            }
+            CheckWave();
         }
 
         private void InitEnemies()
@@ -287,6 +281,12 @@ namespace Managers
 
             enemyScript.EnemyKilled += EnemyKilled;
         }
+        
+        private void PlayerHealthChanged(float _, float health, bool __)
+        {
+            if (health > 0) return;
+            EndGame();
+        }
 
         private void StopSceneScripts()
         {
@@ -331,6 +331,7 @@ namespace Managers
 
         protected void OnDisable()
         {
+            _player.HealthChanged -= PlayerHealthChanged;
             UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }

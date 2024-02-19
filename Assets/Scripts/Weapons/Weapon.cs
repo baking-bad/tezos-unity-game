@@ -66,15 +66,16 @@ namespace Weapons
         {
             if (timeBtwShots <= 0)
             {
-                if (Input.GetMouseButton(0) && weaponPurpose == WeaponPurpose.Player && !reloading
-                    || weaponPurpose == WeaponPurpose.Enemy)
+                if (Input.GetMouseButton(0) && 
+                    weaponPurpose == WeaponPurpose.Player && 
+                    !reloading)
                 {
                     Shoot();
                 }
-                else
+
+                if (weaponPurpose == WeaponPurpose.Enemy)
                 {
-                    if (animator != null)
-                        animator.SetBool("isFiring", false);
+                    AttackStarted();
                 }
             }
             else
@@ -128,15 +129,11 @@ namespace Weapons
             {
                 soundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
-                
-                if (animator != null) 
-                    animator.SetBool("isFiring", false);
-                
+
                 return;
             }
             
-            if (animator != null)
-                animator.SetBool("isFiring", true);
+            AttackStarted();
             
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);
@@ -162,6 +159,22 @@ namespace Weapons
             if (!gameObject.activeInHierarchy) return;
             
             AmmoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);;
+        }
+
+        /// <summary>
+        /// Call with animation clip
+        /// </summary>
+        public void AttackEnded()
+        {
+            if (animator != null)
+                animator.SetBool("isAttacking", false);
+        }
+        
+
+        private void AttackStarted()
+        {
+            if (animator != null)
+                animator.SetBool("isAttacking", true);
         }
     }
 }

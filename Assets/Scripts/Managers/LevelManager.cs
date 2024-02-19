@@ -148,7 +148,7 @@ namespace Managers
                 rndBoss,
                 new Vector3(
                     spawnPoint.x,
-                    spawnPoint.y + rndBoss.transform.localScale.y / 2,
+                    spawnPoint.y,
                     spawnPoint.z),
                 Quaternion.identity);
 

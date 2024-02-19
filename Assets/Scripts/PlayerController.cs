@@ -346,4 +346,12 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+    
+    /// <summary>
+    /// Call with animation clip
+    /// </summary>
+    private void AttackEnded()
+    {
+        _currentWeapon.AttackEnded();
+    }
 }

@@ -61,10 +61,7 @@ namespace Weapons
             {
                 soundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
-                
-                if (animator == null) return;
-                animator.SetBool("isFiring", false);
-                
+
                 return;
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Managers;
 using UnityEngine;
+using Weapons;
 
 public class Enemy : MonoBehaviour
 {
@@ -20,17 +21,25 @@ public class Enemy : MonoBehaviour
     private float _timeBtwAttack;
     private float _stopTime;
     private bool _isStunned;
+    private bool _isAttacking;
+    private bool _isKilled;
     private float _normalSpeed;
 
     private bool _isTheBoss;
     private int _bossIndex;
     
     private PlayerController _player;
+    private Animator _animator;
+    private Rigidbody _rb;
+    private Weapon _weapon;
+    
     private SoundManager _soundManager;
     private List<GameObject> _killAwards;
     
     public GameObject damageEffect;
     public Action<Enemy, Transform, List<GameObject>> EnemyKilled;
+    
+    private int _deadBodyLifetimeInSec = 5;
 
     private void Awake()
     {
@@ -42,6 +51,9 @@ public class Enemy : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
+        _animator = GetComponent<Animator>();
+        _rb = GetComponent<Rigidbody>();
+        TryGetComponent<Weapon>(out _weapon);
         _normalSpeed = speed;
         _soundManager = GameObject.FindGameObjectWithTag("GameController")
             .GetComponent<SoundManager>();
@@ -50,11 +62,28 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (health <= 0 && !_isKilled)
         {
+            _animator.SetBool("dead", true);
             _soundManager.Death();
             EnemyKilled?.Invoke(this, transform, _killAwards);
-            Destroy(gameObject);
+            _isKilled = true;
+            if (_weapon != null) _weapon.enabled = false;
+            
+            enabled = false;
+        }
+
+        if (_isAttacking)
+        {
+            if (_timeBtwAttack > 0)
+            {
+                _timeBtwAttack -= Time.deltaTime;
+            }
+            else
+            {
+                _isAttacking = false;
+                _animator.SetBool("isAttacking", false);
+            }
         }
 
         if (!_isStunned) return;
@@ -73,35 +102,55 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            _player.transform.position,
-            speed * Time.fixedDeltaTime);
+        if (_isKilled)
+        {
+            transform.Translate(Vector3.down * Time.fixedDeltaTime / 4, Space.World);
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                _player.transform.position,
+                speed * Time.fixedDeltaTime);
         
-        transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
+            transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
+        
+            _animator.SetBool("isMoving", _rb.velocity != Vector3.zero);   
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (!canMeleeDamage) return;
+        if (!canMeleeDamage || _isKilled) return;
 
         if (!other.CompareTag("Player")) return;
         
-        if (_timeBtwAttack <= 0)
-        {
-            OnEnemyAttack();
-        }
-        else
-        {
-            _timeBtwAttack -= Time.deltaTime;
-        }
+        if (_timeBtwAttack > 0) return;
+        
+        OnEnemyAttack();
+    }
+
+    /// <summary>
+    /// Call with animation clip
+    /// </summary>
+    private void Die()
+    {
+        enabled = true;
+        Invoke(nameof(DestroyDeadBody), _deadBodyLifetimeInSec);
+    }
+    
+    private void DestroyDeadBody()
+    {
+        Destroy(gameObject);
     }
 
     private void OnEnemyAttack()
     {
         Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
         _player.ChangeHealth(-meleeDamage);
+        _animator.SetBool("isAttacking", true);
         _timeBtwAttack = meleeAttackRate;
+        _isAttacking = true;
     }
 
     public void TakeDamage(float damage, float stunTime)

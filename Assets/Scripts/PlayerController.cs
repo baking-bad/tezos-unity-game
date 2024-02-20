@@ -89,19 +89,19 @@ public class PlayerController : MonoBehaviour
             _equippedWeapons.Add(weaponType, weapon);
         }
 
-        var equipment = UserDataManager.Instance.GetEquipment();
-        
-        foreach (var item in equipment)
-        {
-            if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
-            {
-                AddWeapon(item);   
-            }
-            else
-            {
-                UpdatePlayerSkills(item);
-            }
-        }
+        // var equipment = UserDataManager.Instance.GetEquipment();
+        //
+        // foreach (var item in equipment)
+        // {
+        //     if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
+        //     {
+        //         AddWeapon(item);   
+        //     }
+        //     else
+        //     {
+        //         UpdatePlayerSkills(item);
+        //     }
+        // }
         
         EnableDefaultGun();
     }

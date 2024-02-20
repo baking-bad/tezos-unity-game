@@ -59,7 +59,7 @@ namespace Managers
         // Start is called before the first frame update
         void Start()
         {
-            UserDataManager.Instance.GameStarted += GameStarted;
+            // UserDataManager.Instance.GameStarted += GameStarted;
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _player.HealthChanged += PlayerHealthChanged;
@@ -132,7 +132,7 @@ namespace Managers
 
         public void Restart()
         {
-            UserDataManager.Instance.StartGame();
+            // UserDataManager.Instance.StartGame();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             Time.timeScale = 1;
         }
@@ -249,13 +249,14 @@ namespace Managers
 
             _soundManager.Death();
 
+            
             for (var i = 0; i < killAwards.Count; i++)
             {
                 var position = killPosition.position;
                 
                 position = new Vector3(
                     position.x + _distanceBtwItemDrop * i,
-                    position.y, 
+                    1.5f, 
                     position.z + _distanceBtwItemDrop * i);
 
                 var award = Instantiate(killAwards[i], position, Quaternion.identity);
@@ -264,9 +265,9 @@ namespace Managers
             
             if (!enemy.IsTheBoss()) return;
             
-            UserDataManager.Instance.KillBoss(
-                _gameSession.GameId,
-                enemy.GetBossIndex());
+            // UserDataManager.Instance.KillBoss(
+            //     _gameSession.GameId,
+            //     enemy.GetBossIndex());
         }
 
         private void SubscribeToKillEvents(GameObject enemy)
@@ -303,7 +304,7 @@ namespace Managers
 
         private void EndGame()
         {
-            UserDataManager.Instance.EndGame(_gameSession.GameId);
+            // UserDataManager.Instance.EndGame(_gameSession.GameId);
             _soundManager.Lose();
             PlayerDied?.Invoke();
             StopSceneScripts();
@@ -332,7 +333,7 @@ namespace Managers
         protected void OnDisable()
         {
             _player.HealthChanged -= PlayerHealthChanged;
-            UserDataManager.Instance.GameStarted -= GameStarted;
+            // UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }
 }

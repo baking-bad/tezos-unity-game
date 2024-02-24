@@ -7,6 +7,7 @@ using Managers;
 using UnityEngine;
 using Weapons;
 using Type = Nft.NftType;
+using LootScript = Loot.Loot;
 using WeaponType = Weapons.Weapon.WeaponType;
 
 public class PlayerController : MonoBehaviour
@@ -89,19 +90,19 @@ public class PlayerController : MonoBehaviour
             _equippedWeapons.Add(weaponType, weapon);
         }
 
-        // var equipment = UserDataManager.Instance.GetEquipment();
-        //
-        // foreach (var item in equipment)
-        // {
-        //     if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
-        //     {
-        //         AddWeapon(item);   
-        //     }
-        //     else
-        //     {
-        //         UpdatePlayerSkills(item);
-        //     }
-        // }
+        var equipment = UserDataManager.Instance.GetEquipment();
+        
+        foreach (var item in equipment)
+        {
+            if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
+            {
+                AddWeapon(item);   
+            }
+            else
+            {
+                UpdatePlayerSkills(item);
+            }
+        }
         
         EnableDefaultGun();
     }
@@ -282,7 +283,15 @@ public class PlayerController : MonoBehaviour
                      .Where(w => w.Value.activeInHierarchy))
         {
             w.Value.SetActive(false);
-        
+            if (_currentWeapon.fireEffect != null)
+            {
+                _currentWeapon.fireEffect.gameObject.SetActive(false);
+            }
+            if (_currentWeapon.bulletShellEffect != null)
+            {
+                _currentWeapon.bulletShellEffect.gameObject.SetActive(false);
+            }
+
             if (isTaken && weapon != null)
             {
                 weapon.SetActive(true);
@@ -342,7 +351,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Loot"))
         {
-            other.GetComponent<Loot>().ApplyLoot(gameObject);
+            other.GetComponent<LootScript>().ApplyLoot(gameObject);
             Destroy(other.gameObject);
         }
     }

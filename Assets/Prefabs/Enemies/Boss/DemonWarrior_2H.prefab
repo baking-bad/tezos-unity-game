@@ -1806,7 +1806,8 @@ MonoBehaviour:
   canMeleeDamage: 1
   meleeAttackRate: 0.5
   meleeDamage: 15
-  damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  enemyModelCollider: {fileID: 4939937272217650872}
 --- !u!1 &7534712323999800245
 GameObject:
   m_ObjectHideFlags: 0

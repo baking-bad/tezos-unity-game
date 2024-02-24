@@ -2088,7 +2088,8 @@ MonoBehaviour:
   canMeleeDamage: 1
   meleeAttackRate: 1
   meleeDamage: 20
-  damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  enemyModelCollider: {fileID: 4620305202826464494}
 --- !u!114 &4594932722967721869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2103,8 +2104,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPurpose: 1
   weaponType: 0
-  bullet: {fileID: 5627677126749510976, guid: 24f43839437d34be0b0eb41dd130c91e, type: 3}
+  bullet: {fileID: 7329723892997137254, guid: 28b3c7c8e9ae644aeaa7ce26d6deebe0, type: 3}
   shotPoint: {fileID: 4620305202332430774}
+  fireEffect: {fileID: 0}
+  bulletShellEffect: {fileID: 0}
   fireRate: 2
   magazineCapacity: 0
   reloadTime: 1

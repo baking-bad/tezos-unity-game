@@ -36,10 +36,12 @@ public class Enemy : MonoBehaviour
     private SoundManager _soundManager;
     private List<GameObject> _killAwards;
     
-    public GameObject damageEffect;
+    public GameObject takeDamageEffect;
     public Action<Enemy, Transform, List<GameObject>> EnemyKilled;
     
     private int _deadBodyLifetimeInSec = 5;
+    
+    [SerializeField] private Collider enemyModelCollider;
 
     private void Awake()
     {
@@ -67,10 +69,14 @@ public class Enemy : MonoBehaviour
             _animator.SetBool("dead", true);
             _soundManager.Death();
             EnemyKilled?.Invoke(this, transform, _killAwards);
+            gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             _isKilled = true;
+            
             if (_weapon != null) _weapon.enabled = false;
             
-            enabled = false;
+            if (enemyModelCollider != null) enemyModelCollider.isTrigger = true;
+
+             enabled = false;
         }
 
         if (_isAttacking)
@@ -146,7 +152,6 @@ public class Enemy : MonoBehaviour
 
     private void OnEnemyAttack()
     {
-        Instantiate(damageEffect, _player.transform.position, Quaternion.identity);
         _player.ChangeHealth(-meleeDamage);
         _animator.SetBool("isAttacking", true);
         _timeBtwAttack = meleeAttackRate;
@@ -155,6 +160,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage, float stunTime)
     {
+        Instantiate(takeDamageEffect, gameObject.transform.position, Quaternion.identity);
         _isStunned = true;
         _stopTime = stunTime;
 

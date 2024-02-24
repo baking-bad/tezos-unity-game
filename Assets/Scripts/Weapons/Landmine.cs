@@ -8,9 +8,8 @@ namespace Weapons
     {
         [SerializeField] private int damage;
         [SerializeField] private float stunTime;
-    
-        public GameObject damageEffect;
-        public GameObject destroyEffect;
+        
+        public GameObject explosiveEffect;
         public float explosionDelay;
         private List<GameObject> _affectedEnemies;
         private bool _isTimeDetonate;
@@ -45,12 +44,6 @@ namespace Weapons
             }   
         }
 
-        private void DestroyMine()
-        {
-            // Instantiate(destroyEffect, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-        }
-
         private void Detonate()
         {   
             _affectedEnemies.ForEach(e =>
@@ -58,10 +51,15 @@ namespace Weapons
                 if (e.gameObject != null)
                     e.GetComponent<Enemy>().TakeDamage(damage, stunTime);   
             });
-        
-            Instantiate(damageEffect, transform.position, Quaternion.identity);
+            
             _soundManager.MineDetanate();
-            DestroyMine();   
+
+            if (explosiveEffect != null)
+            {
+                Instantiate(explosiveEffect, gameObject.transform.position, Quaternion.identity);
+            }
+            
+            Destroy(gameObject);
         }
     }
 }

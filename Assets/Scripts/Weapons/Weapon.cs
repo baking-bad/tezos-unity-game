@@ -10,6 +10,8 @@ namespace Weapons
         public WeaponType weaponType;
         [SerializeField] protected GameObject bullet;
         [SerializeField] protected Transform shotPoint;
+        [SerializeField] public ParticleSystem fireEffect;
+        [SerializeField] public ParticleSystem bulletShellEffect;
     
         [SerializeField] protected float fireRate;
         [SerializeField] protected int magazineCapacity;
@@ -137,6 +139,19 @@ namespace Weapons
             
             if (weaponType != WeaponType.Shotgun)
                 Instantiate(bullet, shotPoint.position, shotPoint.rotation);
+
+            if (fireEffect != null)
+            {
+                fireEffect.gameObject.SetActive(true);
+                fireEffect.Play();
+            }
+
+            if (bulletShellEffect != null)
+            {
+                bulletShellEffect.gameObject.SetActive(true);
+                bulletShellEffect.Play();
+            }
+            
         
             soundManager.Shot(weaponType, name);
 

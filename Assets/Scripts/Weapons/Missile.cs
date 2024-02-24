@@ -20,7 +20,6 @@ namespace Weapons
                 if (e.gameObject == null) return;
                 
                 e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-                Instantiate(damageEffect, e.gameObject.transform.position, Quaternion.identity);
             });
             
             Destroy(gameObject);

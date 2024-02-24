@@ -11,10 +11,6 @@ namespace Weapons
         [SerializeField] private int bulletsPerShot;
         [SerializeField] private float buckshotLifeTime;
         [SerializeField] private float inaccurancyDistanceBtwBuckshot;
-
-        public GameObject damageEffect;
-        public GameObject shootEffect;
-        
         [SerializeField] private GameObject buckshot;
 
         protected override void Awake()
@@ -74,7 +70,6 @@ namespace Weapons
                         if (hit.collider.CompareTag("Enemy"))
                         {
                             hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-                            Instantiate(damageEffect, hit.transform.position, Quaternion.identity);
                         }
                         DrawBuckshot(hit.point);
                     }
@@ -89,8 +84,6 @@ namespace Weapons
                 }
             }
 
-            Instantiate(shootEffect, shotPoint.position, Quaternion.identity);
-            
             base.Shoot();
         }
     }

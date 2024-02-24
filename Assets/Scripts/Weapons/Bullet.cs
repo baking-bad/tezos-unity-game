@@ -12,8 +12,7 @@ namespace Weapons
         [SerializeField] protected LayerMask mask;
 
         [SerializeField] protected bool enemyBullet;
-
-        public GameObject damageEffect;
+        
         public GameObject destroyEffect;
 
         private Rigidbody _rb;
@@ -38,20 +37,18 @@ namespace Weapons
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
                 hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
-                Instantiate(damageEffect, transform.position, Quaternion.identity);
-                DestroyBullet();
-                return;
             }
-            
+
             if (hit.collider.CompareTag("Player") && enemyBullet)
             {
                 hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
-                Instantiate(damageEffect, transform.position, Quaternion.identity);
-                DestroyBullet();
-                return;
+            }
+
+            if (destroyEffect != null)
+            {
+                Instantiate(destroyEffect, transform.position, Quaternion.identity);
             }
             
-            Instantiate(destroyEffect, transform.position, Quaternion.identity);
             DestroyBullet();
         }
 

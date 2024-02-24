@@ -2943,7 +2943,8 @@ MonoBehaviour:
   canMeleeDamage: 1
   meleeAttackRate: 1
   meleeDamage: 2
-  damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  enemyModelCollider: {fileID: 8641614956680714624}
 --- !u!136 &5768812519345420844
 CapsuleCollider:
   m_ObjectHideFlags: 0

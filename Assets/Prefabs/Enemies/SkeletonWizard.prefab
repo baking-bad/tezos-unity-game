@@ -2524,7 +2524,8 @@ MonoBehaviour:
   canMeleeDamage: 0
   meleeAttackRate: 0
   meleeDamage: 0
-  damageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
+  enemyModelCollider: {fileID: 3118297420613701209}
 --- !u!114 &3465641881406897165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2539,8 +2540,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPurpose: 1
   weaponType: 0
-  bullet: {fileID: 4189340335037484485, guid: 38a72d97c368e42a79945581578941ee, type: 3}
+  bullet: {fileID: 7329723892997137254, guid: 28b3c7c8e9ae644aeaa7ce26d6deebe0, type: 3}
   shotPoint: {fileID: 3465641880690991930}
+  fireEffect: {fileID: 0}
+  bulletShellEffect: {fileID: 0}
   fireRate: 2
   magazineCapacity: 0
   reloadTime: 1
@@ -3890,7 +3893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 714560864357263541}
   - component: {fileID: 3683089729410161841}
-  - component: {fileID: 3465641881149308976}
+  - component: {fileID: 3118297420613701209}
   m_Layer: 6
   m_Name: Skeleton
   m_TagString: Untagged
@@ -4026,7 +4029,7 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.002611339, y: -0.16168973, z: 2.0041351}
     m_Extent: {x: 1.3998642, y: 0.47509685, z: 2.0467658}
   m_DirtyAABB: 0
---- !u!64 &3465641881149308976
+--- !u!64 &3118297420613701209
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

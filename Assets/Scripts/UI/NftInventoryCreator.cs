@@ -22,6 +22,11 @@ namespace UI
         {
             if (userNfts == null) return;
             
+            foreach(Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+            
             foreach (var t in userNfts)
             {
                 var item = Instantiate(nftInventoryPrefab, transform);

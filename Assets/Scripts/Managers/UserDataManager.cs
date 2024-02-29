@@ -27,7 +27,7 @@ namespace Managers
         private List<Nft> _contractNfts;
         private List<Nft> _userNfts;
         private List<Nft> _equipment;
-        
+
         public Action<List<Nft>> TokensReceived;
         public Action<GameSession> GameStarted;
 
@@ -44,11 +44,11 @@ namespace Managers
                 Destroy(gameObject);
                 return;
             }
-            
+
             _equipment = new List<Nft>();
             _userNfts = new List<Nft>();
             _contractNfts = new List<Nft>();
-            
+
             Instance = this;
 
             _api = new GameApi(serverApiUrl);
@@ -67,7 +67,7 @@ namespace Managers
             var routine = _api.VerifyPayload(_pubKey, payload.Signature, verified =>
             {
                 if (!verified) return;
-                
+
                 PlayerPrefs.SetString("Address", _connectedAddress);
                 GetMenuManager()?.EnableGameMenu();
             });
@@ -80,20 +80,21 @@ namespace Managers
             _pubKey = wallet.PublicKey;
             if (string.IsNullOrEmpty(PlayerPrefs.GetString("Address", null)))
             {
-                var routine = _api.GetPayload(_pubKey, payload =>
-                {
-                    TezosManager.Instance.Wallet.RequestSignPayload(SignPayloadType.micheline, payload);
-                });
+                var routine = _api.GetPayload(_pubKey,
+                    payload =>
+                    {
+                        TezosManager.Instance.Wallet.RequestSignPayload(SignPayloadType.micheline, payload);
+                    });
                 CoroutineRunner.Instance.StartWrappedCoroutine(routine);
             }
             else
             {
                 GetMenuManager()?.EnableGameMenu();
             }
-            
+
             LoadGameNfts();
         }
-        
+
         private void WalletDisconnected(WalletInfo wallet)
         {
             PlayerPrefs.SetString("Address", null);
@@ -118,41 +119,42 @@ namespace Managers
             int boss)
         {
             var routine = _api.KillBoss(gameId, boss);
-            CoroutineRunner.Instance.StartWrappedCoroutine(routine);   
+            CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
         private void LoadGameNfts()
         {
             CoroutineRunner.Instance.StartCoroutine(
-                TezosManager.Instance.Tezos.API.GetTokensForOwner(tbs=> 
+                TezosManager.Instance.Tezos.API.GetTokensForOwner(tbs =>
                     {
                         if (tbs == null) return;
-                        
+
                         var userTokens = tbs.ToList();
                         if (userTokens.Count > 0)
                         {
                             var tokens = userTokens
                                 .Where(t => t.TokenContract.Address == contract)
                                 .ToList();
-            
+
                             var options = new JsonSerializerOptions
                             {
                                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                             };
                             options.Converters.Add(new JsonStringEnumConverter());
                             options.Converters.Add(new NftConverter());
-                            
+
                             foreach (var t in tokens)
                             {
                                 try
                                 {
                                     var nft = t.TokenMetadata.Deserialize<Nft>(options);
-            
+
                                     if (nft == null ||
                                         nft.Type == Type.None ||
                                         nft.GameParameters == null) continue;
-            
+
                                     nft.TokenId = int.Parse(t.TokenId);
+                                    _userNfts = new List<Nft>();
                                     _userNfts.Add(nft);
                                 }
                                 catch (Exception e)
@@ -160,19 +162,19 @@ namespace Managers
                                     Debug.Log("Serialization error: " + e);
                                 }
                             }
-                            
+
                             TokensReceived?.Invoke(_userNfts);
                         }
                         else
                         {
                             Debug.Log($"{_connectedAddress} has no tokens");
                         }
-                    }, 
+                    },
                     owner: _connectedAddress,
                     withMetadata: true,
                     maxItems: maxTokenCount,
                     orderBy: new TokensForOwnerOrder.Default(0)));
-            
+
             CoroutineRunner.Instance.StartCoroutine(
                 TezosManager.Instance.Tezos.API.GetTokensForContract(tokens =>
                     {
@@ -183,17 +185,17 @@ namespace Managers
                         };
                         options.Converters.Add(new JsonStringEnumConverter());
                         options.Converters.Add(new NftConverter());
-                        
+
                         foreach (var t in tokens)
                         {
                             try
                             {
                                 var nft = t.TokenMetadata.Deserialize<Nft>(options);
-                                    
+
                                 if (nft == null ||
                                     nft.Type == Type.None ||
                                     nft.GameParameters == null) continue;
-            
+
                                 nft.TokenId = int.Parse(t.TokenId);
                                 _contractNfts.Add(nft);
                             }
@@ -202,12 +204,17 @@ namespace Managers
                                 Debug.Log("Serialization error: " + e);
                             }
                         }
-                    }, 
+                    },
                     contractAddress: contract,
                     withMetadata: true,
                     maxItems: maxTokenCount,
-                    orderBy: new TokensForContractOrder.Default(0))
-            );
+                    orderBy: new TokensForContractOrder.Default(0)));
+
+            CoroutineRunner.Instance.StartCoroutine(
+                _api.GetRewards(_connectedAddress, rewards =>
+                {
+                    GetMenuManager()?.SetRewardsAmount(rewards.Aggregate(0, (acc, reward) => acc + reward.Amount));
+                }));
         }
 
         private UiMenuManager GetMenuManager()
@@ -219,7 +226,6 @@ namespace Managers
 
         private void ChangedActiveScene(Scene current, Scene next)
         {
-
             if (next.name == "Game")
             {
                 StartGame();
@@ -247,11 +253,11 @@ namespace Managers
         private void OnDisable()
         {
             if (TezosManager.Instance == null) return;
-            
+
             TezosManager.Instance.Wallet.EventManager.WalletDisconnected -= WalletDisconnected;
             TezosManager.Instance.Wallet.EventManager.WalletConnected -= WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned -= PayloadSigned;
-            
+
             SceneManager.activeSceneChanged -= ChangedActiveScene;
         }
     }

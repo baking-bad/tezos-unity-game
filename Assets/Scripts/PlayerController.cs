@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
     public Action<float, float, bool> HealthChanged;
     public Action<Weapon> WeaponSwitched;
-    public Action<float> SprintCooldownContinues;
+    public Action<float, float> SprintCooldownContinues;
     public Action SprintCooldownStarted;
     public Action SprintCooldownEnded;
     public Action PlayerInitialized;
@@ -90,19 +90,19 @@ public class PlayerController : MonoBehaviour
             _equippedWeapons.Add(weaponType, weapon);
         }
 
-        var equipment = UserDataManager.Instance.GetEquipment();
-        
-        foreach (var item in equipment)
-        {
-            if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
-            {
-                AddWeapon(item);   
-            }
-            else
-            {
-                UpdatePlayerSkills(item);
-            }
-        }
+        // var equipment = UserDataManager.Instance.GetEquipment();
+        //
+        // foreach (var item in equipment)
+        // {
+        //     if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
+        //     {
+        //         AddWeapon(item);   
+        //     }
+        //     else
+        //     {
+        //         UpdatePlayerSkills(item);
+        //     }
+        // }
         
         EnableDefaultGun();
     }
@@ -230,7 +230,7 @@ public class PlayerController : MonoBehaviour
         
         if (_timeBtwSprints < sprintCooldown)
         {
-            SprintCooldownContinues?.Invoke(sprintCooldown);
+            SprintCooldownContinues?.Invoke(_timeBtwSprints, sprintCooldown);
             _timeBtwSprints += Time.deltaTime;
         }
         else

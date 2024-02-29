@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +9,7 @@ namespace Managers
 {
     public class UiManager : MonoBehaviour
     {
-        [SerializeField] private Image healthBarValue;
+        [SerializeField] private Slider healthBarValue;
         [SerializeField] private TMP_Text score;
         [SerializeField] private TMP_Text currentThreat;
         [SerializeField] private Image weaponIcon;
@@ -21,21 +20,20 @@ namespace Managers
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
-        [SerializeField] private TMP_Text waveAlertText;
-        [SerializeField] private TMP_Text bossAlertText;
+        [SerializeField] private GameObject waveTip;
+        [SerializeField] private GameObject bossTip;
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
-        [SerializeField] private Image sprintTimer;
+        [SerializeField] private Image shieldTimerProgress;
+        [SerializeField] private Text shieldTimerText;
+        [SerializeField] private Image sprintTimerProgress;
+        [SerializeField] private Image sprintTimerIcon;
+        [SerializeField] private TMP_Text sprintTimerText;
+        [SerializeField] private TMP_Text gameTimerText;
         
-        // [SerializeField] private Sprite[] valueSprites;
-        // [SerializeField] private Image nftHealthIcon;
-        // [SerializeField] private Image nftSpeedIcon;
-        // [SerializeField] private Image nftDamageIcon;
-
-        [SerializeField] private TMP_Text timerText;
         private float _timer;
-        
-        private Dictionary<string, Sprite> _spriteValues;
+        private Animator _bossTipAnimator;
+        private Animator _waveTipAnimator;
         
         private PlayerController _player;
 
@@ -43,6 +41,8 @@ namespace Managers
         {
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
+            _waveTipAnimator = waveTip.GetComponent<Animator>();
+            _bossTipAnimator = bossTip.GetComponent<Animator>();
             var levelManager = GetComponent<LevelManager>();
         
             levelManager.GameScoreUpdated += ScoreUpdated;
@@ -58,11 +58,6 @@ namespace Managers
             
             score.text = "Score: " + levelManager.GetScore();
         }
-        
-        void Start()
-        {
-            // InitSpriteValues();
-        }
 
         private void SubscribeToPlayerEvents()
         {
@@ -72,53 +67,15 @@ namespace Managers
             _player.GetPlayerShield().ShieldTimerChanged += ShieldTimerChanged;
         }
 
-        // private void InitSpriteValues()
-        // {
-        //     _spriteValues = new Dictionary<string, Sprite>();
-        //
-        //     foreach (var s in valueSprites)
-        //     {
-        //         _spriteValues.Add(
-        //             s.name,
-        //             s);
-        //     }
-        // }
-
-        // private void DrawUserNfts(List<Nft> nfts)
-        // {
-        //     try
-        //     {
-        //         foreach (var t in nfts)
-        //         {
-        //             switch (t.Name)
-        //             {
-        //                 case "Health":
-        //                     nftHealthIcon.sprite = _spriteValues[t.Value.ToString()];
-        //                     break;
-        //                 case "Speed":
-        //                     nftSpeedIcon.sprite = _spriteValues[t.Value.ToString()];
-        //                     break;
-        //                 case "Damage":
-        //                     nftDamageIcon.sprite = _spriteValues[t.Value.ToString()];
-        //                     break;
-        //             }
-        //         }
-        //     }
-        //     catch (Exception)
-        //     {
-        //         Console.WriteLine("Invalid dictionary key");
-        //     }
-        // }
-
         private void ScoreUpdated(int scr, int threat)
         {
-            score.text = "Score: " + scr;
+            score.text = scr.ToString();
             currentThreat.text = "Current threat: " + threat;
         }
 
         private void PlayerHealthChanged(float maxHealth, float health, bool _)
         {
-            healthBarValue.fillAmount = health / maxHealth;
+            healthBarValue.value = health / maxHealth;
         }
 
         private void WeaponSwitched(Weapon weapon)
@@ -135,8 +92,8 @@ namespace Managers
                 ammoQtyInMagazine.text = ammo.Item1.ToString();
                 
                 ammoQty.text = weapon.weaponType == WeaponType.Gun
-                    ? "Inf"
-                    : ammo.Item2.ToString();
+                    ? "/ Inf"
+                    : "/ " + ammo.Item2;
 
                 _player.GetCurrentWeapon().AmmoQtyChanged -= AmmoQtyChanged;
                 weapon.AmmoQtyChanged += AmmoQtyChanged;
@@ -149,14 +106,14 @@ namespace Managers
         {
             ammoQtyInMagazine.text = ammoInMagazine.ToString();
             ammoQty.text = weaponType == WeaponType.Gun
-                ? "Inf"
-                : ammo.ToString();
+                ? "/ Inf"
+                : "/ " + ammo;
         }
 
         private void FixedUpdate()
         {
             _timer += Time.deltaTime;
-            timerText.text = $"{(int) _timer / 60:00}:{(int) _timer % 60:00}";
+            gameTimerText.text = $"{(int) _timer / 60:00}:{(int) _timer % 60:00}";
 
         }
 
@@ -164,14 +121,14 @@ namespace Managers
         {
             waveText.text = "Wave #" + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
-            waveAlertText.gameObject.SetActive(true);
+            _waveTipAnimator.SetTrigger("Show");
         }
         
         private void BossSpawned(int wave, int waveThreat)
         {
             waveText.text = "Wave #" + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
-            bossAlertText.gameObject.SetActive(true);
+            _bossTipAnimator.SetTrigger("Show");
         }
 
         private void ShowRestartPanel()
@@ -183,33 +140,43 @@ namespace Managers
         private void ShieldTimerActivated()
         {
             shieldTimer.gameObject.SetActive(true);
-            shieldTimer.fillAmount = 1;
+            shieldTimerProgress.fillAmount = 1;
         }
     
         private void ShieldTimerDeactivated()
         {
             shieldTimer.gameObject.SetActive(false);
-            shieldTimer.fillAmount = 1;
+            shieldTimerProgress.fillAmount = 1;
         }
     
         private void ShieldTimerChanged(float cooldown)
         {
-            shieldTimer.fillAmount -= 1 / cooldown * Time.deltaTime;
+            shieldTimerProgress.fillAmount -= 1 / cooldown * Time.deltaTime;
+            shieldTimerText.text = (int)Math.Round(shieldTimerProgress.fillAmount * 100f) + "%";
         }
     
-        private void SprintTimerChanged(float cooldown)
+        private void SprintTimerChanged(float elapsedTime, float cooldown)
         {
-            sprintTimer.fillAmount += 1 / cooldown * Time.deltaTime;
+            sprintTimerProgress.fillAmount += 1 / cooldown * Time.deltaTime;
+            sprintTimerText.text = Math.Ceiling(cooldown - elapsedTime).ToString();
         }
 
         private void SprintTimerStarted()
         {
-            sprintTimer.fillAmount = 0;
+            sprintTimerText.gameObject.SetActive(true);
+            var newColor = sprintTimerIcon.color;
+            newColor.a = 0.5f;
+            sprintTimerIcon.color = newColor;
+            sprintTimerProgress.fillAmount = 0;
         }
 
         private void SprintTimerEnded()
         {
-            sprintTimer.fillAmount = 1;
+            sprintTimerProgress.fillAmount = 1;
+            var newColor = sprintTimerIcon.color;
+            newColor.a = 1;
+            sprintTimerIcon.color = newColor;
+            sprintTimerText.gameObject.SetActive(false);
         }
 
         protected void OnDisable()

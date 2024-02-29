@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text.Json;
 using Api.Models;
 using Dynamic.Json;
@@ -143,6 +144,22 @@ namespace Api
                 $"{_apiUri}/game/unpause/", data);
             
             yield return routine;
+        }
+        
+        public IEnumerator GetRewards(string address, Action<IEnumerable<Reward>> callback)
+        {
+            var routine = HttpHelper.GetRequest<string>(
+                $"{_apiUri}/drop/get/?address={address}");
+            yield return routine;
+
+            if (routine.Current == null) yield break;
+            var jsonResponse = JsonSerializer
+                .Deserialize<JsonElement>(routine.Current.ToString());
+
+            jsonResponse.TryGetProperty("response", out var response);
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+            var rewards = response.Deserialize<IEnumerable<Reward>>();
+            callback?.Invoke(rewards);
         }
     }
 }

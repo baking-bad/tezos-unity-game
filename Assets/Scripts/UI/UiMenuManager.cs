@@ -22,6 +22,7 @@ namespace UI
         [Header("BUTTONS")]
         public GameObject startGameButton;
         public GameObject connectWalletButton;
+        public GameObject claimRewardButton;
         public GameObject changeWalletButton;
         public GameObject inventoryButton;
 
@@ -41,6 +42,7 @@ namespace UI
         public GameObject panelInventory;
         public GameObject panelEffects;
         public GameObject panelStats;
+        public GameObject rewardsWindow;
 
 
         // highlights in settings screen
@@ -216,6 +218,17 @@ namespace UI
 			_cameraAnimator.SetFloat("Animate",0);
 		}
 
+		public void ShowRewardsWindow()
+		{
+			Position3();
+			rewardsWindow.SetActive(true);
+		}
+
+		public void HideRewardsWindow()
+		{
+			rewardsWindow.SetActive(false);
+		}
+
 		void DisableSettingsPanels()
 		{
 			panelVideo.SetActive(false);
@@ -335,6 +348,21 @@ namespace UI
 		protected void OnDisable()
 		{
 			_listener.GetComponent<UiSettingsManager>().soundVolumeChanged -= ChangeVolume;
+		}
+
+		public void SetRewardsAmount(int rewardsAmount)
+		{
+			if (rewardsAmount > 0)
+			{
+				claimRewardButton
+						.GetComponentInChildren<TMP_Text>()
+						.text = $"Claim {rewardsAmount} reward{(rewardsAmount > 1 ? "s" : "")}";
+				claimRewardButton.SetActive(true);
+			}
+			else
+			{
+				claimRewardButton.SetActive(false);
+			}
 		}
 	}
 }

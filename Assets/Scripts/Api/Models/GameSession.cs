@@ -23,4 +23,13 @@ namespace Api.Models
         [JsonPropertyName("token")]
         public int Token { get; set; }
     }
+
+    [SerializeField]
+    public class Reward
+    {
+        [JsonPropertyName("token_id")]
+        public int TokenId { get; set; }
+        [JsonPropertyName("amount")]
+        public int Amount { get; set; }
+    }
 }

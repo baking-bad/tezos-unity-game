@@ -5,6 +5,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | {{{ PRODUCT_NAME }}}</title>
     <script src="StreamingAssets/webgl-frontend.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=captchaLoadedCallback&render=explicit" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <style>
+      body {
+        overflow: hidden;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+      }
+
+      .popup-content {
+        position: relative;
+        padding: 25px;
+      }
+
+      .close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        cursor: pointer;
+        font-size: larger;
+      }
+    </style>
   </head>
   <body style="text-align: center">
     <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} style="width: {{{ WIDTH }}}px; height: {{{ HEIGHT }}}px; background: {{{ BACKGROUND_FILENAME ? 'url(\'Build/' + BACKGROUND_FILENAME.replace(/'/g, '%27') + '\') center / cover' : BACKGROUND_COLOR }}}"></canvas>
@@ -40,7 +70,40 @@
         console.log("Unity instance initialized.");
         window.unityInstance = unityInstance;
       });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.querySelector('#unity-canvas');
+        canvas.style.width = `${document.documentElement.clientWidth}px`;
+        canvas.style.height = `${document.documentElement.clientHeight}px`;
+      });
+
+      function showCaptcha() {
+        if (!document.querySelector("#recaptcha").innerHTML) {
+          grecaptcha.render("recaptcha", {
+            sitekey: '6LdGqYQpAAAAAFTIdO_ck3IpRqOLKZfjlKYjLL9a',
+            callback: captchaCallback
+          });
+        } else {
+          grecaptcha.reset();
+        }
+        document.getElementById('popup').style.display = 'block';
+      }
+
+      function closeCaptcha() {
+        document.getElementById('popup').style.display = 'none';
+        grecaptcha.reset();
+      }
+
+      function captchaCallback(captchaData) {
+        unityInstance.SendMessage("UserDataSingleton", "ClaimReward", captchaData);
+        closeCaptcha();
+      }
     </script>
-    <div id="logger-output"></div>
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <span class="close" id="closePopup" onclick="closeCaptcha()">&times;</span>
+        <div id="recaptcha"></div>
+      </div>
+    </div>
   </body>
 </html>

@@ -56,6 +56,7 @@ namespace Managers
             TezosManager.Instance.Wallet.EventManager.WalletDisconnected += WalletDisconnected;
             TezosManager.Instance.Wallet.EventManager.WalletConnected += WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned += PayloadSigned;
+            TezosManager.Instance.Wallet.EventManager.ContractCallCompleted += OperationCompleted;
 
             DontDestroyOnLoad(gameObject);
 
@@ -72,6 +73,11 @@ namespace Managers
                 GetMenuManager()?.EnableGameMenu();
             });
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
+        }
+
+        private void OperationCompleted(OperationResult operationResult)
+        {
+            GetMenuManager().ShowSuccessOperationHash(operationResult.TransactionHash);
         }
 
         private void WalletConnected(WalletInfo wallet)
@@ -224,10 +230,42 @@ namespace Managers
                     orderBy: new TokensForContractOrder.Default(0)));
 
             CoroutineRunner.Instance.StartCoroutine(
-                _api.GetRewards(_connectedAddress, rewards =>
-                {
-                    GetMenuManager()?.SetRewardsAmount(rewards.Aggregate(0, (acc, reward) => acc + reward.Amount));
-                }));
+                _api.GetRewardsList(
+                    _connectedAddress, 
+                    rewards =>
+                    {
+                        GetMenuManager()?.SetRewardsAmount(
+                            rewards.Aggregate(0, (acc, reward) => acc + reward.Amount)
+                        );
+                    }
+                )
+            );
+        }
+
+        // Called from JS side after captcha checked.
+        public void ClaimReward(string captchaData)
+        {
+            var uiManager = GetMenuManager();
+            uiManager.HideRewardsWindow();
+            uiManager.ShowTokensAwaitingBadge();
+
+            CoroutineRunner.Instance.StartCoroutine(
+                _api.ClaimReward(
+                    _connectedAddress,
+                    captchaData,
+                    claimRewardResponse =>
+                    {
+                        if (string.IsNullOrEmpty(claimRewardResponse.OperationHash)) return;
+                        OperationCompleted(new OperationResult
+                            {
+                                TransactionHash = claimRewardResponse.OperationHash
+                            }
+                        );
+                        LoadGameNfts();
+                        uiManager.HideTokensAwaitingBadge();
+                    }
+                )
+            );
         }
 
         private UiMenuManager GetMenuManager()
@@ -270,6 +308,7 @@ namespace Managers
             TezosManager.Instance.Wallet.EventManager.WalletDisconnected -= WalletDisconnected;
             TezosManager.Instance.Wallet.EventManager.WalletConnected -= WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned -= PayloadSigned;
+            TezosManager.Instance.Wallet.EventManager.ContractCallCompleted -= OperationCompleted;
 
             SceneManager.activeSceneChanged -= ChangedActiveScene;
         }

@@ -5,6 +5,7 @@ using System.Text.Json;
 using Api.Models;
 using Dynamic.Json;
 using Helpers;
+using UnityEngine;
 
 namespace Api
 {
@@ -146,7 +147,7 @@ namespace Api
             yield return routine;
         }
         
-        public IEnumerator GetRewards(string address, Action<IEnumerable<Reward>> callback)
+        public IEnumerator GetRewardsList(string address, Action<IEnumerable<Reward>> callback)
         {
             var routine = HttpHelper.GetRequest<string>(
                 $"{_apiUri}/drop/get/?address={address}");
@@ -160,6 +161,30 @@ namespace Api
             if (response.ValueKind == JsonValueKind.Null) yield break;
             var rewards = response.Deserialize<IEnumerable<Reward>>();
             callback?.Invoke(rewards);
+        }
+        
+        public IEnumerator ClaimReward(string address, string captcha, Action<ClaimRewardResponse> callback)
+        {
+            var data = new
+            {
+                address,
+                captcha
+            };
+
+            var routine = HttpHelper.PostRequest<object>(
+                $"{_apiUri}/drop/transfer/", data);
+            yield return routine;
+
+            if (routine.Current == null) yield break;
+
+            Debug.LogError($"Response: {routine.Current.ToString()}");
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(routine.Current.ToString());
+            jsonElement.TryGetProperty("response", out var response);
+
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+
+            var claimRewardResponse = response.Deserialize<ClaimRewardResponse>();
+            callback?.Invoke(claimRewardResponse);
         }
     }
 }

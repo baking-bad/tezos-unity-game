@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
+using System.Runtime.InteropServices;
 using SlimUI.ModernMenu;
 using TMPro;
 using UnityEngine;
@@ -43,7 +45,9 @@ namespace UI
         public GameObject panelEffects;
         public GameObject panelStats;
         public GameObject rewardsWindow;
+        public GameObject successOperationWindow;
 
+        public GameObject tokensAwaitingBadge;
 
         // highlights in settings screen
         [Header("SETTINGS SCREEN")]
@@ -77,7 +81,10 @@ namespace UI
 		public AudioClip hoverSound;
 		public AudioClip sliderSound;
 		public AudioClip swooshSound;
-
+		
+		[DllImport("__Internal")]
+		private static extern void ShowCaptchaJS();
+		
 		private void Awake()
 		{
 			SetThemeColors();
@@ -364,5 +371,22 @@ namespace UI
 				claimRewardButton.SetActive(false);
 			}
 		}
+
+		public void ShowSuccessOperationHash(string operationHash)
+		{
+			successOperationWindow.SetActive(true);
+			successOperationWindow
+				.GetComponentsInChildren<TMP_Text>()
+				.First(c => c.name == "opHashText")
+				.text = operationHash;
+		}
+
+		public void HideSuccessOperationPopup() => successOperationWindow.SetActive(false);
+
+		public void ShowTokensAwaitingBadge() => tokensAwaitingBadge.SetActive(true);
+		
+		public void HideTokensAwaitingBadge() => tokensAwaitingBadge.SetActive(false);
+		
+		public void ShowCaptcha() => ShowCaptchaJS();
 	}
 }

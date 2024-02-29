@@ -32,4 +32,13 @@ namespace Api.Models
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
     }
+    
+    [SerializeField]
+    public class ClaimRewardResponse
+    {
+        [JsonPropertyName("tokens_transfered")]
+        public int TokensTransfered { get; set; }
+        [JsonPropertyName("operation_hash")]
+        public string OperationHash { get; set; }
+    }
 }

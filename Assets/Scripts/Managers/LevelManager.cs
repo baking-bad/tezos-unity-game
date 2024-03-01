@@ -48,6 +48,9 @@ namespace Managers
         public Action<int, int> NewWaveHasBegun;
         public Action<int, int> BossSpawned;
         public Action PlayerDied;
+        public Action PauseGame;
+        public Action ResumeGame;
+        public bool gameIsPaused;
 
         private SoundManager _soundManager;
         private PlayerController _player;
@@ -73,6 +76,14 @@ namespace Managers
             if (!session.IsNew) return;
             
             _gameSession = session;
+        }
+
+        private void Update()
+        {
+            if (!Input.GetKeyDown(KeyCode.Escape)) return;
+            
+            gameIsPaused = !gameIsPaused;
+            Pause();
         }
 
         private void FixedUpdate()
@@ -132,7 +143,7 @@ namespace Managers
 
         public void Restart()
         {
-            // UserDataManager.Instance.StartGame();
+            UserDataManager.Instance.StartGame();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             Time.timeScale = 1;
         }
@@ -265,9 +276,9 @@ namespace Managers
             
             if (!enemy.IsTheBoss()) return;
             
-            // UserDataManager.Instance.KillBoss(
-            //     _gameSession.GameId,
-            //     enemy.GetBossIndex());
+            UserDataManager.Instance.KillBoss(
+                _gameSession.GameId,
+                enemy.GetBossIndex());
         }
 
         private void SubscribeToKillEvents(GameObject enemy)
@@ -289,25 +300,41 @@ namespace Managers
             EndGame();
         }
 
-        private void StopSceneScripts()
+        private void Pause()
         {
-            Time.timeScale = 0;
+            if(gameIsPaused)
+            {
+                
+                UserDataManager.Instance.PauseGame(_gameSession?.GameId);
+                PauseGame?.Invoke();
+                Time.timeScale = 0f;
+            }
+            else 
+            {
+                UserDataManager.Instance.ResumeGame(_gameSession?.GameId);
+                Time.timeScale = 1;
+                ResumeGame?.Invoke();
+            }
+        }
 
-            _player.enabled = false;
-            
-            var enemiesGo = GameObject.FindGameObjectsWithTag("Enemy");
-            foreach (var e in enemiesGo)
-                e.GetComponent<Enemy>().enabled = false;
+        public void Resume()
+        {
+            gameIsPaused = false;
+            Pause();
+        }
 
-            enabled = false;
+        public void QuitGame()
+        {
+            UserDataManager.Instance.EndGame(_gameSession.GameId);
+            LoadScene("Main");
         }
 
         private void EndGame()
         {
-            // UserDataManager.Instance.EndGame(_gameSession.GameId);
+            UserDataManager.Instance.EndGame(_gameSession.GameId);
+            Time.timeScale = 0f;
             _soundManager.Lose();
             PlayerDied?.Invoke();
-            StopSceneScripts();
         }
 
         public void LoadScene(string scene){
@@ -333,7 +360,7 @@ namespace Managers
         protected void OnDisable()
         {
             _player.HealthChanged -= PlayerHealthChanged;
-            // UserDataManager.Instance.GameStarted -= GameStarted;
+            UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }
 }

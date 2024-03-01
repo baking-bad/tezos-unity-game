@@ -32,7 +32,8 @@ public class Enemy : MonoBehaviour
     private Animator _animator;
     private Rigidbody _rb;
     private Weapon _weapon;
-    
+
+    private LevelManager _levelManager;
     private SoundManager _soundManager;
     private List<GameObject> _killAwards;
     
@@ -57,13 +58,16 @@ public class Enemy : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         TryGetComponent<Weapon>(out _weapon);
         _normalSpeed = speed;
-        _soundManager = GameObject.FindGameObjectWithTag("GameController")
-            .GetComponent<SoundManager>();
+        var gameController = GameObject.FindGameObjectWithTag("GameController");
+        _levelManager = gameController.GetComponent<LevelManager>();
+        _soundManager = gameController.GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (_levelManager.gameIsPaused) return;
+        
         if (health <= 0 && !_isKilled)
         {
             _animator.SetBool("dead", true);
@@ -108,6 +112,8 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_levelManager.gameIsPaused) return;
+        
         if (_isKilled)
         {
             transform.Translate(Vector3.down * Time.fixedDeltaTime / 4, Space.World);

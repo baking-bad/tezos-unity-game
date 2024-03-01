@@ -114,6 +114,18 @@ namespace Managers
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
+        public void PauseGame(string gameId)
+        {
+            var routine = _api.PauseGame(gameId);
+            CoroutineRunner.Instance.StartWrappedCoroutine(routine);
+        }
+        
+        public void ResumeGame(string gameId)
+        {
+            var routine = _api.ResumeGame(gameId);
+            CoroutineRunner.Instance.StartWrappedCoroutine(routine);
+        }
+
         public void KillBoss(
             string gameId,
             int boss)

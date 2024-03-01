@@ -16,8 +16,9 @@ namespace Managers
         [SerializeField] private TMP_Text weaponName;
         [SerializeField] private TMP_Text ammoQtyInMagazine;
         [SerializeField] private TMP_Text ammoQty;
-        [SerializeField] private GameObject restartPanel;
-        [SerializeField] private TMP_Text resultText;
+        [SerializeField] private GameObject diedPanel;
+        [SerializeField] private GameObject pausePanel;
+        [SerializeField] private TMP_Text resultScoreText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
         [SerializeField] private GameObject waveTip;
@@ -49,13 +50,15 @@ namespace Managers
             levelManager.PlayerDied += ShowRestartPanel;
             levelManager.NewWaveHasBegun += NewWaveHasBegun;
             levelManager.BossSpawned += BossSpawned;
+            levelManager.PauseGame += ShowPausePanel;
+            levelManager.ResumeGame += HidePausePanel;
             _player.PlayerInitialized += SubscribeToPlayerEvents;
             _player.HealthChanged += PlayerHealthChanged;
             _player.WeaponSwitched += WeaponSwitched;
             _player.SprintCooldownContinues += SprintTimerChanged;
             _player.SprintCooldownStarted += SprintTimerStarted;
             _player.SprintCooldownEnded += SprintTimerEnded;
-            
+
             score.text = "Score: " + levelManager.GetScore();
         }
 
@@ -133,8 +136,18 @@ namespace Managers
 
         private void ShowRestartPanel()
         {
-            resultText.text = score.text;
-            restartPanel.SetActive(true);
+            resultScoreText.text = "SCORE: " + score.text;
+            diedPanel.SetActive(true);
+        }
+
+        private void ShowPausePanel()
+        {
+            pausePanel.SetActive(true);
+        }
+        
+        private void HidePausePanel()
+        {
+            pausePanel.SetActive(false);
         }
 
         private void ShieldTimerActivated()
@@ -187,6 +200,8 @@ namespace Managers
             levelManager.PlayerDied -= ShowRestartPanel;
             levelManager.NewWaveHasBegun -= NewWaveHasBegun;
             levelManager.BossSpawned -= BossSpawned;
+            levelManager.PauseGame -= ShowPausePanel;
+            levelManager.ResumeGame -= HidePausePanel;
             
             if (_player == null) return;
 

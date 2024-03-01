@@ -1,4 +1,3 @@
-using Managers;
 using UnityEngine;
 
 namespace Weapons
@@ -19,13 +18,6 @@ namespace Weapons
             base.Awake();
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            soundManager = GameObject.FindGameObjectWithTag("GameController")
-                .GetComponent<SoundManager>();
-        }
-    
         private Vector3 GetShootingDirection()
         {
             var shotPosition = shotPoint.position;
@@ -55,7 +47,7 @@ namespace Weapons
         {
             if (ammoQtyInMagazine <= 0 && weaponPurpose != WeaponPurpose.Enemy)
             {
-                soundManager.TriggerFall();
+                SoundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
 
                 return;

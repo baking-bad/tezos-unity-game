@@ -44,20 +44,22 @@ namespace Weapons
     
         public Action<int, int, WeaponType> AmmoQtyChanged;
 
-        protected SoundManager soundManager;
+        protected SoundManager SoundManager;
+        private LevelManager _levelManager;
 
         protected virtual void Awake()
         {
             animator = GetComponentInParent<Animator>();
+            var gameController = GameObject.FindGameObjectWithTag("GameController");
+            SoundManager = gameController.GetComponent<SoundManager>();
+            _levelManager = gameController.GetComponent<LevelManager>();
+
         }
 
         // Start is called before the first frame update
         void Start()
         {
             ReloadAmmo();
-            soundManager = GameObject.FindGameObjectWithTag("GameController")
-                .GetComponent<SoundManager>();
-
             if (weaponPurpose == WeaponPurpose.Player) return;
             
             timeBtwShots = reloadTime;
@@ -66,6 +68,8 @@ namespace Weapons
         // Update is called once per frame
         void Update()
         {
+            if (_levelManager.gameIsPaused) return;
+            
             if (timeBtwShots <= 0)
             {
                 if (Input.GetMouseButton(0) && 
@@ -89,7 +93,7 @@ namespace Weapons
                 || ammoQtyInMagazine == 0 && ammo > 0 && !reloading && weaponPurpose != WeaponPurpose.Enemy)
             {
                 reloading = true;
-                soundManager.Reload(weaponType, name);
+                SoundManager.Reload(weaponType, name);
                 timeBtwReloading = reloadTime;
             }
             
@@ -129,7 +133,7 @@ namespace Weapons
             
             if (ammoQtyInMagazine <= 0 && weaponPurpose != WeaponPurpose.Enemy)
             {
-                soundManager.TriggerFall();
+                SoundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
 
                 return;
@@ -153,7 +157,7 @@ namespace Weapons
             }
             
         
-            soundManager.Shot(weaponType, name);
+            SoundManager.Shot(weaponType, name);
 
             if (weaponPurpose == WeaponPurpose.Enemy) 
                 return;

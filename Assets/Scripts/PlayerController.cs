@@ -56,8 +56,12 @@ public class PlayerController : MonoBehaviour
     public Action SprintCooldownEnded;
     public Action PlayerInitialized;
 
+    private LevelManager _levelManager;
+
     private void Awake()
     {
+        _levelManager = GameObject.FindGameObjectWithTag("GameController")
+            .GetComponent<LevelManager>();
         _shieldScript = shield.GetComponent<Shield>();
         EquipPlayer();
     }
@@ -90,19 +94,19 @@ public class PlayerController : MonoBehaviour
             _equippedWeapons.Add(weaponType, weapon);
         }
 
-        // var equipment = UserDataManager.Instance.GetEquipment();
-        //
-        // foreach (var item in equipment)
-        // {
-        //     if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
-        //     {
-        //         AddWeapon(item);   
-        //     }
-        //     else
-        //     {
-        //         UpdatePlayerSkills(item);
-        //     }
-        // }
+        var equipment = UserDataManager.Instance.GetEquipment();
+        
+        foreach (var item in equipment)
+        {
+            if (item.Type is Type.Gun or Type.Shotgun or Type.Smg or Type.Explosive)
+            {
+                AddWeapon(item);   
+            }
+            else
+            {
+                UpdatePlayerSkills(item);
+            }
+        }
         
         EnableDefaultGun();
     }
@@ -181,6 +185,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_levelManager.gameIsPaused) return;
+        
         _moveVector = new Vector3(
             Input.GetAxis("Horizontal"),
             0f,
@@ -200,7 +206,7 @@ public class PlayerController : MonoBehaviour
         {
             SwitchWeapon();
         }
-
+        
         if (Input.GetKeyDown(KeyCode.Space) && _canSprint)
         {
             _isSprinting = true;
@@ -242,6 +248,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_levelManager.gameIsPaused) return;
+        
         _rb.velocity = _movement;
         _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         

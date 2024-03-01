@@ -133,7 +133,7 @@ namespace Api
             yield return routine;
         }
         
-        public IEnumerator UnpauseGame(
+        public IEnumerator ResumeGame(
             string gameId)
         {
             var data = new

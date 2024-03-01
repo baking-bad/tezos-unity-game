@@ -1,6 +1,3 @@
-using Managers;
-using UnityEngine;
-
 namespace Weapons
 {
     public class Gun : Weapon
@@ -15,9 +12,6 @@ namespace Weapons
         // Start is called before the first frame update
         void Start()
         {
-            soundManager = GameObject.FindGameObjectWithTag("GameController")
-                .GetComponent<SoundManager>();
-            
             if (weaponPurpose == WeaponPurpose.Player) return;
             
             timeBtwShots = reloadTime;

@@ -66,6 +66,7 @@ namespace Managers
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _player.HealthChanged += PlayerHealthChanged;
+            UserDataManager.Instance.GameStarted += GameStarted;
             _soundManager = GetComponent<SoundManager>();
             InitEnemies();
             _score = 0;
@@ -73,7 +74,8 @@ namespace Managers
 
         private void GameStarted(GameSession session)
         {
-            if (!session.IsNew) return;
+            // todo: Popup ???
+            // if (!session.IsNew) return;
             
             _gameSession = session;
         }

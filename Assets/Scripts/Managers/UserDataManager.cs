@@ -155,6 +155,8 @@ namespace Managers
                             options.Converters.Add(new JsonStringEnumConverter());
                             options.Converters.Add(new NftConverter());
 
+                            _userNfts.Clear();
+                            
                             foreach (var t in tokens)
                             {
                                 try
@@ -166,7 +168,6 @@ namespace Managers
                                         nft.GameParameters == null) continue;
 
                                     nft.TokenId = int.Parse(t.TokenId);
-                                    _userNfts = new List<Nft>();
                                     _userNfts.Add(nft);
                                 }
                                 catch (Exception e)

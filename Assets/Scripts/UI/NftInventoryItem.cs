@@ -7,9 +7,9 @@ using Type = Nft.NftType;
 
 namespace UI
 {
-    public class NftInventoryItem : MonoBehaviour, IPointerDownHandler
+    public class NftInventoryItem : MonoBehaviour, IPointerClickHandler
     {
-        public Nft nft;
+        public Nft Nft;
         
         [SerializeField] private Image img;
 
@@ -24,29 +24,29 @@ namespace UI
 
         public void InitNft(Nft nftObj)
         {
-            nft = nftObj;
+            Nft = nftObj;
             transform.parent.TryGetComponent<InventorySlot>(out var component);
             if (component != null)
             {
-                component.type = nft.Type;
+                component.type = Nft.Type;
             }
             
             _thumbnailResolver = new ThumbnailResolver();
             _thumbnailResolver.ImageLoaded += DrawSprite;
-            _thumbnailResolver.LoadThumbnail(nft.ThumbnailUri);
-        }
-        
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            if (eventData.clickCount != 2) return;
-            
-            ItemSelected?.Invoke(nft, img.sprite);
-            eventData.clickCount = 0;
+            _thumbnailResolver.LoadThumbnail(Nft.ThumbnailUri);
         }
 
         protected void OnDisable()
         {
             _thumbnailResolver.ImageLoaded -= DrawSprite;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.clickCount < 2) return;
+            
+            ItemSelected?.Invoke(Nft, img.sprite);
+            eventData.clickCount = 0;
         }
     }
 }

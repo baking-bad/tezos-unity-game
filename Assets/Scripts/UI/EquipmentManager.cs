@@ -43,7 +43,7 @@ namespace UI
 
         private void RemoveNft(NftInventoryItem item)
         {
-            if (item.nft.Type == Nft.NftType.Armor)
+            if (item.Nft.Type == Nft.NftType.Armor)
             {
                 var slots = _slotController.GetEquippedSlots().ToArray();
                 
@@ -52,7 +52,7 @@ namespace UI
                     var nftInventoryItem = s.gameObject.GetComponentInChildren<NftInventoryItem>();
                     if (nftInventoryItem == null) continue;
             
-                    nftInventoryItem.nft.GameParameters.ForEach(param =>
+                    nftInventoryItem.Nft.GameParameters.ForEach(param =>
                     {
                         if (!_appliedEffects.TryGetValue(param.Name, out var uiRow)) return;
                         
@@ -63,7 +63,7 @@ namespace UI
                 _slotController.DisableSlots(inventoryPanel.transform);
             }
             
-            item.nft.GameParameters.ForEach(param =>
+            item.Nft.GameParameters.ForEach(param =>
             {
                 if (!_appliedEffects.TryGetValue(param.Name, out var uiRow)) return;
                 
@@ -76,9 +76,9 @@ namespace UI
 
         private void AddNft(NftInventoryItem item)
         {
-            if (item.nft.Type == Nft.NftType.Armor)
+            if (item.Nft.Type == Nft.NftType.Armor)
             {
-                var slotValue = item.nft.GameParameters
+                var slotValue = item.Nft.GameParameters
                     .FirstOrDefault(p => p.Name == "Slots")?.Value;
 
                 if (slotValue == null) return;
@@ -86,7 +86,7 @@ namespace UI
                 _slotController.EnableSlots((int)slotValue);
             }
 
-            item.nft.GameParameters.ForEach(param =>
+            item.Nft.GameParameters.ForEach(param =>
             {
                 if (_appliedEffects.ContainsKey(param.Name)) return;
                 
@@ -104,7 +104,7 @@ namespace UI
         {
             if (item is not NftInventoryItem module) return;
             
-            _equipNfts.Add(module.nft);
+            _equipNfts.Add(module.Nft);
 
             UserDataManager.Instance.SetEquipment(_equipNfts);
         }
@@ -113,7 +113,7 @@ namespace UI
         {
             if (item is not NftInventoryItem module) return;
             
-            _equipNfts.Remove(module.nft);
+            _equipNfts.Remove(module.Nft);
 
             UserDataManager.Instance.SetEquipment(_equipNfts);
         }

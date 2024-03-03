@@ -62,7 +62,7 @@ namespace Managers
         // Start is called before the first frame update
         void Start()
         {
-            // UserDataManager.Instance.GameStarted += GameStarted;
+            UserDataManager.Instance.GameStarted += GameStarted;
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _player.HealthChanged += PlayerHealthChanged;

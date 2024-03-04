@@ -50,6 +50,7 @@ namespace Managers
         public Action PlayerDied;
         public Action PauseGame;
         public Action ResumeGame;
+        public Action ResumeGameRequest;
         public bool gameIsPaused;
 
         private SoundManager _soundManager;
@@ -66,7 +67,6 @@ namespace Managers
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _player.HealthChanged += PlayerHealthChanged;
-            UserDataManager.Instance.GameStarted += GameStarted;
             _soundManager = GetComponent<SoundManager>();
             InitEnemies();
             _score = 0;
@@ -90,6 +90,8 @@ namespace Managers
 
         private void FixedUpdate()
         {
+            if (gameIsPaused) return;
+            
             CheckWave();
         }
 
@@ -314,15 +316,20 @@ namespace Managers
             else 
             {
                 UserDataManager.Instance.ResumeGame(_gameSession?.GameId);
-                Time.timeScale = 1;
-                ResumeGame?.Invoke();
+                ResumeGameRequest();
             }
+        }
+
+        public void ResumeRequest()
+        {
+            ResumeGameRequest?.Invoke();
         }
 
         public void Resume()
         {
+            Time.timeScale = 1;
             gameIsPaused = false;
-            Pause();
+            ResumeGame?.Invoke();
         }
 
         public void QuitGame()

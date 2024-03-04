@@ -18,6 +18,8 @@ namespace Managers
         [SerializeField] private TMP_Text ammoQty;
         [SerializeField] private GameObject diedPanel;
         [SerializeField] private GameObject pausePanel;
+        [SerializeField] private GameObject pauseButtons;
+        [SerializeField] private GameObject pauseCountdown;
         [SerializeField] private TMP_Text resultScoreText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
@@ -37,21 +39,24 @@ namespace Managers
         private Animator _waveTipAnimator;
         
         private PlayerController _player;
+        private LevelManager _levelManager;
 
         private void Awake()
         {
+            _levelManager = GameObject.FindGameObjectWithTag("GameController")
+                .GetComponent<LevelManager>();
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _waveTipAnimator = waveTip.GetComponent<Animator>();
             _bossTipAnimator = bossTip.GetComponent<Animator>();
-            var levelManager = GetComponent<LevelManager>();
-        
-            levelManager.GameScoreUpdated += ScoreUpdated;
-            levelManager.PlayerDied += ShowRestartPanel;
-            levelManager.NewWaveHasBegun += NewWaveHasBegun;
-            levelManager.BossSpawned += BossSpawned;
-            levelManager.PauseGame += ShowPausePanel;
-            levelManager.ResumeGame += HidePausePanel;
+
+            _levelManager.GameScoreUpdated += ScoreUpdated;
+            _levelManager.PlayerDied += ShowRestartPanel;
+            _levelManager.NewWaveHasBegun += NewWaveHasBegun;
+            _levelManager.BossSpawned += BossSpawned;
+            _levelManager.PauseGame += ShowPausePanel;
+            _levelManager.ResumeGame += HidePausePanel;
+            _levelManager.ResumeGameRequest += PauseCountdownStarted;
             _player.PlayerInitialized += SubscribeToPlayerEvents;
             _player.HealthChanged += PlayerHealthChanged;
             _player.WeaponSwitched += WeaponSwitched;
@@ -59,7 +64,7 @@ namespace Managers
             _player.SprintCooldownStarted += SprintTimerStarted;
             _player.SprintCooldownEnded += SprintTimerEnded;
 
-            score.text = "Score: " + levelManager.GetScore();
+            score.text = "Score: " + _levelManager.GetScore();
         }
 
         private void SubscribeToPlayerEvents()
@@ -115,6 +120,8 @@ namespace Managers
 
         private void FixedUpdate()
         {
+            if (_levelManager.gameIsPaused) return;
+            
             _timer += Time.deltaTime;
             gameTimerText.text = $"{(int) _timer / 60:00}:{(int) _timer % 60:00}";
 
@@ -148,6 +155,8 @@ namespace Managers
         private void HidePausePanel()
         {
             pausePanel.SetActive(false);
+            pauseButtons.SetActive(true);
+            pauseCountdown.SetActive(false);
         }
 
         private void ShieldTimerActivated()
@@ -192,16 +201,21 @@ namespace Managers
             sprintTimerText.gameObject.SetActive(false);
         }
 
+        private void PauseCountdownStarted()
+        {
+            pauseButtons.SetActive(false);
+            pauseCountdown.SetActive(true);
+        }
+
         protected void OnDisable()
         {
-            var levelManager = GetComponent<LevelManager>();
-            
-            levelManager.GameScoreUpdated -= ScoreUpdated;
-            levelManager.PlayerDied -= ShowRestartPanel;
-            levelManager.NewWaveHasBegun -= NewWaveHasBegun;
-            levelManager.BossSpawned -= BossSpawned;
-            levelManager.PauseGame -= ShowPausePanel;
-            levelManager.ResumeGame -= HidePausePanel;
+            _levelManager.GameScoreUpdated -= ScoreUpdated;
+            _levelManager.PlayerDied -= ShowRestartPanel;
+            _levelManager.NewWaveHasBegun -= NewWaveHasBegun;
+            _levelManager.BossSpawned -= BossSpawned;
+            _levelManager.PauseGame -= ShowPausePanel;
+            _levelManager.ResumeGame -= HidePausePanel;
+            _levelManager.ResumeGameRequest -= PauseCountdownStarted;
             
             if (_player == null) return;
 

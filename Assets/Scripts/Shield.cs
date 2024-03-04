@@ -1,4 +1,5 @@
 using System;
+using Managers;
 using UnityEngine;
 
 public class Shield : MonoBehaviour
@@ -12,6 +13,14 @@ public class Shield : MonoBehaviour
     public Action ShieldTimerDeactivated;
     public Action<float> ShieldTimerChanged;
     
+    private LevelManager _levelManager;
+
+    private void Awake()
+    {
+        _levelManager = GameObject.FindGameObjectWithTag("GameController")
+            .GetComponent<LevelManager>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +31,8 @@ public class Shield : MonoBehaviour
     void Update()
     {
         if (!_isActivated) return;
+        
+        if (_levelManager.gameIsPaused) return;
         
         _elapsedTime += Time.deltaTime;
         ShieldTimerChanged?.Invoke(cooldown);

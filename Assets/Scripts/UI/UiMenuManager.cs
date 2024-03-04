@@ -85,6 +85,9 @@ namespace UI
 		[DllImport("__Internal")]
 		private static extern void ShowCaptchaJS();
 		
+		[DllImport("__Internal")]
+		private static extern void CopyToClipboardJS(string text);
+		
 		private void Awake()
 		{
 			SetThemeColors();
@@ -388,5 +391,23 @@ namespace UI
 		public void HideTokensAwaitingBadge() => tokensAwaitingBadge.SetActive(false);
 		
 		public void ShowCaptcha() => ShowCaptchaJS();
+
+		public void CopyOperationHash()
+		{
+			var opHash = successOperationWindow
+				.GetComponentsInChildren<TMP_Text>()
+				.First(c => c.name == "opHashText")
+				.text;
+			CopyToClipboard(opHash);
+		}
+
+		private void CopyToClipboard(string text)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			CopyToClipboardJS(text);
+#else
+			GUIUtility.systemCopyBuffer = text;
+#endif
+		}
 	}
 }

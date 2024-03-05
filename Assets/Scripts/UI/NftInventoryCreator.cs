@@ -9,31 +9,33 @@ namespace UI
     public class NftInventoryCreator : MonoBehaviour, IDropHandler
     {
         [SerializeField] private GameObject nftInventoryPrefab;
+        [SerializeField] private Transform parentTransform;
         [SerializeField] private SelectedItemPanel selectedItemPanel;
 
         public Action<NftInventoryItem> nftDropped;
 
-        private void Start()
+        protected virtual void Start()
         {
             UserDataManager.Instance.TokensReceived += DrawInventory;
         }
 
-        private void DrawInventory(List<Nft> userNfts)
+        protected void DrawInventory(List<Nft> userNfts)
         {
             if (userNfts == null) return;
             
-            foreach(Transform child in transform)
+            foreach(Transform child in parentTransform)
             {
                 Destroy(child.gameObject);
             }
             
-            foreach (var t in userNfts)
+            foreach (var nft in userNfts)
             {
-                var item = Instantiate(nftInventoryPrefab, transform);
-                item.name = nftInventoryPrefab.name;
-                var script = item.GetComponentInChildren<NftInventoryItem>();
-                script.InitNft(t);
-                script.ItemSelected += selectedItemPanel.ShowSelectedItem;
+                var nftGameObject = Instantiate(nftInventoryPrefab, parentTransform);
+                nftGameObject.name = nftInventoryPrefab.name;
+                var nftScript = nftGameObject.GetComponentInChildren<NftInventoryItem>();
+                nftScript.InitNft(nft);
+                if (selectedItemPanel != null)
+                    nftScript.ItemSelected += selectedItemPanel.ShowSelectedItem;
             }
         }
 
@@ -44,7 +46,7 @@ namespace UI
             
             if (draggableItem == null) return;
             
-            draggableItem.parentAfterDrag = transform;
+            draggableItem.parentAfterDrag = parentTransform;
             
             nftDropped?.Invoke(dropped.GetComponent<NftInventoryItem>());
         }

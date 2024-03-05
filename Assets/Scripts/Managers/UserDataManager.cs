@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -27,8 +28,10 @@ namespace Managers
         private List<Nft> _contractNfts;
         private List<Nft> _userNfts;
         private List<Nft> _equipment;
+        private List<Reward> _rewards;
 
         public Action<List<Nft>> TokensReceived;
+        public Action<List<Nft>> RewardsAndTokensLoaded;
         public Action<GameSession> GameStarted;
 
         [SerializeField] private int maxTokenCount = 20;
@@ -98,7 +101,7 @@ namespace Managers
                 GetMenuManager()?.EnableGameMenu();
             }
 
-            LoadGameNfts();
+            StartCoroutine(LoadGameNfts());
         }
 
         private void WalletDisconnected(WalletInfo wallet)
@@ -140,9 +143,11 @@ namespace Managers
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
-        private void LoadGameNfts()
+        private IEnumerator LoadGameNfts()
         {
-            CoroutineRunner.Instance.StartCoroutine(
+            if (string.IsNullOrEmpty(_connectedAddress)) yield break;
+
+            var userTokensCoroutine = CoroutineRunner.Instance.StartCoroutine(
                 TezosManager.Instance.Tezos.API.GetTokensForOwner(tbs =>
                     {
                         if (tbs == null) return;
@@ -194,7 +199,7 @@ namespace Managers
                     maxItems: maxTokenCount,
                     orderBy: new TokensForOwnerOrder.Default(0)));
 
-            CoroutineRunner.Instance.StartCoroutine(
+            var contractTokensCoroutine = CoroutineRunner.Instance.StartCoroutine(
                 TezosManager.Instance.Tezos.API.GetTokensForContract(tokens =>
                     {
                         Debug.Log(tokens);
@@ -217,6 +222,7 @@ namespace Managers
 
                                 nft.TokenId = int.Parse(t.TokenId);
                                 _contractNfts.Add(nft);
+                                
                             }
                             catch (Exception e)
                             {
@@ -229,17 +235,47 @@ namespace Managers
                     maxItems: maxTokenCount,
                     orderBy: new TokensForContractOrder.Default(0)));
 
-            CoroutineRunner.Instance.StartCoroutine(
+            var rewardsCoroutine = CoroutineRunner.Instance.StartCoroutine(
                 _api.GetRewardsList(
                     _connectedAddress, 
                     rewards =>
                     {
-                        GetMenuManager()?.SetRewardsAmount(
-                            rewards.Aggregate(0, (acc, reward) => acc + reward.Amount)
+                        var menuManager = GetMenuManager();
+                        _rewards = new List<Reward>(rewards);
+                        
+                        menuManager.SetRewardsAmount(
+                            _rewards.Aggregate(0, (acc, reward) => acc + reward.Amount)
                         );
                     }
                 )
             );
+
+            yield return userTokensCoroutine;
+            yield return contractTokensCoroutine;
+            yield return rewardsCoroutine;
+
+            var rewardNfts = GetRewardNfts().ToList();
+            RewardsAndTokensLoaded?.Invoke(rewardNfts);
+        }
+
+        public IEnumerable<Nft> GetRewardNfts()
+        {
+            var rewardTokenIds = _rewards
+                .Select(r => r.TokenId)
+                .ToArray();
+                        
+            var rewardNftList = _contractNfts
+                .Where(nft => rewardTokenIds.Contains(nft.TokenId))
+                .ToList();
+                        
+            foreach (var rewardNft in rewardNftList)
+            {
+                rewardNft.Amount = _rewards
+                    .Find(r => r.TokenId == rewardNft.TokenId)
+                    .Amount;
+            }
+
+            return rewardNftList;
         }
 
         // Called from JS side after captcha checked.
@@ -261,7 +297,7 @@ namespace Managers
                                 TransactionHash = claimRewardResponse.OperationHash
                             }
                         );
-                        LoadGameNfts();
+                        StartCoroutine(LoadGameNfts());
                         uiManager.HideTokensAwaitingBadge();
                     }
                 )
@@ -286,15 +322,12 @@ namespace Managers
             {
                 _userNfts.Clear();
                 _equipment.Clear();
-                LoadGameNfts();
+                StartCoroutine(LoadGameNfts());
                 GetMenuManager()?.EnableGameMenu();
             }
         }
 
-        public List<Nft> GetEquipment()
-        {
-            return _equipment;
-        }
+        public List<Nft> GetEquipment() => _equipment;
 
         public void SetEquipment(List<Nft> equipment)
         {

@@ -3,18 +3,20 @@ using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
 using SlimUI.ModernMenu;
+using TezosSDK.Helpers.Coroutines;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace UI
 {
 	public class UiMenuManager : MonoBehaviour 
 	{
 		private Animator _cameraAnimator;
-		
-        [Header("MENUS")]
+
+		[Header("MENUS")]
         public GameObject mainMenu;
         public GameObject playMenu;
         public GameObject exitMenu;
@@ -82,6 +84,12 @@ namespace UI
 		public AudioClip sliderSound;
 		public AudioClip swooshSound;
 		
+		[Header("UI Heroes")]
+		public GameObject[] primaryHeroes;
+		public GameObject[] secondaryHeroes;
+		
+		public Action LoadingScreenShowed;
+		
 		[DllImport("__Internal")]
 		private static extern void ShowCaptchaJS();
 		
@@ -107,8 +115,11 @@ namespace UI
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
+			
+			var index = Random.Range(0, primaryHeroes.Length);
+			primaryHeroes[index].SetActive(true);
 		}
-		
+
 		public void EnableGameMenu()
 		{
 			var address = PlayerPrefs.GetString("Address", null);
@@ -207,10 +218,9 @@ namespace UI
 
 		public void LoadScene(string scene)
 		{
-			if(scene != "")
-			{
-				StartCoroutine(LoadAsynchronously(scene));
-			}
+			if (scene == "") return;
+			
+			CoroutineRunner.Instance.StartCoroutine(LoadAsynchronously(scene));
 		}
 
 		public void Position3()
@@ -330,6 +340,11 @@ namespace UI
 			operation.allowSceneActivation = false;
 			mainCanvas.SetActive(false);
 			loadingMenu.SetActive(true);
+			
+			var index = Random.Range(0, secondaryHeroes.Length);
+			secondaryHeroes[index].SetActive(true);
+
+			LoadingScreenShowed?.Invoke();
 
 			while (!operation.isDone)
 			{

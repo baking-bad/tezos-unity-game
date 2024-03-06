@@ -356,7 +356,7 @@ namespace Managers
         private IEnumerator LoadAsynchronously(string scene)
         {
             if (scene == "") yield break;
-            
+
             Time.timeScale = 1;
             var asyncLoad = SceneManager.LoadSceneAsync(scene);
             
@@ -368,7 +368,10 @@ namespace Managers
 
         protected void OnDisable()
         {
-            _player.HealthChanged -= PlayerHealthChanged;
+            if (_player != null)
+            {
+                _player.HealthChanged -= PlayerHealthChanged;
+            }
             UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }

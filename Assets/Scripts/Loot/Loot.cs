@@ -10,8 +10,7 @@ namespace Loot
             Ammo,
             Weapon,
             Health,
-            Shield,
-            Nft
+            Shield
         }
     
         [SerializeField] private float lootValue;
@@ -68,10 +67,6 @@ namespace Loot
                     var shield = playerScript.GetPlayerShield();
                     shield.gameObject.SetActive(true);
                     shield.Activate(lootValue);
-                    break;
-            
-                case LootType.Nft:
-                    // todo: action of picking up an item
                     break;
             }
         }

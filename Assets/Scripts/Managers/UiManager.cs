@@ -25,6 +25,7 @@ namespace Managers
         [SerializeField] private TMP_Text waveThreatText;
         [SerializeField] private GameObject waveTip;
         [SerializeField] private GameObject bossTip;
+        [SerializeField] private GameObject nftTip;
         [SerializeField] private Sprite[] weaponSprites;
         [SerializeField] private Image shieldTimer;
         [SerializeField] private Image shieldTimerProgress;
@@ -37,6 +38,7 @@ namespace Managers
         private float _timer;
         private Animator _bossTipAnimator;
         private Animator _waveTipAnimator;
+        private Animator _nftTipAnimator;
         
         private PlayerController _player;
         private LevelManager _levelManager;
@@ -49,6 +51,7 @@ namespace Managers
                 .GetComponent<PlayerController>();
             _waveTipAnimator = waveTip.GetComponent<Animator>();
             _bossTipAnimator = bossTip.GetComponent<Animator>();
+            _nftTipAnimator = nftTip.GetComponent<Animator>();
 
             _levelManager.GameScoreUpdated += ScoreUpdated;
             _levelManager.PlayerDied += ShowRestartPanel;
@@ -57,6 +60,7 @@ namespace Managers
             _levelManager.PauseGame += ShowPausePanel;
             _levelManager.ResumeGame += HidePausePanel;
             _levelManager.ResumeGameRequest += PauseCountdownStarted;
+            _levelManager.DropNft += DropNft;
             _player.PlayerInitialized += SubscribeToPlayerEvents;
             _player.HealthChanged += PlayerHealthChanged;
             _player.WeaponSwitched += WeaponSwitched;
@@ -140,6 +144,11 @@ namespace Managers
             waveThreatText.text = "Wave threat: " + waveThreat;
             _bossTipAnimator.SetTrigger("Show");
         }
+        
+        private void DropNft()
+        {
+            _nftTipAnimator.SetTrigger("Show");
+        }
 
         private void ShowRestartPanel()
         {
@@ -216,6 +225,7 @@ namespace Managers
             _levelManager.PauseGame -= ShowPausePanel;
             _levelManager.ResumeGame -= HidePausePanel;
             _levelManager.ResumeGameRequest -= PauseCountdownStarted;
+            _levelManager.DropNft -= DropNft;
             
             if (_player == null) return;
 

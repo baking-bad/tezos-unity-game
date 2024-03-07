@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Managers;
 using SlimUI.ModernMenu;
 using TezosSDK.Helpers.Coroutines;
 using TMPro;
@@ -221,11 +222,9 @@ namespace UI
 			mainMenu.SetActive(true);
 		}
 
-		public void LoadScene(string scene)
+		public void LoadScene(string sceneName)
 		{
-			if (scene == "") return;
-			
-			CoroutineRunner.Instance.StartCoroutine(LoadAsynchronously(scene));
+			CoroutineRunner.Instance.StartCoroutine(LoadAsynchronously(sceneName));
 		}
 
 		public void Position3()
@@ -363,6 +362,7 @@ namespace UI
 
 					if (Input.GetKeyDown(userPromptKey))
 					{
+						UserDataManager.Instance.StartGame();
 						operation.allowSceneActivation = true;
 					}
                 }

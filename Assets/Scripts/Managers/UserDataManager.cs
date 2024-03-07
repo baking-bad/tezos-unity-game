@@ -209,6 +209,8 @@ namespace Managers
                         };
                         options.Converters.Add(new JsonStringEnumConverter());
                         options.Converters.Add(new NftConverter());
+                        
+                        _contractNfts.Clear();
 
                         foreach (var t in tokens)
                         {
@@ -313,15 +315,11 @@ namespace Managers
 
         private void ChangedActiveScene(Scene current, Scene next)
         {
-            if (next.name == "Game")
-            {
-                StartGame();
-            }
-
             if (next.name == "Main")
             {
                 _userNfts.Clear();
                 _equipment.Clear();
+                _contractNfts.Clear();
                 StartCoroutine(LoadGameNfts());
                 GetMenuManager()?.EnableGameMenu();
             }

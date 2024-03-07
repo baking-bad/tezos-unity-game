@@ -75,9 +75,6 @@ namespace Managers
 
         private void GameStarted(GameSession session)
         {
-            // todo: Popup ???
-            // if (!session.IsNew) return;
-            
             _gameSession = session;
         }
 
@@ -324,7 +321,6 @@ namespace Managers
             }
             else 
             {
-                UserDataManager.Instance.ResumeGame(_gameSession?.GameId);
                 ResumeGameRequest();
             }
         }
@@ -336,6 +332,7 @@ namespace Managers
 
         public void Resume()
         {
+            UserDataManager.Instance.ResumeGame(_gameSession?.GameId);
             Time.timeScale = 1;
             gameIsPaused = false;
             ResumeGame?.Invoke();

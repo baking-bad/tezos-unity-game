@@ -106,6 +106,7 @@ namespace Api
                 $"{_apiUri}/game/boss/kill/", data);
             
             yield return routine;
+            
         }
         
         public IEnumerator EndGameSession(
@@ -119,6 +120,7 @@ namespace Api
                 $"{_apiUri}/game/end/", data);
             
             yield return routine;
+            yield return null;
         }
         
         public IEnumerator PauseGame(

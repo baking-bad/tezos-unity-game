@@ -11,8 +11,6 @@ namespace Api.Models
         public string GameId { get; set; }
         [JsonPropertyName("game_drop")]
         public IEnumerable<GameDrop> GameDrop { get; set; }
-        [JsonPropertyName("is_new")]
-        public bool IsNew { get; set; }
     }
 
     [SerializeField]

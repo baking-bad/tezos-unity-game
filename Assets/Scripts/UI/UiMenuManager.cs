@@ -88,6 +88,9 @@ namespace UI
 		public GameObject[] primaryHeroes;
 		public GameObject[] secondaryHeroes;
 		
+		[Header("UI VFX")]
+		public GameObject[] vfxs;
+
 		public Action LoadingScreenShowed;
 		
 		[DllImport("__Internal")]
@@ -118,6 +121,8 @@ namespace UI
 			
 			var index = Random.Range(0, primaryHeroes.Length);
 			primaryHeroes[index].SetActive(true);
+			var indexVfx = Random.Range(0, vfxs.Length);
+			vfxs[indexVfx].SetActive(true);
 		}
 
 		public void EnableGameMenu()

@@ -47,6 +47,7 @@ namespace Managers
         public Action<int, int> GameScoreUpdated;
         public Action<int, int> NewWaveHasBegun;
         public Action<int, int> BossSpawned;
+        public Action DropNft;
         public Action PlayerDied;
         public Action PauseGame;
         public Action ResumeGame;
@@ -264,7 +265,6 @@ namespace Managers
 
             _soundManager.Death();
 
-            
             for (var i = 0; i < killAwards.Count; i++)
             {
                 var position = killPosition.position;
@@ -279,6 +279,15 @@ namespace Managers
             }
             
             if (!enemy.IsTheBoss()) return;
+            
+            if (_gameSession != null)
+            {
+                var drop = _gameSession
+                    .GameDrop
+                    .FirstOrDefault(gd => gd.Boss == enemy.GetBossIndex());
+                if (drop != null)
+                    DropNft?.Invoke();
+            }
             
             UserDataManager.Instance.KillBoss(
                 _gameSession.GameId,

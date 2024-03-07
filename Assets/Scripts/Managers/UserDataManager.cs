@@ -75,6 +75,7 @@ namespace Managers
                 PlayerPrefs.SetString("Address", _connectedAddress);
                 GetMenuManager()?.EnableGameMenu();
                 GetMenuManager()?.HideSignAwaitingBadge();
+                StartCoroutine(LoadGameNfts());
             });
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
@@ -101,9 +102,8 @@ namespace Managers
             else
             {
                 GetMenuManager()?.EnableGameMenu();
+                StartCoroutine(LoadGameNfts());
             }
-
-            StartCoroutine(LoadGameNfts());
         }
 
         private void WalletDisconnected(WalletInfo wallet)

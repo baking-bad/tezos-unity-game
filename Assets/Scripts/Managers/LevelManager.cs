@@ -352,7 +352,9 @@ namespace Managers
             PlayerDied?.Invoke();
         }
 
-        public void LoadScene(string scene){
+        public void LoadScene(string scene)
+        {
+            Time.timeScale = 1;
             if (scene != "")
             {
                 StartCoroutine(LoadAsynchronously(scene));

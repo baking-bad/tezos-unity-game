@@ -143,6 +143,7 @@ namespace UI
 		public void DisableGameMenu()
 		{
 			changeWalletButton.SetActive(false);
+			claimRewardButton.SetActive(false);
 			connectWalletButton.SetActive(true);
 
 			EnableButton(startGameButton, false);

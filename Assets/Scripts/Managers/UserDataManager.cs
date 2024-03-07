@@ -74,6 +74,7 @@ namespace Managers
 
                 PlayerPrefs.SetString("Address", _connectedAddress);
                 GetMenuManager()?.EnableGameMenu();
+                GetMenuManager()?.HideSignAwaitingBadge();
             });
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
@@ -93,6 +94,7 @@ namespace Managers
                     payload =>
                     {
                         TezosManager.Instance.Wallet.RequestSignPayload(SignPayloadType.micheline, payload);
+                        GetMenuManager()?.ShowSignAwaitingBadge();
                     });
                 CoroutineRunner.Instance.StartWrappedCoroutine(routine);
             }

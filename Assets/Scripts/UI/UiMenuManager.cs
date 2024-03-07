@@ -51,6 +51,7 @@ namespace UI
         public GameObject successOperationWindow;
 
         public GameObject tokensAwaitingBadge;
+        public GameObject signAwaitingBadge;
 
         // highlights in settings screen
         [Header("SETTINGS SCREEN")]
@@ -134,7 +135,7 @@ namespace UI
 			changeWalletButton.GetComponentInChildren<TMP_Text>().text = 
 				address.Substring(0,5) + "..." + address.Substring(address.Length - 5, 5);
 			changeWalletButton.SetActive(true);
-			
+
 			EnableButton(startGameButton, true);
 			EnableButton(inventoryButton, true);
 		}
@@ -403,6 +404,10 @@ namespace UI
 				.First(c => c.name == "opHashText")
 				.text = operationHash;
 		}
+		
+		public void ShowSignAwaitingBadge() => signAwaitingBadge.SetActive(true);
+		
+		public void HideSignAwaitingBadge() => signAwaitingBadge.SetActive(false);
 
 		public void HideSuccessOperationPopup() => successOperationWindow.SetActive(false);
 

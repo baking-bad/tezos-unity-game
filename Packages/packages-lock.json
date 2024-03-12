@@ -1,14 +1,13 @@
 {
   "dependencies": {
     "com.trilitech.tezos-unity-sdk": {
-      "version": "https://github.com/k-karuna/tezos-unity-sdk.git",
+      "version": "file:/Users/admin/Projects/tezos-unity-sdk",
       "depth": 0,
-      "source": "git",
+      "source": "local",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.textmeshpro": "3.0.6"
-      },
-      "hash": "26304a8fa03a3052efd823d847ca309bef1f9ad1"
+      }
     },
     "com.unity.ai.navigation": {
       "version": "1.1.4",

@@ -10,6 +10,7 @@ using Beacon.Sdk.Beacon.Sign;
 using Helpers;
 using TezosSDK.Helpers.Coroutines;
 using TezosSDK.Tezos;
+using TezosSDK.Tezos.API;
 using TezosSDK.Tezos.API.Models.Filters;
 using UI;
 using UnityEngine;
@@ -60,6 +61,9 @@ namespace Managers
             TezosManager.Instance.Wallet.EventManager.WalletConnected += WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned += PayloadSigned;
             TezosManager.Instance.Wallet.EventManager.ContractCallCompleted += OperationCompleted;
+            // todo: TezosManager.Instance.Wallet.EventManager.ContractCallFailed
+
+            TezosManager.Instance.Tezos.TokenContract = new TokenContract(contract);
 
             DontDestroyOnLoad(gameObject);
 
@@ -89,7 +93,9 @@ namespace Managers
         {
             _connectedAddress = wallet.Address;
             _pubKey = wallet.PublicKey;
-            if (string.IsNullOrEmpty(PlayerPrefs.GetString("Address", null)))
+            var cacheAddress = PlayerPrefs.GetString("Address", null);
+            if (string.IsNullOrEmpty(cacheAddress)
+                || _connectedAddress != cacheAddress)
             {
                 var routine = _api.GetPayload(_pubKey,
                     payload =>
@@ -260,6 +266,25 @@ namespace Managers
 
             var rewardNfts = GetRewardNfts().ToList();
             RewardsAndTokensLoaded?.Invoke(rewardNfts);
+        }
+
+        public void TransferToken(int tokenId, string address)
+        {
+            TezosManager.Instance.Tezos.TokenContract.Transfer(
+                TransferCompleted, 
+                address, 
+                tokenId,
+                1);
+            
+            var uiManager = GetMenuManager();
+            uiManager.ShowTxAwaitingBadge();
+        }
+        
+        private void TransferCompleted(string txHash)
+        {
+            StartCoroutine(LoadGameNfts());
+            var uiManager = GetMenuManager();
+            uiManager.HideTxAwaitingBadge();
         }
 
         public IEnumerable<Nft> GetRewardNfts()

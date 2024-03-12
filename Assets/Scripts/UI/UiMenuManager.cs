@@ -52,6 +52,7 @@ namespace UI
 
         public GameObject tokensAwaitingBadge;
         public GameObject signAwaitingBadge;
+        public GameObject txConfirmationAwaitingBadge;
 
         // highlights in settings screen
         [Header("SETTINGS SCREEN")]
@@ -415,6 +416,8 @@ namespace UI
 		public void ShowTokensAwaitingBadge() => tokensAwaitingBadge.SetActive(true);
 		
 		public void HideTokensAwaitingBadge() => tokensAwaitingBadge.SetActive(false);
+		public void ShowTxAwaitingBadge() => txConfirmationAwaitingBadge.SetActive(true);
+		public void HideTxAwaitingBadge() => txConfirmationAwaitingBadge.SetActive(false);
 		
 		public void ShowCaptcha() => ShowCaptchaJS();
 

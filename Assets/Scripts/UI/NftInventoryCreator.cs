@@ -35,7 +35,7 @@ namespace UI
                 var nftScript = nftGameObject.GetComponentInChildren<NftInventoryItem>();
                 nftScript.InitNft(nft);
                 if (selectedItemPanel != null)
-                    nftScript.ItemSelected += selectedItemPanel.ShowSelectedItem;
+                    nftScript.ItemSelected += selectedItemPanel.ShowSelectedNft;
             }
         }
 

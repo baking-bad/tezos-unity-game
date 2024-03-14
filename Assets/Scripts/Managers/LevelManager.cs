@@ -31,8 +31,7 @@ namespace Managers
         [SerializeField] private int minThreatInPercent;
         [SerializeField] private int bossRateMod;
         [SerializeField] private int increasedBossHealthInPercent;
-
-        private int _score;
+        
         private int _wave;
         private int _waveThreat;
         private int _currentThreat;
@@ -60,22 +59,27 @@ namespace Managers
         private float _distanceBtwItemDrop = 2f;
 
         private GameSession _gameSession;
+        private GameResult _gameResult;
 
         // Start is called before the first frame update
         void Start()
         {
             UserDataManager.Instance.GameStarted += GameStarted;
+            _gameSession = UserDataManager.Instance.GetCurrentGameSession();
             _player = GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerController>();
             _player.HealthChanged += PlayerHealthChanged;
             _soundManager = GetComponent<SoundManager>();
+            _gameResult = gameObject.AddComponent<GameResult>();
+            _gameResult.Init(_gameSession.GameId);
             InitEnemies();
-            _score = 0;
         }
 
-        private void GameStarted(GameSession session)
+        private void GameStarted()
         {
-            _gameSession = session;
+            _gameSession = UserDataManager.Instance.GetCurrentGameSession();
+            SceneManager.LoadScene("Game");
+            Time.timeScale = 1;
         }
 
         private void Update()
@@ -88,8 +92,8 @@ namespace Managers
 
         private void FixedUpdate()
         {
-            if (gameIsPaused) return;
-            
+            if (gameIsPaused || _gameSession == null) return;
+
             CheckWave();
         }
 
@@ -130,7 +134,7 @@ namespace Managers
                     SpawnEnemies();
                 }
                 
-                GameScoreUpdated?.Invoke(_score, _currentThreat);
+                GameScoreUpdated?.Invoke(_gameResult.GetScore(), _currentThreat);
             }
             else
             {
@@ -138,16 +142,9 @@ namespace Managers
             }
         }
 
-        public int GetScore()
-        {
-            return _score;
-        }
-
         public void Restart()
         {
             UserDataManager.Instance.StartGame();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            Time.timeScale = 1;
         }
 
         private void SpawnBoss()
@@ -256,9 +253,9 @@ namespace Managers
 
         private void EnemyKilled(Enemy enemy, Transform killPosition, List<GameObject> killAwards)
         {
-            _score++;
+            _gameResult.UpdateScore();
             _currentThreat -= enemy.threat;
-            GameScoreUpdated?.Invoke(_score, _currentThreat);
+            GameScoreUpdated?.Invoke(_gameResult.GetScore(), _currentThreat);
 
             _soundManager.Death();
 
@@ -294,8 +291,9 @@ namespace Managers
         private void SubscribeToKillEvents(GameObject enemy)
         {
             var enemyScript = enemy.GetComponent<Enemy>();
+            var score = _gameResult.GetScore();
 
-            if (_score != 0 && _score % lootRate == 0)
+            if (score != 0 && score % lootRate == 0)
             {
                 var rndImprovement = Random.Range(0, supplyItems.Length);
                 enemyScript.AddKillAward(supplyItems[rndImprovement]);
@@ -340,21 +338,22 @@ namespace Managers
 
         public void QuitGame()
         {
-            UserDataManager.Instance.EndGame(_gameSession.GameId);
+            UserDataManager.Instance.EndGame(_gameResult);
             LoadScene("Main");
         }
 
         private void EndGame()
         {
-            UserDataManager.Instance.EndGame(_gameSession.GameId);
-            Time.timeScale = 0f;
+            UserDataManager.Instance.EndGame(_gameResult);
             _soundManager.Lose();
             PlayerDied?.Invoke();
+            Time.timeScale = 0f;
         }
+
+        public GameResult GetGameResult() => _gameResult;
 
         public void LoadScene(string scene)
         {
-            Time.timeScale = 1;
             if (scene != "")
             {
                 StartCoroutine(LoadAsynchronously(scene));
@@ -364,8 +363,7 @@ namespace Managers
         private IEnumerator LoadAsynchronously(string scene)
         {
             if (scene == "") yield break;
-
-            Time.timeScale = 1;
+            
             var asyncLoad = SceneManager.LoadSceneAsync(scene);
             
             while (!asyncLoad.isDone)
@@ -380,6 +378,7 @@ namespace Managers
             {
                 _player.HealthChanged -= PlayerHealthChanged;
             }
+
             UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }

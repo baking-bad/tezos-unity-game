@@ -68,7 +68,7 @@ namespace Managers
             _player.SprintCooldownStarted += SprintTimerStarted;
             _player.SprintCooldownEnded += SprintTimerEnded;
 
-            score.text = "Score: " + _levelManager.GetScore();
+            score.text = "Score: 0";
         }
 
         private void SubscribeToPlayerEvents()

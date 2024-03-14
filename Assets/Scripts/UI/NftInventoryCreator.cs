@@ -12,7 +12,7 @@ namespace UI
         [SerializeField] private Transform parentTransform;
         [SerializeField] private SelectedItemPanel selectedItemPanel;
 
-        public Action<NftInventoryItem> nftDropped;
+        public Action<NftInventoryItem> NftDropped;
 
         protected virtual void Start()
         {
@@ -48,7 +48,7 @@ namespace UI
             
             draggableItem.parentAfterDrag = parentTransform;
             
-            nftDropped?.Invoke(dropped.GetComponent<NftInventoryItem>());
+            NftDropped?.Invoke(dropped.GetComponent<NftInventoryItem>());
         }
         
         private void OnDisable()

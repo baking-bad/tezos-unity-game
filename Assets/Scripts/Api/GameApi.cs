@@ -110,11 +110,14 @@ namespace Api
         }
         
         public IEnumerator EndGameSession(
-            string gameId)
+            GameResult gameResult)
         {
             var data = new
             {
-                game_id = gameId
+                game_id = gameResult.gameId,
+                score = gameResult.score,
+                shots_fired = gameResult.shotsFired,
+                mobs_killed = gameResult.mobsKilled
             };
             var routine = HttpHelper.PostRequest<object>(
                 $"{_apiUri}/game/end/", data);
@@ -163,6 +166,26 @@ namespace Api
             if (response.ValueKind == JsonValueKind.Null) yield break;
             var rewards = response.Deserialize<IEnumerable<Reward>>();
             callback?.Invoke(rewards);
+        }
+        
+        public IEnumerator GetPlayerStats(
+            string address,
+            Action<PlayerStats> callback)
+        {
+            var routine = HttpHelper.GetRequest<string>(
+                $"{_apiUri}/player/stats/get/?address={address}");
+            yield return routine;
+
+            if (routine.Current == null) yield break;
+            var jsonResponse = JsonSerializer
+                .Deserialize<JsonElement>(routine.Current.ToString());
+            
+            jsonResponse.TryGetProperty("response", out var response);
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+            
+            var stats = response.Deserialize<PlayerStats>();
+            
+            callback?.Invoke(stats);
         }
         
         public IEnumerator ClaimReward(string address, string captcha, Action<ClaimRewardResponse> callback)

@@ -37,7 +37,7 @@ namespace UI
                 }
             }
 
-            inventoryPanel.nftDropped += RemoveNft;
+            inventoryPanel.NftDropped += RemoveNft;
             effectsPanel.SetActive(false);
         }
 
@@ -128,7 +128,7 @@ namespace UI
                 }
             }
 
-            inventoryPanel.nftDropped -= RemoveNft;
+            inventoryPanel.NftDropped -= RemoveNft;
         }
     }
 }

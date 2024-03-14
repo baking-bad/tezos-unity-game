@@ -30,10 +30,12 @@ namespace Managers
         private List<Nft> _userNfts;
         private List<Nft> _equipment;
         private List<Reward> _rewards;
+        private PlayerStats _playerStats;
+        private GameSession _gameSession;
 
         public Action<List<Nft>> TokensReceived;
         public Action<List<Nft>> RewardsAndTokensLoaded;
-        public Action<GameSession> GameStarted;
+        public Action GameStarted;
 
         [SerializeField] private int maxTokenCount = 20;
         [SerializeField] private string contract = "KT1DTJEAte2SE1dTJNWS1qSck8pCmGpVpD6X";
@@ -41,7 +43,7 @@ namespace Managers
 
         private GameApi _api;
 
-        void Start()
+        void Awake()
         {
             if (Instance != null)
             {
@@ -109,6 +111,7 @@ namespace Managers
             {
                 GetMenuManager()?.EnableGameMenu();
                 StartCoroutine(LoadGameNfts());
+                LoadPlayerStats();
             }
         }
 
@@ -121,13 +124,18 @@ namespace Managers
         public void StartGame()
         {
             var routine = _api.CreateGameSession(_connectedAddress, session =>
-                GameStarted?.Invoke(session));
+            {
+                _gameSession = session;
+                GameStarted?.Invoke();
+            });
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
-        public void EndGame(string gameId)
+        public GameSession GetCurrentGameSession() => _gameSession;
+
+        public void EndGame(GameResult gameResult)
         {
-            var routine = _api.EndGameSession(gameId);
+            var routine = _api.EndGameSession(gameResult);
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
@@ -268,6 +276,16 @@ namespace Managers
             RewardsAndTokensLoaded?.Invoke(rewardNfts);
         }
 
+        private void LoadPlayerStats()
+        {
+            if (string.IsNullOrEmpty(_connectedAddress)) return;
+
+            var coroutine = _api.GetPlayerStats(_connectedAddress,
+                stats => _playerStats = stats);
+            
+            CoroutineRunner.Instance.StartWrappedCoroutine(coroutine);
+        }
+
         public void TransferToken(int tokenId, string address)
         {
             TezosManager.Instance.Tezos.TokenContract.Transfer(
@@ -347,12 +365,15 @@ namespace Managers
                 _userNfts.Clear();
                 _equipment.Clear();
                 _contractNfts.Clear();
+                Time.timeScale = 1f;
                 StartCoroutine(LoadGameNfts());
                 GetMenuManager()?.EnableGameMenu();
+                LoadPlayerStats();
             }
         }
 
         public List<Nft> GetEquipment() => _equipment;
+        public PlayerStats GetPlayerStats() => _playerStats;
 
         public void SetEquipment(List<Nft> equipment)
         {

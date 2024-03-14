@@ -53,7 +53,6 @@ namespace Weapons
             var gameController = GameObject.FindGameObjectWithTag("GameController");
             SoundManager = gameController.GetComponent<SoundManager>();
             _levelManager = gameController.GetComponent<LevelManager>();
-
         }
 
         // Start is called before the first frame update
@@ -131,14 +130,15 @@ namespace Weapons
         {
             timeBtwShots = fireRate;
             
-            if (ammoQtyInMagazine <= 0 && weaponPurpose != WeaponPurpose.Enemy)
+            if (ammoQtyInMagazine <= 0 && 
+                weaponPurpose != WeaponPurpose.Enemy)
             {
                 SoundManager.TriggerFall();
                 timeBtwShots = triggerFallInSec;
 
                 return;
             }
-            
+
             AttackStarted();
             
             if (weaponType != WeaponType.Shotgun)
@@ -161,6 +161,8 @@ namespace Weapons
 
             if (weaponPurpose == WeaponPurpose.Enemy) 
                 return;
+            
+            _levelManager.GetGameResult().UpdateShotsFired();
         
             ammoQtyInMagazine--;
             AmmoQtyChanged?.Invoke(ammoQtyInMagazine, ammo, weaponType);

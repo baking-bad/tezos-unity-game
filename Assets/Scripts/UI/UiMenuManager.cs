@@ -95,6 +95,7 @@ namespace UI
 		public GameObject[] vfxs;
 
 		public Action LoadingScreenShowed;
+		private AsyncOperation _gameSceneOperation;
 		
 		[DllImport("__Internal")]
 		private static extern void ShowCaptchaJS();
@@ -113,6 +114,8 @@ namespace UI
 
 	        _listener = Camera.main.gameObject;
 	        _listener.GetComponent<UiSettingsManager>().soundVolumeChanged += ChangeVolume;
+
+	        UserDataManager.Instance.GameStarted += StartGameScene;
 	        
 			_cameraAnimator = Camera.main
 				.gameObject.transform
@@ -343,8 +346,8 @@ namespace UI
 
 		IEnumerator LoadAsynchronously(string sceneName)
 		{
-			var operation = SceneManager.LoadSceneAsync(sceneName);
-			operation.allowSceneActivation = false;
+			_gameSceneOperation = SceneManager.LoadSceneAsync(sceneName);
+			_gameSceneOperation.allowSceneActivation = false;
 			mainCanvas.SetActive(false);
 			loadingMenu.SetActive(true);
 			
@@ -353,12 +356,12 @@ namespace UI
 
 			LoadingScreenShowed?.Invoke();
 
-			while (!operation.isDone)
+			while (!_gameSceneOperation.isDone)
 			{
-				var progress = Mathf.Clamp01(operation.progress / .95f);
+				var progress = Mathf.Clamp01(_gameSceneOperation.progress / .95f);
 				loadingBar.value = progress;
 
-				if (operation.progress >= 0.9f && waitForInput)
+				if (_gameSceneOperation.progress >= 0.9f && waitForInput)
 				{
 					loadPromptText.text = "Press " + userPromptKey.ToString().ToUpper() + " to continue";
 					loadingBar.value = 1;
@@ -366,12 +369,11 @@ namespace UI
 					if (Input.GetKeyDown(userPromptKey))
 					{
 						UserDataManager.Instance.StartGame();
-						operation.allowSceneActivation = true;
 					}
                 }
-				else if(operation.progress >= 0.9f && !waitForInput)
+				else if(_gameSceneOperation.progress >= 0.9f && !waitForInput)
 				{
-					operation.allowSceneActivation = true;
+					_gameSceneOperation.allowSceneActivation = true;
 				}
 
 				yield return null;
@@ -381,6 +383,12 @@ namespace UI
 		protected void OnDisable()
 		{
 			_listener.GetComponent<UiSettingsManager>().soundVolumeChanged -= ChangeVolume;
+			UserDataManager.Instance.GameStarted -= StartGameScene;
+		}
+
+		private void StartGameScene()
+		{
+			_gameSceneOperation.allowSceneActivation = true;
 		}
 
 		public void SetRewardsAmount(int rewardsAmount)

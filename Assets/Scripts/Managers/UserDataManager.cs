@@ -58,7 +58,12 @@ namespace Managers
             Instance = this;
 
             _api = new GameApi(serverApiUrl);
+            DontDestroyOnLoad(gameObject);
+            SceneManager.activeSceneChanged += ChangedActiveScene;
+        }
 
+        private void Start()
+        {
             TezosManager.Instance.Wallet.EventManager.WalletDisconnected += WalletDisconnected;
             TezosManager.Instance.Wallet.EventManager.WalletConnected += WalletConnected;
             TezosManager.Instance.Wallet.EventManager.PayloadSigned += PayloadSigned;
@@ -66,10 +71,6 @@ namespace Managers
             // todo: TezosManager.Instance.Wallet.EventManager.ContractCallFailed
 
             TezosManager.Instance.Tezos.TokenContract = new TokenContract(contract);
-
-            DontDestroyOnLoad(gameObject);
-
-            SceneManager.activeSceneChanged += ChangedActiveScene;
         }
 
         private void PayloadSigned(SignResult payload)

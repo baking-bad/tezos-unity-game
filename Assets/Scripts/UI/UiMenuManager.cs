@@ -146,14 +146,12 @@ namespace UI
 
 		public void DisableGameMenu()
 		{
+			DisableAllMenu();
 			changeWalletButton.SetActive(false);
 			claimRewardButton.SetActive(false);
 			connectWalletButton.SetActive(true);
-
 			EnableButton(startGameButton, false);
 			EnableButton(inventoryButton, false);
-				
-			DisableAllMenu();
 		}
 
 		void SetThemeColors()

@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
     private bool _isStunned;
     private bool _isAttacking;
     private bool _isKilled;
+    private bool _isHidingDeadBody;
     private float _normalSpeed;
 
     private bool _isTheBoss;
@@ -79,6 +80,7 @@ public class Enemy : MonoBehaviour
             if (_weapon != null) _weapon.enabled = false;
             
             if (enemyModelCollider != null) enemyModelCollider.isTrigger = true;
+            _rb.useGravity = false;
 
              enabled = false;
         }
@@ -114,9 +116,9 @@ public class Enemy : MonoBehaviour
     {
         if (_levelManager.gameIsPaused) return;
         
-        if (_isKilled)
+        if (_isHidingDeadBody)
         {
-            transform.Translate(Vector3.down * Time.fixedDeltaTime / 4, Space.World);
+            transform.Translate(Vector3.down * Time.fixedDeltaTime, Space.World);
         }
         else
         {
@@ -126,7 +128,7 @@ public class Enemy : MonoBehaviour
                 speed * Time.fixedDeltaTime);
         
             transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
-        
+            
             _animator.SetBool("isMoving", _rb.velocity != Vector3.zero);   
         }
     }
@@ -147,8 +149,17 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        _isHidingDeadBody = true;
         enabled = true;
         Invoke(nameof(DestroyDeadBody), _deadBodyLifetimeInSec);
+    }
+    
+    /// <summary>
+    /// Call with animation clip
+    /// </summary>
+    public void AttackEnded()
+    {
+        _animator.SetBool("isAttacking", false);
     }
     
     private void DestroyDeadBody()

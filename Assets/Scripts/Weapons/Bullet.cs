@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Weapons
@@ -36,7 +37,10 @@ namespace Weapons
             
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
-                hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                hit.collider.TryGetComponent<Enemy>(out var enemy);
+                
+                if (enemy != null)
+                    hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
             }
 
             if (hit.collider.CompareTag("Player") && enemyBullet)

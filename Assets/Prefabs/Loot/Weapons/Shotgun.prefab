@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 6654113516502164228}
   - component: {fileID: 3460528097459969621}
   - component: {fileID: 6654113516502164227}
+  - component: {fileID: 2075924222}
   m_Layer: 0
   m_Name: Shotgun
   m_TagString: Loot
@@ -4944,8 +4945,21 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: 0, y: 1.2, z: 0}
+  m_Radius: 1.2
+  m_Center: {x: 0, y: 0.6, z: 0}
+--- !u!65 &2075924222
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3439733800074525377}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &6654113514592311744
 GameObject:
   m_ObjectHideFlags: 0

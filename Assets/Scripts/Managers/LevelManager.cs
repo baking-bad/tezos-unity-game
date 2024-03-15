@@ -264,7 +264,7 @@ namespace Managers
                 
                 position = new Vector3(
                     position.x + _distanceBtwItemDrop * i,
-                    1.5f, 
+                    0f, 
                     position.z + _distanceBtwItemDrop * i);
 
                 var award = Instantiate(killAwards[i], position, Quaternion.identity);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Managers;
 using UnityEngine;
+using UnityEngine.UI;
 using Weapons;
 
 public class Enemy : MonoBehaviour
@@ -18,6 +19,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float meleeAttackRate;
     [SerializeField] private float meleeDamage;
     
+    private float _maxHealth;
     private float _timeBtwAttack;
     private float _stopTime;
     private bool _isStunned;
@@ -44,6 +46,8 @@ public class Enemy : MonoBehaviour
     private int _deadBodyLifetimeInSec = 5;
     
     [SerializeField] private Collider enemyModelCollider;
+    [SerializeField] private GameObject healthBar;
+    private Slider _hpSlider;
 
     private void Awake()
     {
@@ -62,6 +66,9 @@ public class Enemy : MonoBehaviour
         var gameController = GameObject.FindGameObjectWithTag("GameController");
         _levelManager = gameController.GetComponent<LevelManager>();
         _soundManager = gameController.GetComponent<SoundManager>();
+        _maxHealth = health;
+        if (healthBar == null) return;
+        _hpSlider = healthBar.GetComponent<Slider>();
     }
 
     // Update is called once per frame
@@ -76,6 +83,8 @@ public class Enemy : MonoBehaviour
             EnemyKilled?.Invoke(this, transform, _killAwards);
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             _isKilled = true;
+            
+            if (healthBar != null) healthBar.SetActive(false);
             
             if (_weapon != null) _weapon.enabled = false;
             
@@ -184,6 +193,10 @@ public class Enemy : MonoBehaviour
         var playerDamage = damage + damage * _player.GetPlayerDamageIncrease() / 100f;
 
         health -= playerDamage;
+        
+        if (healthBar == null) return;
+
+        _hpSlider.value = health / _maxHealth;
     }
 
     public void AddKillAward(GameObject award)

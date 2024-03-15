@@ -39,7 +39,7 @@ namespace Managers
 
         [SerializeField] private int maxTokenCount = 20;
         [SerializeField] private string contract = "KT1DTJEAte2SE1dTJNWS1qSck8pCmGpVpD6X";
-        [SerializeField] private string serverApiUrl = "https://static.turborouter.keenetic.pro/api";
+        [SerializeField] private string serverApiUrl = "https://game.baking-bad.org/back/api";
 
         private GameApi _api;
 

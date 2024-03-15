@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Managers;
 using SlimUI.ModernMenu;
 using TezosSDK.Helpers.Coroutines;
+using TezosSDK.Tezos;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -435,7 +436,12 @@ namespace UI
 				.text;
 			CopyToClipboard(opHash);
 		}
-
+		
+		public void CopyCurrentWalletAddress()
+        {
+            CopyToClipboard(TezosManager.Instance.Wallet.GetWalletAddress());
+        }
+		
 		private void CopyToClipboard(string text)
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR

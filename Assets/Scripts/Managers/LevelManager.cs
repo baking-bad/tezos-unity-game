@@ -22,9 +22,9 @@ namespace Managers
 
         [Header("LOOT:")] 
         [SerializeField] private GameObject[] supplyItems;
+        [SerializeField] private int dropChance;
         [SerializeField] private GameObject[] weapons;
         [SerializeField] private GameObject nftItem;
-        [SerializeField] private int lootRate;
 
         [Header("WAVES PARAMS:")] 
         [SerializeField] private float waveRateInSec;
@@ -290,12 +290,14 @@ namespace Managers
         private void SubscribeToKillEvents(GameObject enemy)
         {
             var enemyScript = enemy.GetComponent<Enemy>();
-            var score = _gameResult.GetScore();
 
-            if (score != 0 && score % lootRate == 0)
+            foreach (var loot in supplyItems)
             {
-                var rndImprovement = Random.Range(0, supplyItems.Length);
-                enemyScript.AddKillAward(supplyItems[rndImprovement]);
+                var randomNumber = Random.Range(1, 100);
+                if (randomNumber <= dropChance)
+                {
+                    enemyScript.AddKillAward(loot);
+                }
             }
 
             enemyScript.EnemyKilled += EnemyKilled;

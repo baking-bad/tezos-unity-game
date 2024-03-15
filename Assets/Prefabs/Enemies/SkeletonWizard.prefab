@@ -2445,7 +2445,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5275436095046908988}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.96, y: 0.2, z: 6.13}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2502,10 +2502,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.8
+  m_Radius: 1.5
   m_Height: 4.6
   m_Direction: 1
-  m_Center: {x: 0, y: 2.3, z: 0}
+  m_Center: {x: 0, y: 2.6, z: 0}
 --- !u!114 &3465641881406897166
 MonoBehaviour:
   m_ObjectHideFlags: 0

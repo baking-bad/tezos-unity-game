@@ -1392,14 +1392,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5984050756611684460}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7798845, y: 0, z: 0, w: 0.62592345}
   m_LocalPosition: {x: -0.000030441286, y: 2.0672312, z: -0.5784751}
   m_LocalScale: {x: 0.39370078, y: 0.39370078, z: 0.39370078}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5858753441334794998}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -102.5, y: 0, z: 0}
 --- !u!137 &206336009442962266
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -2048,7 +2048,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7427879367777020133}
   serializedVersion: 2
-  m_Mass: 5
+  m_Mass: 50
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -2069,7 +2069,7 @@ CapsuleCollider:
   m_Radius: 1
   m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Center: {x: 0, y: 2.62, z: 0}
 --- !u!114 &4620305202826464495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2082,7 +2082,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b160f779d81b43b0a4f41c0bbd8f8cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 250
+  health: 300
   speed: 3
   threat: 1000
   canMeleeDamage: 1

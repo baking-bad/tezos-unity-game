@@ -20,7 +20,8 @@ namespace Managers
         public Transform[] spawnPoints;
         public int minSpawnDistanceToPlayer;
 
-        [Header("LOOT:")] [SerializeField] private GameObject[] supplyItems;
+        [Header("LOOT:")] 
+        [SerializeField] private GameObject[] supplyItems;
         [SerializeField] private GameObject[] weapons;
         [SerializeField] private GameObject nftItem;
         [SerializeField] private int lootRate;
@@ -30,8 +31,7 @@ namespace Managers
         [SerializeField] private int waveThreatEnhancement;
         [SerializeField] private int minThreatInPercent;
         [SerializeField] private int bossRateMod;
-        [SerializeField] private int increasedBossHealthInPercent;
-        
+
         private int _wave;
         private int _waveThreat;
         private int _currentThreat;
@@ -71,7 +71,7 @@ namespace Managers
             _player.HealthChanged += PlayerHealthChanged;
             _soundManager = GetComponent<SoundManager>();
             _gameResult = gameObject.AddComponent<GameResult>();
-            _gameResult.Init(_gameSession.GameId);
+            _gameResult.Init(_gameSession?.GameId);
             InitEnemies();
         }
 
@@ -163,7 +163,6 @@ namespace Managers
                 Quaternion.identity);
 
             var bossScript = boss.GetComponent<Enemy>();
-            bossScript.health = bossScript.health * _wave * increasedBossHealthInPercent / 100;
 
             var rndWeapon = Random.Range(0, weapons.Length);
             bossScript.AddKillAward(weapons[rndWeapon]);
@@ -284,7 +283,7 @@ namespace Managers
             }
             
             UserDataManager.Instance.KillBoss(
-                _gameSession.GameId,
+                _gameSession?.GameId,
                 enemy.GetBossIndex());
         }
 
@@ -312,7 +311,6 @@ namespace Managers
         {
             if(gameIsPaused)
             {
-                
                 UserDataManager.Instance.PauseGame(_gameSession?.GameId);
                 PauseGame?.Invoke();
                 Time.timeScale = 0f;

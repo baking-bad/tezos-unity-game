@@ -190,9 +190,9 @@ public class Enemy : MonoBehaviour
         _isStunned = true;
         _stopTime = stunTime;
 
-        var playerDamage = damage + damage * _player.GetPlayerDamageIncrease() / 100f;
-
-        health -= playerDamage;
+        health -= _player != null 
+            ? damage + damage * _player.GetPlayerDamageIncrease() / 100f 
+            : damage;
         
         if (healthBar == null) return;
 

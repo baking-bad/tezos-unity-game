@@ -330,30 +330,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public Weapon GetCurrentWeapon()
-    {
-        return _currentWeapon;
-    }
+    public Weapon GetCurrentWeapon() => _currentWeapon;
 
-    public Shield GetPlayerShield()
-    {
-        return _shieldScript;
-    }
+    public Shield GetPlayerShield() => _shieldScript;
 
-    private GameObject[] GetAllWeapons()
-    {
-        return allWeapons;
-    }
+    private GameObject[] GetAllWeapons() => allWeapons;
 
-    public Dictionary<string, GameObject> GetEquippedWeapons()
-    {
-        return _equippedWeapons;
-    }
+    public Dictionary<string, GameObject> GetEquippedWeapons() => _equippedWeapons;
 
-    public float GetPlayerDamageIncrease()
-    {
-        return _damageIncreaseInPercent;
-    }
+    public float GetPlayerDamageIncrease() => _damageIncreaseInPercent;
 
     private void OnTriggerEnter(Collider other)
     {

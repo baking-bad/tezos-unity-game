@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using System.Text.Json;
@@ -45,10 +46,17 @@ namespace Helpers
         public static IEnumerator PostRequest<T>(string uri, object data)
         {
             var request = GetUnityWebRequest(uri, UnityWebRequest.kHttpVerbPOST);
-            var serializedData = JsonSerializer.Serialize(data, JsonOptions.DefaultOptions);
-            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(serializedData));
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.SendWebRequest();
+            try
+            {
+                var serializedData = JsonSerializer.Serialize(data, JsonOptions.DefaultOptions);
+                request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(serializedData));
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.SendWebRequest();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
             yield return new WaitUntil(() => request.isDone);
             yield return JsonSerializer.Deserialize<T>(request.downloadHandler.text, JsonOptions.DefaultOptions);
             request.Dispose();

@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
             if (_weapon != null) _weapon.enabled = false;
             
             if (enemyModelCollider != null) enemyModelCollider.isTrigger = true;
-            _rb.useGravity = false;
+            _rb.isKinematic = true;
 
             EnemyKilled -= _levelManager.EnemyKilled;
              enabled = false;
@@ -126,6 +126,8 @@ public class Enemy : MonoBehaviour
         }
         else
         {
+            if (_isAttacking) return;
+            
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 _player.transform.position,

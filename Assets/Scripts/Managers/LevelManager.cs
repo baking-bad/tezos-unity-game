@@ -45,13 +45,14 @@ namespace Managers
 
         public Action<int, int> GameScoreUpdated;
         public Action<int, int> NewWaveHasBegun;
-        public Action<int, int> BossSpawned;
+        public Action<Enemy, int, int> BossSpawned;
+        public Action<Enemy> BossKilled;
         public Action DropNft;
         public Action PlayerDied;
         public Action PauseGame;
         public Action ResumeGame;
         public Action ResumeGameRequest;
-        public bool gameIsPaused;
+        [HideInInspector] public bool gameIsPaused;
 
         private SoundManager _soundManager;
         private PlayerController _player;
@@ -162,6 +163,7 @@ namespace Managers
                     spawnPoint.z),
                 Quaternion.identity);
 
+            boss.name = rndBoss.name;
             var bossScript = boss.GetComponent<Enemy>();
 
             var rndWeapon = Random.Range(0, weapons.Length);
@@ -181,7 +183,7 @@ namespace Managers
             bossScript.threat = _waveThreat;
             bossScript.EnemyKilled += EnemyKilled;
 
-            BossSpawned?.Invoke(_wave, _waveThreat);
+            BossSpawned?.Invoke(bossScript, _wave, _waveThreat);
         }
 
         private void SpawnEnemies()
@@ -250,7 +252,7 @@ namespace Managers
             return spawnPoints[randomPoint].position;
         }
 
-        private void EnemyKilled(Enemy enemy, Transform killPosition, List<GameObject> killAwards)
+        public void EnemyKilled(Enemy enemy, Transform killPosition, List<GameObject> killAwards)
         {
             _gameResult.UpdateScore();
             _currentThreat -= enemy.threat;
@@ -273,15 +275,16 @@ namespace Managers
             
             if (!enemy.IsTheBoss()) return;
             
-            if (_gameSession != null)
-            {
-                var drop = _gameSession
-                    .GameDrop
-                    .FirstOrDefault(gd => gd.Boss == enemy.GetBossIndex());
-                if (drop != null)
-                    DropNft?.Invoke();
-            }
+            BossKilled?.Invoke(enemy);
             
+            if (_gameSession == null) return;
+            
+            var drop = _gameSession
+                .GameDrop
+                .FirstOrDefault(gd => gd.Boss == enemy.GetBossIndex());
+            if (drop != null)
+                DropNft?.Invoke();
+
             UserDataManager.Instance.KillBoss(
                 _gameSession?.GameId,
                 enemy.GetBossIndex());
@@ -374,11 +377,7 @@ namespace Managers
 
         protected void OnDisable()
         {
-            if (_player != null)
-            {
-                _player.HealthChanged -= PlayerHealthChanged;
-            }
-
+            _player.HealthChanged -= PlayerHealthChanged;
             UserDataManager.Instance.GameStarted -= GameStarted;
         }
     }

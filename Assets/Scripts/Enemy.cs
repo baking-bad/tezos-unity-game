@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Managers;
 using UnityEngine;
-using UnityEngine.UI;
 using Weapons;
 
 public class Enemy : MonoBehaviour
@@ -42,12 +41,11 @@ public class Enemy : MonoBehaviour
     
     public GameObject takeDamageEffect;
     public Action<Enemy, Transform, List<GameObject>> EnemyKilled;
+    public Action<float, float> HealthChanged;
     
     private int _deadBodyLifetimeInSec = 5;
     
     [SerializeField] private Collider enemyModelCollider;
-    [SerializeField] private GameObject healthBar;
-    private Slider _hpSlider;
 
     private void Awake()
     {
@@ -67,8 +65,6 @@ public class Enemy : MonoBehaviour
         _levelManager = gameController.GetComponent<LevelManager>();
         _soundManager = gameController.GetComponent<SoundManager>();
         _maxHealth = health;
-        if (healthBar == null) return;
-        _hpSlider = healthBar.GetComponent<Slider>();
     }
 
     // Update is called once per frame
@@ -78,19 +74,18 @@ public class Enemy : MonoBehaviour
         
         if (health <= 0 && !_isKilled)
         {
+            _isKilled = true;
             _animator.SetBool("dead", true);
             _soundManager.Death();
             EnemyKilled?.Invoke(this, transform, _killAwards);
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-            _isKilled = true;
-            
-            if (healthBar != null) healthBar.SetActive(false);
-            
+
             if (_weapon != null) _weapon.enabled = false;
             
             if (enemyModelCollider != null) enemyModelCollider.isTrigger = true;
             _rb.useGravity = false;
 
+            EnemyKilled -= _levelManager.EnemyKilled;
              enabled = false;
         }
 
@@ -194,9 +189,7 @@ public class Enemy : MonoBehaviour
             ? damage + damage * _player.GetPlayerDamageIncrease() / 100f 
             : damage;
         
-        if (healthBar == null) return;
-
-        _hpSlider.value = health / _maxHealth;
+        HealthChanged?.Invoke(health, _maxHealth);
     }
 
     public void AddKillAward(GameObject award)
@@ -210,13 +203,7 @@ public class Enemy : MonoBehaviour
         _bossIndex = bossIndex;
     }
 
-    public bool IsTheBoss()
-    {
-        return _isTheBoss;
-    }
-    
-    public int GetBossIndex()
-    {
-        return _bossIndex;
-    }
+    public bool IsTheBoss() => _isTheBoss;
+
+    public int GetBossIndex() => _bossIndex;
 }

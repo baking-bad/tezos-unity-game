@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Weapons;
@@ -34,6 +35,8 @@ namespace Managers
         [SerializeField] private Image sprintTimerIcon;
         [SerializeField] private TMP_Text sprintTimerText;
         [SerializeField] private TMP_Text gameTimerText;
+        [SerializeField] private GameObject bossHudPanel;
+        [SerializeField] private GameObject bossHudPrefab;
         
         private float _timer;
         private Animator _bossTipAnimator;
@@ -136,11 +139,13 @@ namespace Managers
             _waveTipAnimator.SetTrigger("Show");
         }
         
-        private void BossSpawned(int wave, int waveThreat)
+        private void BossSpawned(Enemy boss, int wave, int waveThreat)
         {
             waveText.text = "Wave #" + wave;
             waveThreatText.text = "Wave threat: " + waveThreat;
             _bossTipAnimator.SetTrigger("Show");
+            var bossHud = Instantiate(bossHudPrefab, bossHudPanel.transform);
+            bossHud.GetComponent<BossHudResolver>().owner = boss;
         }
         
         private void DropNft()

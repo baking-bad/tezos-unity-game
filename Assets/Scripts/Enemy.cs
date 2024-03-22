@@ -36,7 +36,6 @@ public class Enemy : MonoBehaviour
     private Weapon _weapon;
 
     private LevelManager _levelManager;
-    private SoundManager _soundManager;
     private List<GameObject> _killAwards;
     
     public GameObject takeDamageEffect;
@@ -61,9 +60,8 @@ public class Enemy : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         TryGetComponent<Weapon>(out _weapon);
         _normalSpeed = speed;
-        var gameController = GameObject.FindGameObjectWithTag("GameController");
-        _levelManager = gameController.GetComponent<LevelManager>();
-        _soundManager = gameController.GetComponent<SoundManager>();
+        _levelManager = GameObject.FindGameObjectWithTag("GameController")
+            .GetComponent<LevelManager>();
         _maxHealth = health;
     }
 

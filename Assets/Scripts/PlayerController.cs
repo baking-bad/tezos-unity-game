@@ -261,6 +261,11 @@ public class PlayerController : MonoBehaviour
                 _hit.point.x,
                 transform.position.y,
                 _hit.point.z));
+            
+            _currentWeapon.gameObject.transform.LookAt(new Vector3(
+                _hit.point.x,
+                transform.position.y,
+                _hit.point.z));
         }
     }
 

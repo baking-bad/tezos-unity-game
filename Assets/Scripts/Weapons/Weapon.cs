@@ -92,7 +92,7 @@ namespace Weapons
                 || ammoQtyInMagazine == 0 && ammo > 0 && !reloading && weaponPurpose != WeaponPurpose.Enemy)
             {
                 reloading = true;
-                SoundManager.Reload();
+                SoundManager.Reload(this);
                 timeBtwReloading = reloadTime;
             }
             

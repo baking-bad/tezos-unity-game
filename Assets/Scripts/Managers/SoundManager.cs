@@ -96,8 +96,10 @@ namespace Managers
             AudioSource.PlayClipAtPoint(lose, _listener.transform.position, _sfxVolume);
         }
 
-        public void Reload()
+        public void Reload(Weapon weapon)
         {
+            if (weapon.weaponType == WeaponType.Explosive) return;
+            
             AudioSource.PlayClipAtPoint(weaponReload, _listener.transform.position, _sfxVolume);
         }
         

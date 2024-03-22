@@ -43,6 +43,8 @@ public class Enemy : MonoBehaviour
     public Action<float, float> HealthChanged;
     
     private int _deadBodyLifetimeInSec = 5;
+    private float _minDistanceForRangedEnemy = 3;
+    private float _maxDistanceForRangedEnemy = 8;
     
     [SerializeField] private Collider enemyModelCollider;
 
@@ -124,15 +126,32 @@ public class Enemy : MonoBehaviour
         else
         {
             if (_isAttacking) return;
-            
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                _player.transform.position,
-                speed * Time.fixedDeltaTime);
-        
+
             transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
             
-            _animator.SetBool("isMoving", _rb.velocity != Vector3.zero);   
+            if (canMeleeDamage)
+            {
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    _player.transform.position,
+                    speed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistanceForRangedEnemy &&
+                    !(Vector3.Distance(transform.position, _player.transform.position) < _minDistanceForRangedEnemy))
+                {
+                    transform.position = Vector3.MoveTowards(
+                        transform.position,
+                        _player.transform.position,
+                        speed * Time.fixedDeltaTime);
+                    _animator.SetBool("isMoving", _rb.velocity != Vector3.zero);
+                }
+                else
+                {
+                    _animator.SetBool("isMoving", false);
+                }
+            }
         }
     }
 

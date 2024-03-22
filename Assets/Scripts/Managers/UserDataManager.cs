@@ -190,13 +190,17 @@ namespace Managers
                                 try
                                 {
                                     var nft = t.TokenMetadata.Deserialize<Nft>(options);
-
+                                    
                                     if (nft == null ||
                                         nft.Type == Type.None ||
                                         nft.GameParameters == null) continue;
 
-                                    nft.TokenId = int.Parse(t.TokenId);
-                                    _userNfts.Add(nft);
+                                    var tokenCount = int.Parse(t.Balance);
+                                    for (var i = 0; i < tokenCount; i++)
+                                    {
+                                        nft.TokenId = int.Parse(t.TokenId);
+                                        _userNfts.Add(nft);   
+                                    }
                                 }
                                 catch (Exception e)
                                 {

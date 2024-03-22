@@ -9,7 +9,8 @@ namespace Weapons
         [SerializeField] protected float lifetime;
         [SerializeField] protected int damage;
         [SerializeField] protected float stunTime;
-    
+
+        [SerializeField] protected float maxDistanceForCollisionCheck;
         [SerializeField] protected LayerMask mask;
 
         [SerializeField] protected bool enemyBullet;
@@ -17,8 +18,7 @@ namespace Weapons
         public GameObject destroyEffect;
 
         private Rigidbody _rb;
-        private readonly float _distance = 1f;
-        
+
         // Start is called before the first frame update
         protected virtual void Start()
         {
@@ -29,7 +29,12 @@ namespace Weapons
         private void FixedUpdate()
         {
             _rb.velocity = transform.forward * speed;
-            Physics.Raycast(transform.position, transform.forward, out var hit, _distance, mask);
+            Physics.Raycast(
+                transform.position,
+                transform.forward,
+                out var hit,
+                maxDistanceForCollisionCheck,
+                mask);
             
             if (hit.collider == null) return;
             

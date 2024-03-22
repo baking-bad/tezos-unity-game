@@ -135,6 +135,8 @@ public class Enemy : MonoBehaviour
                     transform.position,
                     _player.transform.position,
                     speed * Time.fixedDeltaTime);
+                
+                _animator.SetBool("isMoving", _rb.velocity != Vector3.zero);
             }
             else
             {

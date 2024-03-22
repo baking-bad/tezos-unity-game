@@ -92,7 +92,7 @@ namespace Weapons
                 || ammoQtyInMagazine == 0 && ammo > 0 && !reloading && weaponPurpose != WeaponPurpose.Enemy)
             {
                 reloading = true;
-                SoundManager.Reload(weaponType, name);
+                SoundManager.Reload();
                 timeBtwReloading = reloadTime;
             }
             
@@ -156,8 +156,7 @@ namespace Weapons
                 bulletShellEffect.Play();
             }
             
-        
-            SoundManager.Shot(weaponType, name);
+            SoundManager.Shot(this);
 
             if (weaponPurpose == WeaponPurpose.Enemy) 
                 return;

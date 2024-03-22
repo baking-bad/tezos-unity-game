@@ -1,4 +1,5 @@
 using UnityEngine;
+using Weapons;
 using WeaponType = Weapons.Weapon.WeaponType;
 
 namespace Managers
@@ -6,18 +7,23 @@ namespace Managers
     public class SoundManager : MonoBehaviour
     {
         [SerializeField] private AudioClip gunFire,
-            gunReload,
             shotgunFire,
-            shotgunReload,
             smgFire,
-            smgReload,
+            weaponReload,
             minePlanted,
             mineDetonate,
             explosiveFire,
-            explosiveReload,
             triggerFall,
-            death,
-            lose;
+            lose,
+            roar,
+            rangeFire,
+            switchWeapon,
+            pickup,
+            drop,
+            step;
+
+        [SerializeField] private AudioClip[] groans;
+        [SerializeField] private AudioClip[] deaths;
 
         private GameObject _listener;
         private float _musicVolume;
@@ -32,12 +38,14 @@ namespace Managers
             _listener.GetComponent<AudioSource>().volume = _musicVolume;
         }
 
-        public void Shot(WeaponType weaponType, string weaponName)
+        public void Shot(Weapon weapon)
         {
-            switch (weaponType)
+            switch (weapon.weaponType)
             {
                 case WeaponType.Gun:
-                    AudioSource.PlayClipAtPoint(gunFire, _listener.transform.position, _sfxVolume);
+                    AudioSource.PlayClipAtPoint(
+                        weapon.weaponPurpose == Weapon.WeaponPurpose.Player ? gunFire : rangeFire,
+                        _listener.transform.position, _sfxVolume);
                     break;
 
                 case WeaponType.Shotgun:
@@ -49,11 +57,16 @@ namespace Managers
                     break;
 
                 case WeaponType.Explosive:
-                    AudioSource.PlayClipAtPoint(weaponName == "Zoooka" ? explosiveFire : minePlanted,
+                    AudioSource.PlayClipAtPoint(
+                        weapon.name == "Zoooka" ? explosiveFire : minePlanted,
                         _listener.transform.position, _sfxVolume);
-
                     break;
             }
+        }
+        
+        public void SwitchWeapon()
+        {
+            AudioSource.PlayClipAtPoint(switchWeapon, _listener.transform.position, _sfxVolume);
         }
 
         public void TriggerFall()
@@ -63,7 +76,19 @@ namespace Managers
 
         public void Death()
         {
-            AudioSource.PlayClipAtPoint(death, _listener.transform.position, _sfxVolume);
+            var rnd = Random.Range(0, deaths.Length);
+            AudioSource.PlayClipAtPoint(deaths[rnd], _listener.transform.position, _sfxVolume);
+        }
+        
+        public void Roar()
+        {
+            AudioSource.PlayClipAtPoint(roar, _listener.transform.position, _sfxVolume * 5);
+        }
+        
+        public void Groan()
+        {
+            var rnd = Random.Range(0, groans.Length);
+            AudioSource.PlayClipAtPoint(groans[rnd], _listener.transform.position, _sfxVolume);
         }
 
         public void Lose()
@@ -71,30 +96,9 @@ namespace Managers
             AudioSource.PlayClipAtPoint(lose, _listener.transform.position, _sfxVolume);
         }
 
-        public void Reload(WeaponType weaponType, string weaponName)
+        public void Reload()
         {
-            switch (weaponType)
-            {
-                case WeaponType.Gun:
-                    AudioSource.PlayClipAtPoint(gunReload, _listener.transform.position, _sfxVolume);
-                    break;
-
-                case WeaponType.Shotgun:
-                    AudioSource.PlayClipAtPoint(shotgunReload, _listener.transform.position, _sfxVolume);
-                    break;
-
-                case WeaponType.Smg:
-                    AudioSource.PlayClipAtPoint(smgReload, _listener.transform.position, _sfxVolume);
-                    break;
-
-                case WeaponType.Explosive:
-                    if (weaponName == "Zoooka")
-                    {
-                        AudioSource.PlayClipAtPoint(explosiveReload, _listener.transform.position, _sfxVolume);
-                    }
-
-                    break;
-            }
+            AudioSource.PlayClipAtPoint(weaponReload, _listener.transform.position, _sfxVolume);
         }
         
         public void MineDetanate()
@@ -102,5 +106,14 @@ namespace Managers
             AudioSource.PlayClipAtPoint(mineDetonate, _listener.transform.position, _sfxVolume);
         }
 
+        public void Drop()
+        {
+            AudioSource.PlayClipAtPoint(drop, _listener.transform.position, _sfxVolume * 5);
+        }
+
+        public void LootPickup()
+        {
+            AudioSource.PlayClipAtPoint(pickup, _listener.transform.position, _sfxVolume);
+        }
     }
 }

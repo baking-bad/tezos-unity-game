@@ -1,3 +1,4 @@
+using Managers;
 using UnityEngine;
 using Weapons;
 
@@ -16,10 +17,14 @@ namespace Loot
         [SerializeField] private float lootValue;
         [SerializeField] private float destructionTime;
         [SerializeField] private LootType type;
+        
+        private SoundManager _soundManager;
     
         // Start is called before the first frame update
         void Start()
         {
+            _soundManager = GameObject.FindGameObjectWithTag("GameController")
+                .GetComponent<SoundManager>();
             Invoke(nameof(DestroyLoot), destructionTime);
         }
 
@@ -69,6 +74,7 @@ namespace Loot
                     shield.Activate(lootValue);
                     break;
             }
+            _soundManager.LootPickup();
         }
 
         private void DestroyLoot()

@@ -183,6 +183,7 @@ namespace Managers
             bossScript.threat = _waveThreat;
             bossScript.EnemyKilled += EnemyKilled;
 
+            _soundManager.Roar();
             BossSpawned?.Invoke(bossScript, _wave, _waveThreat);
         }
 
@@ -283,7 +284,10 @@ namespace Managers
                 .GameDrop
                 .FirstOrDefault(gd => gd.Boss == enemy.GetBossIndex());
             if (drop != null)
+            {
                 DropNft?.Invoke();
+                _soundManager.Drop();
+            }
 
             UserDataManager.Instance.KillBoss(
                 _gameSession?.GameId,

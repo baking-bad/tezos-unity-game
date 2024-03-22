@@ -57,11 +57,13 @@ public class PlayerController : MonoBehaviour
     public Action PlayerInitialized;
 
     private LevelManager _levelManager;
+    private SoundManager _soundManager;
 
     private void Awake()
     {
-        _levelManager = GameObject.FindGameObjectWithTag("GameController")
-            .GetComponent<LevelManager>();
+        var gameController = GameObject.FindGameObjectWithTag("GameController"); 
+        _levelManager = gameController.GetComponent<LevelManager>();
+        _soundManager = gameController.GetComponent<SoundManager>();
         _shieldScript = shield.GetComponent<Shield>();
         EquipPlayer();
     }
@@ -278,6 +280,12 @@ public class PlayerController : MonoBehaviour
         if (health <= 0)
         {
             _animator.SetBool("dead", true);
+            return;
+        }
+
+        if (damaged)
+        {
+            _soundManager.Groan();
         }
     }
 
@@ -323,8 +331,9 @@ public class PlayerController : MonoBehaviour
             _currentWeapon.TryGetComponent<WeaponAnimationInitializer>(out var animInitializer);
             if (animInitializer != null)
                 animInitializer.Set();
-
+            
             WeaponSwitched?.Invoke(_currentWeapon);
+            _soundManager.SwitchWeapon();
 
             break;
         }

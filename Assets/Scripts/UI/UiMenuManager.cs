@@ -87,6 +87,7 @@ namespace UI
 		public AudioClip hoverSound;
 		public AudioClip sliderSound;
 		public AudioClip swooshSound;
+		public AudioClip heroRoar;
 		
 		[Header("UI Heroes")]
 		public GameObject[] primaryHeroes;
@@ -342,6 +343,11 @@ namespace UI
 		{
 			AudioSource.PlayClipAtPoint(swooshSound, _listener.transform.position, _sfxVolume);
 		}
+		
+		public void Roar()
+		{
+			AudioSource.PlayClipAtPoint(heroRoar, _listener.transform.position, _sfxVolume * 3);
+		}
 
 		IEnumerator LoadAsynchronously(string sceneName)
 		{
@@ -349,6 +355,8 @@ namespace UI
 			_gameSceneOperation.allowSceneActivation = false;
 			mainCanvas.SetActive(false);
 			loadingMenu.SetActive(true);
+			
+			Roar();
 			
 			var index = Random.Range(0, secondaryHeroes.Length);
 			secondaryHeroes[index].SetActive(true);

@@ -76,7 +76,6 @@ public class Enemy : MonoBehaviour
         {
             _isKilled = true;
             _animator.SetBool("dead", true);
-            _soundManager.Death();
             EnemyKilled?.Invoke(this, transform, _killAwards);
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 

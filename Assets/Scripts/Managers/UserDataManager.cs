@@ -38,7 +38,7 @@ namespace Managers
         public Action GameStarted;
 
         [SerializeField] private int maxTokenCount = 20;
-        [SerializeField] private string contract = "KT1DTJEAte2SE1dTJNWS1qSck8pCmGpVpD6X";
+        [SerializeField] private string contract = "KT1HtDEdFLQ1m8soCZ7kA1ieMSLxbGSwCX5F";
         [SerializeField] private string serverApiUrl = "https://game.baking-bad.org/back/api";
 
         private GameApi _api;

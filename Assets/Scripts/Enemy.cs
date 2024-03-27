@@ -105,6 +105,7 @@ public class Enemy : MonoBehaviour
         
         if (_stopTime <= 0)
         {
+            _animator.SetBool("stunned", false);
             speed = _normalSpeed;
             _isStunned = false;
         }
@@ -125,7 +126,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            if (_isAttacking) return;
+            if (_isAttacking || _isStunned) return;
 
             transform.rotation = Quaternion.LookRotation(_player.transform.position - transform.position);
             
@@ -202,8 +203,12 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(float damage, float stunTime)
     {
         Instantiate(takeDamageEffect, gameObject.transform.position, Quaternion.identity);
-        _isStunned = true;
-        _stopTime = stunTime;
+        if (stunTime > 0)
+        {
+            _isStunned = true;
+            _stopTime = stunTime;
+            _animator.SetBool("stunned", true);
+        }
 
         health -= _player != null 
             ? damage + damage * _player.GetPlayerDamageIncrease() / 100f 

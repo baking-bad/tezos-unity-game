@@ -21,12 +21,12 @@ namespace UI
 
         protected void DrawInventory(List<Nft> userNfts)
         {
-            if (userNfts == null) return;
-            
             foreach(Transform child in parentTransform)
             {
                 Destroy(child.gameObject);
             }
+            
+            if (userNfts == null) return;
             
             foreach (var nft in userNfts)
             {

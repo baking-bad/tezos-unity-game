@@ -22,11 +22,11 @@ namespace UI
 
         private void RenderStats(PlayerStats stats)
         {
-            gamesPlayed.text = stats.GamesPlayed.ToString();
-            bestScore.text = stats.BestScore.ToString();
-            bossesKilled.text = stats.BossesKilled.ToString();
-            mobsKilled.text = stats.MobsKilled.ToString();
-            shotsFired.text = stats.ShotsFired.ToString();
+            gamesPlayed.text = stats?.GamesPlayed.ToString();
+            bestScore.text = stats?.BestScore.ToString();
+            bossesKilled.text = stats?.BossesKilled.ToString();
+            mobsKilled.text = stats?.MobsKilled.ToString();
+            shotsFired.text = stats?.ShotsFired.ToString();
         }
     }
 }

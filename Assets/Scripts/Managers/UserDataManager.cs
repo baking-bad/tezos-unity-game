@@ -83,6 +83,7 @@ namespace Managers
                 GetMenuManager()?.EnableGameMenu();
                 GetMenuManager()?.HideSignAwaitingBadge();
                 StartCoroutine(LoadGameNfts());
+                LoadPlayerStats();
             });
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }

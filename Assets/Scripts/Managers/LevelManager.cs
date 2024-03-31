@@ -164,15 +164,16 @@ namespace Managers
                 Quaternion.identity);
 
             boss.name = rndBoss.name;
+            
             var bossScript = boss.GetComponent<Enemy>();
-
-            var rndWeapon = Random.Range(0, weapons.Length);
-            bossScript.AddKillAward(weapons[rndWeapon]);
 
             if (_gameSession != null)
             {
                 var bossIndex = _wave / bossRateMod;
                 bossScript.AppointBoss(bossIndex);
+                
+                if (weapons.Length >= bossIndex)
+                    bossScript.AddKillAward(weapons[bossIndex-1]);
                 var drop = _gameSession
                     .GameDrop
                     .FirstOrDefault(gd => gd.Boss == bossIndex);
@@ -304,6 +305,7 @@ namespace Managers
                 if (randomNumber <= dropChance)
                 {
                     enemyScript.AddKillAward(loot);
+                    break;
                 }
             }
 

@@ -25,7 +25,7 @@ namespace Weapons
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && other.enabled)
             {
                 _affectedEnemies.Add(other.gameObject);
 
@@ -38,14 +38,14 @@ namespace Weapons
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && other.enabled)
             {
                 _affectedEnemies.Remove(other.gameObject);
             }   
         }
 
         private void Detonate()
-        {   
+        {
             _affectedEnemies.ForEach(e =>
             {
                 if (e.gameObject != null)

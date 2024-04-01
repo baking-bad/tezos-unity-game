@@ -111,7 +111,6 @@ GameObject:
   - component: {fileID: 4610946008496255555}
   - component: {fileID: 4610946008496255553}
   - component: {fileID: 4610946008496255559}
-  - component: {fileID: 4610946008496255565}
   m_Layer: 6
   m_Name: RockGolem_GreyStone
   m_TagString: Enemy
@@ -176,8 +175,7 @@ MonoBehaviour:
   meleeAttackRate: 1
   meleeDamage: 2
   takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
-  enemyModelCollider: {fileID: 4610946008496255565}
-  healthBar: {fileID: 0}
+  enemyModelCollider: {fileID: 0}
 --- !u!54 &4610946008496255553
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -208,20 +206,6 @@ CapsuleCollider:
   m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: 2.3, z: 0}
---- !u!64 &4610946008496255565
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4610946008496255558}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 373dc7caa0b84d3408b581eadff81091, type: 3}
 --- !u!1 &4610946008496255560
 GameObject:
   m_ObjectHideFlags: 0
@@ -2948,6 +2932,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4610946008496156626}
+  - component: {fileID: 8602806443428636244}
   m_Layer: 6
   m_Name: Geometry
   m_TagString: Untagged
@@ -2974,6 +2959,20 @@ Transform:
   m_Father: {fileID: 4610946008496156582}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &8602806443428636244
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4610946008496255986}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5273605855520333666, guid: f68544d0e30403b4b835d29e79a8d965, type: 3}
 --- !u!1 &4610946008496255988
 GameObject:
   m_ObjectHideFlags: 0

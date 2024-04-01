@@ -50,7 +50,14 @@ namespace Weapons
 
             if (hit.collider.CompareTag("Player") && enemyBullet)
             {
-                hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
+                if (hit.collider.isTrigger)
+                {
+                    hit.collider.GetComponent<PlayerController>().ChangeHealth(-damage);
+                }
+                else
+                {
+                    return;   
+                }
             }
 
             if (destroyEffect != null)

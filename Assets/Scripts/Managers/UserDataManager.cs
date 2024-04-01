@@ -95,6 +95,7 @@ namespace Managers
 
         private void WalletConnected(WalletInfo wallet)
         {
+            ResetData();
             _connectedAddress = wallet.Address;
             _pubKey = wallet.PublicKey;
             var cacheAddress = PlayerPrefs.GetString("Address", null);
@@ -121,7 +122,6 @@ namespace Managers
         {
             PlayerPrefs.SetString("Address", null);
             GetMenuManager()?.DisableGameMenu();
-            ResetData();
             TokensReceived?.Invoke(new List<Nft>());
             RewardsAndTokensLoaded?.Invoke(new List<Nft>());
             Debug.Log($"Wallet {wallet.Address} disconnected");

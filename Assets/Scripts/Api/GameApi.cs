@@ -137,19 +137,24 @@ namespace Api
                 $"{_apiUri}/game/pause/", data);
             
             yield return routine;
+            
         }
         
         public IEnumerator ResumeGame(
-            string gameId)
+            string gameId,
+            Action<bool> callback)
         {
             var data = new
             {
                 game_id = gameId
             };
+
             var routine = HttpHelper.PostRequest<object>(
                 $"{_apiUri}/game/unpause/", data);
             
             yield return routine;
+            
+            callback?.Invoke(routine.Current != null);
         }
         
         public IEnumerator GetRewardsList(string address, Action<IEnumerable<Reward>> callback)

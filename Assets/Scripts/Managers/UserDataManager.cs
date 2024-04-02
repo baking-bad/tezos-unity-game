@@ -163,9 +163,9 @@ namespace Managers
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
-        public void ResumeGame(string gameId)
+        public void ResumeGame(string gameId, Action<bool> callback)
         {
-            var routine = _api.ResumeGame(gameId);
+            var routine = _api.ResumeGame(gameId, callback);
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 

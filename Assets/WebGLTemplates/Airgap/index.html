@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
     <title>Unity WebGL Player | {{{ PRODUCT_NAME }}}</title>
     <script src="StreamingAssets/webgl-frontend.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?onload=captchaLoadedCallback&render=explicit" async defer></script>
@@ -33,6 +35,29 @@
         right: 10px;
         cursor: pointer;
         font-size: larger;
+      }
+
+      .progress-container {
+        position: absolute;
+        top: 80%;
+        width: 100%;
+        transform: translateY(-50%);
+        height: 30px;
+        background-color: #f3f3f3;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: rgb(0, 82, 124);
+        width: 0%;
+        transition: width 0.3s ease-in-out;
+      }
+
+      .loading-text {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        color: white;
       }
     </style>
   </head>
@@ -66,6 +91,19 @@
         productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      }, (loadingValue) => {
+        if (window.progressBarContainer && window.progressBarEl && window.loadingValueTextEl) {
+            const loadingValueString = loadingValue.toFixed(2) * 100 + "%";
+            window.progressBarEl.style.width = loadingValueString;
+            window.loadingValueTextEl.innerText = loadingValueString;
+            if (loadingValue > 0.98) {
+              window.progressBarContainer.style.display = "none";
+            }
+          } else {
+            window.progressBarContainer = document.querySelector(".progress-container");
+            window.progressBarEl = document.querySelector(".progress-bar");
+            window.loadingValueTextEl = document.querySelector(".loading-value");
+          }
       }).then((unityInstance) => {
         console.log("Unity instance initialized.");
         window.unityInstance = unityInstance;
@@ -104,6 +142,11 @@
         <span class="close" id="closePopup" onclick="closeCaptcha()">&times;</span>
         <div id="recaptcha"></div>
       </div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+      <span class="loading-text">Loading:&nbsp;<span class="loading-value"></span></span>
     </div>
   </body>
 </html>

@@ -50,7 +50,7 @@ namespace Managers
         public Action DropNft;
         public Action PlayerDied;
         public Action PauseGame;
-        public Action ResumeGame;
+        public Action<bool> ResumeGame;
         public Action ResumeGameRequest;
         [HideInInspector] public bool gameIsPaused;
 
@@ -339,10 +339,16 @@ namespace Managers
 
         public void Resume()
         {
-            UserDataManager.Instance.ResumeGame(_gameSession?.GameId);
-            Time.timeScale = 1;
-            gameIsPaused = false;
-            ResumeGame?.Invoke();
+            UserDataManager.Instance.ResumeGame(_gameSession?.GameId, resumed =>
+            {
+                if (resumed)
+                {
+                    Time.timeScale = 1;
+                    gameIsPaused = false;
+                }
+                
+                ResumeGame?.Invoke(resumed);
+            });
         }
 
         public void QuitGame()

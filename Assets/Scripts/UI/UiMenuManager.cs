@@ -24,6 +24,7 @@ namespace UI
         public GameObject exitMenu;
         public GameObject connectMenu;
         public GameObject walletMenu;
+        public GameObject incompleteSessionMenu;
         
         [Header("BUTTONS")]
         public GameObject startGameButton;
@@ -98,6 +99,7 @@ namespace UI
 
 		public Action LoadingScreenShowed;
 		private AsyncOperation _gameSceneOperation;
+		private bool _hasActiveGameSession;
 		
 		[DllImport("__Internal")]
 		private static extern void ShowCaptchaJS();
@@ -118,6 +120,7 @@ namespace UI
 	        _listener.GetComponent<UiSettingsManager>().soundVolumeChanged += ChangeVolume;
 
 	        UserDataManager.Instance.GameStarted += StartGameScene;
+	        UserDataManager.Instance.HasActiveSessionResult += EnableIncompleteSessionMenu;
 	        
 			_cameraAnimator = Camera.main
 				.gameObject.transform
@@ -131,6 +134,11 @@ namespace UI
 			primaryHeroes[index].SetActive(true);
 			var indexVfx = Random.Range(0, vfxs.Length);
 			vfxs[indexVfx].SetActive(true);
+		}
+
+		private void EnableIncompleteSessionMenu(bool hasActiveSession)
+		{
+			_hasActiveGameSession = hasActiveSession;
 		}
 
 		public void EnableGameMenu()
@@ -202,6 +210,7 @@ namespace UI
 			playMenu.SetActive(false);
 			walletMenu.SetActive(false);
 			connectMenu.SetActive(false);
+			incompleteSessionMenu.SetActive(false);
 		}
 
 		public void ConnectWallet()
@@ -216,10 +225,18 @@ namespace UI
 			walletMenu.SetActive(true);
 		}
 
-		public void PlayCampaign()
+		public void StartGame()
 		{
 			DisableAllMenu();
-			playMenu.SetActive(true);
+			
+			if (_hasActiveGameSession)
+			{
+				incompleteSessionMenu.SetActive(true);
+			}
+			else
+			{
+				playMenu.SetActive(true);	
+			}
 		}
 
 		public void ReturnMenu()
@@ -391,6 +408,7 @@ namespace UI
 		{
 			_listener.GetComponent<UiSettingsManager>().soundVolumeChanged -= ChangeVolume;
 			UserDataManager.Instance.GameStarted -= StartGameScene;
+			UserDataManager.Instance.HasActiveSessionResult -= EnableIncompleteSessionMenu;
 		}
 
 		private void StartGameScene()

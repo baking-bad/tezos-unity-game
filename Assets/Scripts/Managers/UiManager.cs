@@ -21,6 +21,7 @@ namespace Managers
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private GameObject pauseButtons;
         [SerializeField] private GameObject pauseCountdown;
+        [SerializeField] private GameObject sessionOverPopup;
         [SerializeField] private TMP_Text resultScoreText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private TMP_Text waveThreatText;
@@ -164,11 +165,15 @@ namespace Managers
             pausePanel.SetActive(true);
         }
         
-        private void HidePausePanel()
+        private void HidePausePanel(bool resumed)
         {
             pausePanel.SetActive(false);
             pauseButtons.SetActive(true);
             pauseCountdown.SetActive(false);
+            
+            if (resumed) return;
+
+            sessionOverPopup.SetActive(true);
         }
 
         private void ShieldTimerActivated()

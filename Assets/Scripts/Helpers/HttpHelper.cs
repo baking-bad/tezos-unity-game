@@ -58,7 +58,16 @@ namespace Helpers
                 Debug.LogError(e);
             }
             yield return new WaitUntil(() => request.isDone);
-            yield return JsonSerializer.Deserialize<T>(request.downloadHandler.text, JsonOptions.DefaultOptions);
+
+            if (request.responseCode != 200)
+            {
+                yield return null;
+            }
+            else
+            {
+                yield return JsonSerializer.Deserialize<T>(request.downloadHandler.text, JsonOptions.DefaultOptions);   
+            }
+            
             request.Dispose();
         }
 

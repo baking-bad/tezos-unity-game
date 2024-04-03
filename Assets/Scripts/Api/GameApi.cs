@@ -137,19 +137,24 @@ namespace Api
                 $"{_apiUri}/game/pause/", data);
             
             yield return routine;
+            
         }
         
         public IEnumerator ResumeGame(
-            string gameId)
+            string gameId,
+            Action<bool> callback)
         {
             var data = new
             {
                 game_id = gameId
             };
+
             var routine = HttpHelper.PostRequest<object>(
                 $"{_apiUri}/game/unpause/", data);
             
             yield return routine;
+            
+            callback?.Invoke(routine.Current != null);
         }
         
         public IEnumerator GetRewardsList(string address, Action<IEnumerable<Reward>> callback)
@@ -210,6 +215,24 @@ namespace Api
 
             var claimRewardResponse = response.Deserialize<ClaimRewardResponse>();
             callback?.Invoke(claimRewardResponse);
+        }
+        
+        public IEnumerator HasActiveSession(
+            string address,
+            Action<bool> callback)
+        {
+            var routine = HttpHelper.GetRequest<string>(
+                $"{_apiUri}/player/games/has-active/?address={address}");
+            yield return routine;
+            
+            if (routine.Current == null) yield break;
+            var jsonResponse = JsonSerializer
+                .Deserialize<JsonElement>(routine.Current.ToString());
+            
+            jsonResponse.TryGetProperty("response", out var response);
+            if (response.ValueKind == JsonValueKind.Null) yield break;
+            
+            callback?.Invoke(response.GetProperty("has_games").GetBoolean());
         }
     }
 }

@@ -36,7 +36,6 @@ namespace Managers
         public Action<List<Nft>> TokensReceived;
         public Action<List<Nft>> RewardsAndTokensLoaded;
         public Action GameStarted;
-        public Action<bool> HasActiveSessionResult;
 
         [SerializeField] private int maxTokenCount = 20;
         [SerializeField] private string contract = "KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj";
@@ -115,7 +114,6 @@ namespace Managers
             {
                 GetMenuManager()?.EnableGameMenu();
                 StartCoroutine(LoadGameNfts());
-                CheckActiveGameSession();
                 LoadPlayerStats();
             }
         }
@@ -152,10 +150,10 @@ namespace Managers
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 
-        public void CheckActiveGameSession()
+        public void CheckActiveGameSession(Action<bool> callback)
         {
             var routine = _api.HasActiveSession(_connectedAddress, 
-                result => HasActiveSessionResult?.Invoke(result));
+                result => callback?.Invoke(result));
             CoroutineRunner.Instance.StartWrappedCoroutine(routine);
         }
 

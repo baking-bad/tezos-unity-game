@@ -120,9 +120,8 @@ namespace UI
 	        _listener.GetComponent<UiSettingsManager>().soundVolumeChanged += ChangeVolume;
 
 	        UserDataManager.Instance.GameStarted += StartGameScene;
-	        UserDataManager.Instance.HasActiveSessionResult += EnableIncompleteSessionMenu;
-	        
-			_cameraAnimator = Camera.main
+
+	        _cameraAnimator = Camera.main
 				.gameObject.transform
 				.GetComponent<Animator>();
 
@@ -134,11 +133,6 @@ namespace UI
 			primaryHeroes[index].SetActive(true);
 			var indexVfx = Random.Range(0, vfxs.Length);
 			vfxs[indexVfx].SetActive(true);
-		}
-
-		private void EnableIncompleteSessionMenu(bool hasActiveSession)
-		{
-			_hasActiveGameSession = hasActiveSession;
 		}
 
 		public void EnableGameMenu()
@@ -229,14 +223,17 @@ namespace UI
 		{
 			DisableAllMenu();
 			
-			if (_hasActiveGameSession)
+			UserDataManager.Instance.CheckActiveGameSession(result =>
 			{
-				incompleteSessionMenu.SetActive(true);
-			}
-			else
-			{
-				playMenu.SetActive(true);	
-			}
+				if (result)
+				{
+					incompleteSessionMenu.SetActive(true);
+				}
+				else
+				{
+					playMenu.SetActive(true);	
+				}
+			});
 		}
 
 		public void ReturnMenu()
@@ -408,7 +405,6 @@ namespace UI
 		{
 			_listener.GetComponent<UiSettingsManager>().soundVolumeChanged -= ChangeVolume;
 			UserDataManager.Instance.GameStarted -= StartGameScene;
-			UserDataManager.Instance.HasActiveSessionResult -= EnableIncompleteSessionMenu;
 		}
 
 		private void StartGameScene()

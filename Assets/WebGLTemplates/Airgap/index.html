@@ -9,6 +9,7 @@
     <script src="StreamingAssets/webgl-frontend.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?onload=captchaLoadedCallback&render=explicit" async defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.cdnfonts.com/css/uniform" rel="stylesheet">
 
     <style>
       body {
@@ -58,6 +59,7 @@
         justify-content: center;
         margin-top: 20px;
         color: white;
+        font-family: 'Uniform Regular', sans-serif;
       }
     </style>
   </head>
@@ -93,7 +95,7 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }, (loadingValue) => {
         if (window.progressBarContainer && window.progressBarEl && window.loadingValueTextEl) {
-            const loadingValueString = loadingValue.toFixed(2) * 100 + "%";
+            const loadingValueString = (loadingValue * 100).toFixed(2) + "%";
             window.progressBarEl.style.width = loadingValueString;
             window.loadingValueTextEl.innerText = loadingValueString;
             if (loadingValue > 0.98) {
@@ -146,7 +148,7 @@
 
     <div class="progress-container">
       <div class="progress-bar"></div>
-      <span class="loading-text">Loading:&nbsp;<span class="loading-value"></span></span>
+      <h3 class="loading-text">Loading:&nbsp;<span class="loading-value"></span></h3>
     </div>
   </body>
 </html>

@@ -39,7 +39,7 @@ namespace Managers
         public Action<bool> HasActiveSessionResult;
 
         [SerializeField] private int maxTokenCount = 20;
-        [SerializeField] private string contract = "KT1HtDEdFLQ1m8soCZ7kA1ieMSLxbGSwCX5F";
+        [SerializeField] private string contract = "KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj";
         [SerializeField] private string serverApiUrl = "https://game.baking-bad.org/back/api";
 
         private GameApi _api;
@@ -124,8 +124,7 @@ namespace Managers
         {
             PlayerPrefs.SetString("Address", null);
             GetMenuManager()?.DisableGameMenu();
-            TokensReceived?.Invoke(new List<Nft>());
-            RewardsAndTokensLoaded?.Invoke(new List<Nft>());
+            ResetData();
             Debug.Log($"Wallet {wallet.Address} disconnected");
         }
 
@@ -139,6 +138,8 @@ namespace Managers
             _rewards = new List<Reward>();
             _playerStats = new PlayerStats();
             _gameSession = new GameSession();
+            TokensReceived?.Invoke(new List<Nft>());
+            RewardsAndTokensLoaded?.Invoke(new List<Nft>());
         }
 
         public void StartGame()

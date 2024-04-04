@@ -12,7 +12,8 @@ namespace UI
     {
         [SerializeField] private GameObject effectsPanel;
         [SerializeField] private GameObject effectRowPrefab;
-        [SerializeField] private NftInventoryCreator inventoryPanel;
+        [SerializeField] private NftInventoryCreator nftInventoryCreator;
+        [SerializeField] private GameObject inventoryPanelContent;
 
         private List<Nft> _equipNfts;
         private Dictionary<string, GameObject> _appliedEffects;
@@ -37,7 +38,7 @@ namespace UI
                 }
             }
 
-            inventoryPanel.NftDropped += RemoveNft;
+            nftInventoryCreator.NftDropped += RemoveNft;
             effectsPanel.SetActive(false);
         }
 
@@ -60,7 +61,7 @@ namespace UI
                         _appliedEffects.Remove(param.Name);
                     });
                 }
-                _slotController.DisableSlots(inventoryPanel.transform);
+                _slotController.DisableSlots(inventoryPanelContent.transform);
             }
             
             item.Nft.GameParameters.ForEach(param =>
@@ -128,7 +129,7 @@ namespace UI
                 }
             }
 
-            inventoryPanel.NftDropped -= RemoveNft;
+            nftInventoryCreator.NftDropped -= RemoveNft;
         }
     }
 }

@@ -111,9 +111,12 @@ https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6
 * List of contract tokens
 * List of rewards (Nft's that user able to claim)
 
-So, this collections filling in with appropriate values after `WalletConnected`, `ContractCallCompleted` SDK events.
+So, this collections filling in with appropriate values after `WalletConnected`, `ContractCallCompleted` SDK events in
+`LoadGameNfts` method.
 
-https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L188
+https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L193
+https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L249
+https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L286
 
 Also, this game implement transfer token feature, which is executed when double-clicking on tokens in inventory tab:
 

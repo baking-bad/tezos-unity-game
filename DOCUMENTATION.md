@@ -1,9 +1,9 @@
 [Baking Bad](https://github.com/baking-bad) team glad to introduce shooter demo game build with Unity
 and [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk)
 
-The game is single-player shooter with survival elements. This documentation will describe how core features was
-developed using [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
+## Gamers readme
 
+The game is single-player shooter with survival elements.
 The game process starts with authentication through Tezos wallet or Kukai embed social login.
 
 <p align="center">
@@ -63,15 +63,34 @@ seconds player will be notified that token-transfer operation successfully compl
 </p>
 
 Players can copy provided operation hash and see more details about it on https://tzkt.io/{operationHash}
-Next, players will be able to see all their NFT's on inventory page:
+
+Next, players will be able to see all their NFT's on inventory page and enhance players stats by equipping tokens with
+drag and drop from inventory tab to left. Note: equipped state did not persistently saved after game tab reloading, so
+make sure that all your tokens are equipped after such cases.
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/armor.png?raw=true">
 </p>
 
+
+When equipped, players can see how this tokens enhance players properties in
+effects tab.
+
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/stats.png?raw=true">
+</p>
+
+And last tab - players own stats reduced from all matches.
+
+## Developers docs
+
+This section will describe how core features was
+developed using [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
 First of all, we connected SDK through Unity package manager using git url:
 
-![alt text][package_manager]
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/package-manager.png?raw=true">
+</p>
 
 After waiting a while for the dependencies to be resolved we need to drag and drop 2 prefabs on our game scene:
 `TezosManager` and `TezosAuthenticator` which are located in `Runtime/Prefabs` SDK directory.
@@ -91,16 +110,19 @@ https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6
 * List of user tokens
 * List of contract tokens
 * List of rewards (Nft's that user able to claim)
-* Player stats
 
-[package_manager]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/package-manager.png?raw=true "Package manager"
+So, this collections filling in with appropriate values after `WalletConnected`, `ContractCallCompleted` SDK events.
 
-[connect]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/connect.png?raw=true "Beacon connect window"
+https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L188
 
-[game]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/game.png?raw=true "Game main window"
+Also, this game implement transfer token feature, which is executed when double-clicking on tokens in inventory tab:
 
-[claim]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/claim.png?raw=true "Claim rewards"
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/transfer.png?raw=true">
+</p>
 
-[operationhash]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/success-operation.png?raw=true "Success operation"
+This actions performs easily with next SDK code:
 
-[armor]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/armor.png?raw=true "Armor"
+https://github.com/baking-bad/tezos-unity-game/blob/cad51934c4decf8652b9f57381268019f71e6eca/Assets/Scripts/Managers/UserDataManager.cs#L320
+
+That's pretty much it, more detailed SDK docs [available here](https://opentezos.com/gaming/unity-sdk/).

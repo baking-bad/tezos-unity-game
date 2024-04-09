@@ -6,12 +6,16 @@ developed using [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
 
 The game process starts with authentication through Tezos wallet or Kukai embed social login.
 
-![alt text][connect]
+<p align="center">
+  <img width="600" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/connect.png?raw=true">
+</p>
 
 After connected, the user will be prompted to sign game-generated payload in order to make sure that user have access
 to his address private keys. After success authentication user can start game.
 
-![alt text][game]
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/game.png?raw=true">
+</p>
 
 Player spawns with one low-DPS default weapon (Walky, #4). The goal of the game is to survive as long, as
 possible. Current player HP displays on top left corner (#1). During game session different amount and types of mobs
@@ -47,14 +51,23 @@ For example Armor increases max HP level by 10%. Here is the full list of all av
 After player killed boss and NFT dropped from him, claim rewards button will appear in main menu with total NFT's amount
 available.
 
-![alt text][claim]
+<p align="center">
+  <img width="400" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/claim.png?raw=true">
+</p>
 
 After click on claim and solving captcha, game server will send NFT to player's Tezos address and after approximately 30
 seconds player will be notified that token-transfer operation successfully completed with hash:
 
-![alt text][operationhash]
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/success-operation.png?raw=true">
+</p>
 
-After 
+Players can copy provided operation hash and see more details about it on https://tzkt.io/{operationHash}
+Next, players will be able to see all their NFT's on inventory page:
+
+<p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/armor.png?raw=true">
+</p>
 
 First of all, we connected SDK through Unity package manager using git url:
 
@@ -80,12 +93,14 @@ https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6
 * List of rewards (Nft's that user able to claim)
 * Player stats
 
-[package_manager]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/package-manager.png "Package manager"
+[package_manager]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/package-manager.png?raw=true "Package manager"
 
-[connect]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/connect.png "Beacon connect window"
+[connect]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/connect.png?raw=true "Beacon connect window"
 
-[game]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/game.png "Game main window"
+[game]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/game.png?raw=true "Game main window"
 
-[claim]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/claim.png "Claim rewards"
+[claim]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/claim.png?raw=true "Claim rewards"
 
-[operationhash]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/success-operation.png "Success operation"
+[operationhash]: https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/success-operation.png?raw=true "Success operation"
+
+[armor]: https://github.com/baking-bad/tezos-unity-game/blob/master/images/armor.png?raw=true "Armor"

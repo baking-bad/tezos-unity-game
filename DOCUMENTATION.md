@@ -7,14 +7,14 @@ The game is single-player shooter with survival elements.
 The game process starts with authentication through Tezos wallet or Kukai embed social login.
 
 <p align="center">
-  <img width="600" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/connect.png?raw=true">
+  <img width="600" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/connect.png?raw=true">
 </p>
 
 After connected, the user will be prompted to sign game-generated payload in order to make sure that user have access
 to his address private keys. After success authentication user can start game.
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/game.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/game.png?raw=true">
 </p>
 
 Player spawns with one low-DPS default weapon (Walky, #1). The goal of the game is to survive as long, as
@@ -25,19 +25,18 @@ Controls list:
 | Type         | Type       |
 |--------------|------------|
 | Moving       | W, A, S, D |
-| Shot         | LBM        |
+| Shot         | Left mouse |
 | Swap gun     | E          |
 | Acceleration | Space      |
 | Pause menu   | Esc        |
 
 Once in 4 seconds player can use acceleration, cooldown displays in #2. Current player HP displays on top left
-corner (#3). There's a certain chance of falling out some drop after killing a mob: additional HP, armor and various
-ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega creep with increased HP, current level
-of which you can see on #4. Аfter killing a boss, there's a chance on drop another more powerful weapons and NFT.
-All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own
-different drop chances, because all of them can enhance player in-game stats.
-For example Armor reduces the damage received by the player by 10%. Here is the full list of all available NFT's with
-their drop chances:
+corner (#3). There's a certain chance of falling out some drop after killing a mob: additional HP, shield
+(damage immunity) and various ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega creep
+with increased HP, current level of which you can see on #4. Аfter killing a boss, there's a chance on drop another more
+powerful weapons and NFT. All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own different drop chances, because all of them
+can enhance player in-game stats. For example Armor reduces the damage received by the player by 10%. Here is the full
+list of all available NFT's with their drop chances:
 
 | Token      | Type      |                                    Description                                     |                   Drop chance |
 |------------|-----------|:----------------------------------------------------------------------------------:|------------------------------:|
@@ -64,14 +63,14 @@ After player killed boss and NFT dropped from him, claim rewards button will app
 available.
 
 <p align="center">
-  <img width="400" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/claim.png?raw=true">
+  <img width="400" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/claim.png?raw=true">
 </p>
 
 After click on claim and solving captcha, game server will send NFT to player's Tezos address and after approximately 30
 seconds player will be notified that token-transfer operation successfully completed with hash:
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/success-operation.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/success-operation.png?raw=true">
 </p>
 
 Players can copy provided operation hash and see more details about it on https://tzkt.io/{operationHash}
@@ -81,7 +80,7 @@ drag and drop from inventory tab to left. Note: equipped state did not persisten
 make sure that all your tokens are equipped after such cases.
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/armor.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/armor.png?raw=true">
 </p>
 
 
@@ -89,15 +88,14 @@ When equipped, players can see how this tokens enhance players properties in
 effects tab.
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/effects.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/effects.png?raw=true">
 </p>
 
 And last tab - players own all-time stats.
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/stats.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/stats.png?raw=true">
 </p>
-
 
 ## Developers docs
 
@@ -106,7 +104,7 @@ developed using [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
 First of all, we connected SDK through Unity package manager using git url:
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/package-manager.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/package-manager.png?raw=true">
 </p>
 
 After waiting a while for the dependencies to be resolved we need to drag and drop 2 prefabs on our game scene:
@@ -138,7 +136,7 @@ https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6
 Also, this game implement transfer token feature, which is executed when double-clicking on tokens in inventory tab:
 
 <p align="center">
-  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/transfer.png?raw=true">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/transfer.png?raw=true">
 </p>
 
 This actions performs easily with next SDK code:

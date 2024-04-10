@@ -61,7 +61,15 @@ namespace Weapons
                     {
                         if (hit.collider.CompareTag("Enemy"))
                         {
-                            hit.collider.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                            hit.collider.TryGetComponent<Enemy>(out var enemy);
+
+                            if (enemy == null)
+                            {
+                                enemy = hit.collider.GetComponentInParent<Enemy>();
+                                if (enemy == null) return;
+                            }
+                
+                            enemy.TakeDamage(damage, stunTime);
                         }
                         DrawBuckshot(hit.point);
                     }

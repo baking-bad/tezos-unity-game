@@ -1463,7 +1463,6 @@ GameObject:
   - component: {fileID: 7058811036415695087}
   - component: {fileID: 4117615126816245637}
   - component: {fileID: 4117615126816245636}
-  - component: {fileID: 4117615126816245639}
   m_Layer: 6
   m_Name: Revenant
   m_TagString: Enemy
@@ -1479,7 +1478,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4117615126816245638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0.19999957, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1545,20 +1544,6 @@ MonoBehaviour:
   meleeDamage: 15
   takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   enemyModelCollider: {fileID: 8318011509811294477}
---- !u!136 &4117615126816245639
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4117615126816245638}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 1
-  m_Height: 5
-  m_Direction: 1
-  m_Center: {x: 0, y: 2.55, z: 0}
 --- !u!1 &4208522182682326478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,7 +1817,7 @@ GameObject:
   - component: {fileID: 8318011509811294477}
   m_Layer: 6
   m_Name: body
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

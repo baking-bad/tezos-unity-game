@@ -5,11 +5,11 @@ namespace Weapons
 {
     public class Missile : Bullet
     {
-        private List<GameObject> _affectedEnemies;
+        private List<Enemy> _affectedEnemies;
         
         protected override void Start()
         {
-            _affectedEnemies = new List<GameObject>();
+            _affectedEnemies = new List<Enemy>();
             base.Start();
         }
 
@@ -19,7 +19,7 @@ namespace Weapons
             {
                 if (e.gameObject == null) return;
                 
-                e.GetComponent<Enemy>().TakeDamage(damage, stunTime);
+                e.TakeDamage(damage, stunTime);
             });
             
             Destroy(gameObject);
@@ -27,17 +27,33 @@ namespace Weapons
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && other.enabled)
             {
-                _affectedEnemies.Add(other.gameObject);
+                other.TryGetComponent<Enemy>(out var enemy);
+
+                if (enemy == null)
+                {
+                    enemy = other.GetComponentInParent<Enemy>();
+                    if (enemy == null) return;
+                }
+                
+                _affectedEnemies.Add(enemy);
             }
         }
         
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && other.enabled)
             {
-                _affectedEnemies.Remove(other.gameObject);
+                other.TryGetComponent<Enemy>(out var enemy);
+
+                if (enemy == null)
+                {
+                    enemy = other.GetComponentInParent<Enemy>();
+                    if (enemy == null) return;
+                }
+                
+                _affectedEnemies.Remove(enemy);
             }   
         }
     }

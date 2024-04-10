@@ -1380,7 +1380,7 @@ GameObject:
   - component: {fileID: 4620305202826464494}
   m_Layer: 6
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1986,7 +1986,6 @@ GameObject:
   - component: {fileID: 5858753441334794998}
   - component: {fileID: 4594932722967721868}
   - component: {fileID: 4620305202826464483}
-  - component: {fileID: 4620305202826464493}
   - component: {fileID: 4620305202826464495}
   - component: {fileID: 4594932722967721869}
   m_Layer: 6
@@ -2004,7 +2003,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7427879367777020133}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0.19999981, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2056,20 +2055,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
---- !u!136 &4620305202826464493
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7427879367777020133}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 1
-  m_Height: 4
-  m_Direction: 1
-  m_Center: {x: 0, y: 2.62, z: 0}
 --- !u!114 &4620305202826464495
 MonoBehaviour:
   m_ObjectHideFlags: 0

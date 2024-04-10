@@ -11,14 +11,14 @@ namespace Weapons
         
         public GameObject explosiveEffect;
         public float explosionDelay;
-        private List<GameObject> _affectedEnemies;
+        private List<Enemy> _affectedEnemies;
         private bool _isTimeDetonate;
         
         private SoundManager _soundManager;
 
         private void Start()
         {
-            _affectedEnemies = new List<GameObject>();
+            _affectedEnemies = new List<Enemy>();
             _soundManager = GameObject.FindGameObjectWithTag("GameController")
                 .GetComponent<SoundManager>();
         }
@@ -27,7 +27,15 @@ namespace Weapons
         {
             if (other.CompareTag("Enemy") && other.enabled)
             {
-                _affectedEnemies.Add(other.gameObject);
+                other.TryGetComponent<Enemy>(out var enemy);
+
+                if (enemy == null)
+                {
+                    enemy = other.GetComponentInParent<Enemy>();
+                    if (enemy == null) return;
+                }
+                
+                _affectedEnemies.Add(enemy);
 
                 if (_isTimeDetonate) return;
             
@@ -40,7 +48,15 @@ namespace Weapons
         {
             if (other.CompareTag("Enemy") && other.enabled)
             {
-                _affectedEnemies.Remove(other.gameObject);
+                other.TryGetComponent<Enemy>(out var enemy);
+
+                if (enemy == null)
+                {
+                    enemy = other.GetComponentInParent<Enemy>();
+                    if (enemy == null) return;
+                }
+                
+                _affectedEnemies.Remove(enemy);
             }   
         }
 
@@ -49,7 +65,7 @@ namespace Weapons
             _affectedEnemies.ForEach(e =>
             {
                 if (e.gameObject != null)
-                    e.GetComponent<Enemy>().TakeDamage(damage, stunTime);   
+                    e.TakeDamage(damage, stunTime);   
             });
             
             _soundManager.MineDetanate();

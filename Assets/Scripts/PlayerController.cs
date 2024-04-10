@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private GameObject[] allWeapons;
     [SerializeField] private GameObject shield;
+    [SerializeField] protected LayerMask lookAtMask;
 
     private float _maxHealth;
     private Weapon _currentWeapon;
@@ -255,7 +256,7 @@ public class PlayerController : MonoBehaviour
         _rb.velocity = _movement;
         _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         
-        if (Physics.Raycast(_ray, out _hit))
+        if (Physics.Raycast(_ray, out _hit, 100, lookAtMask))
         {
             transform.LookAt(new Vector3(
                 _hit.point.x,

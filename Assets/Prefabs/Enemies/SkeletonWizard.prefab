@@ -2427,7 +2427,6 @@ GameObject:
   - component: {fileID: 9182071036468629039}
   - component: {fileID: 5275436095046908991}
   - component: {fileID: 3465641881406897167}
-  - component: {fileID: 3465641881406897164}
   - component: {fileID: 3465641881406897166}
   - component: {fileID: 3465641881406897165}
   m_Layer: 6
@@ -2492,20 +2491,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
---- !u!136 &3465641881406897164
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5275436095046908988}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 1.5
-  m_Height: 4.6
-  m_Direction: 1
-  m_Center: {x: 0, y: 2.6, z: 0}
 --- !u!114 &3465641881406897166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2526,7 +2511,6 @@ MonoBehaviour:
   meleeDamage: 0
   takeDamageEffect: {fileID: 250462415662600097, guid: 3bda089ba925944988b299211eec12fc, type: 3}
   enemyModelCollider: {fileID: 3118297420613701209}
-  healthBar: {fileID: 0}
 --- !u!114 &3465641881406897165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3897,7 +3881,7 @@ GameObject:
   - component: {fileID: 3118297420613701209}
   m_Layer: 6
   m_Name: Skeleton
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

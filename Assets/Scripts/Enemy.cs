@@ -47,7 +47,6 @@ public class Enemy : MonoBehaviour
     private float _maxDistanceForRangedEnemy = 8;
     
     [SerializeField] private Collider enemyModelCollider;
-    private Collider _hitCollider;
 
     private void Awake()
     {
@@ -61,7 +60,6 @@ public class Enemy : MonoBehaviour
             .GetComponent<PlayerController>();
         _animator = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
-        _hitCollider = GetComponent<Collider>();
         TryGetComponent<Weapon>(out _weapon);
         _normalSpeed = speed;
         _levelManager = GameObject.FindGameObjectWithTag("GameController")
@@ -79,7 +77,6 @@ public class Enemy : MonoBehaviour
             _isKilled = true;
             _animator.SetBool("dead", true);
             EnemyKilled?.Invoke(this, transform, _killAwards);
-            _hitCollider.enabled = false;
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
             if (_weapon != null) _weapon.enabled = false;

@@ -99,8 +99,7 @@ namespace UI
 
 		public Action LoadingScreenShowed;
 		private AsyncOperation _gameSceneOperation;
-		private bool _hasActiveGameSession;
-		
+
 		[DllImport("__Internal")]
 		private static extern void ShowCaptchaJS();
 		
@@ -133,6 +132,15 @@ namespace UI
 			primaryHeroes[index].SetActive(true);
 			var indexVfx = Random.Range(0, vfxs.Length);
 			vfxs[indexVfx].SetActive(true);
+		}
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				ReturnMenu();
+				Position1();
+			}
 		}
 
 		public void EnableGameMenu()

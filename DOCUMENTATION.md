@@ -22,7 +22,7 @@ possible. Current player HP displays on top left corner (#1). During game sessio
 will be spawned depend on current threat value (#3). There's a certain chance of falling out some drop after killing a
 mob: additional HP, armor and various ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega
 creep with increased HP, current level of which you can see on #2. Аfter killing a boss, there's a chance on drop
-another more powerful weapons and NFT. NFT drop chance increasing linearly from 1% on first boss to 3.9% on last boss.
+another more powerful weapons and NFT. 
 All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own
 different drop chances, because all of them can enhance player in-game stats.
 For example Armor increases max HP level by 10%. Here is the full list of all available NFT's with their drop chances:

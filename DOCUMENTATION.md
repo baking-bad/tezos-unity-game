@@ -17,15 +17,27 @@ to his address private keys. After success authentication user can start game.
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/game.png?raw=true">
 </p>
 
-Player spawns with one low-DPS default weapon (Walky, #4). The goal of the game is to survive as long, as
-possible. Current player HP displays on top left corner (#1). During game session different amount and types of mobs
-will be spawned depend on current threat value (#3). There's a certain chance of falling out some drop after killing a
-mob: additional HP, armor and various ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega
-creep with increased HP, current level of which you can see on #2. Аfter killing a boss, there's a chance on drop
-another more powerful weapons and NFT. 
+Player spawns with one low-DPS default weapon (Walky, #1). The goal of the game is to survive as long, as
+possible.
+
+Controls list:
+
+| Type         | Type       |
+|--------------|------------|
+| Moving       | W, A, S, D |
+| Shot         | LBM        |
+| Swap gun     | E          |
+| Acceleration | Space      |
+| Pause menu   | Esc        |
+
+Once in 4 seconds player can use acceleration, cooldown displays in #2. Current player HP displays on top left
+corner (#3). There's a certain chance of falling out some drop after killing a mob: additional HP, armor and various
+ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega creep with increased HP, current level
+of which you can see on #4. Аfter killing a boss, there's a chance on drop another more powerful weapons and NFT.
 All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own
 different drop chances, because all of them can enhance player in-game stats.
-For example Armor increases max HP level by 10%. Here is the full list of all available NFT's with their drop chances:
+For example Armor reduces the damage received by the player by 10%. Here is the full list of all available NFT's with
+their drop chances:
 
 | Token      | Type      |                                    Description                                     |                   Drop chance |
 |------------|-----------|:----------------------------------------------------------------------------------:|------------------------------:|
@@ -77,10 +89,15 @@ When equipped, players can see how this tokens enhance players properties in
 effects tab.
 
 <p align="center">
+  <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/effects.png?raw=true">
+</p>
+
+And last tab - players own all-time stats.
+
+<p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/feat/docs/images/stats.png?raw=true">
 </p>
 
-And last tab - players own stats reduced from all matches.
 
 ## Developers docs
 

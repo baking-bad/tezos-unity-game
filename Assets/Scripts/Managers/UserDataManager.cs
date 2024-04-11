@@ -37,7 +37,7 @@ namespace Managers
         public Action<List<Nft>> RewardsAndTokensLoaded;
         public Action GameStarted;
 
-        [SerializeField] private int maxTokenCount = 20;
+        [SerializeField] private int maxTokenCount = 100;
         [SerializeField] private string contract = "KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj";
         [SerializeField] private string serverApiUrl = "https://game.baking-bad.org/back/api";
 

@@ -32,6 +32,9 @@ namespace UI
         public GameObject claimRewardButton;
         public GameObject changeWalletButton;
         public GameObject inventoryButton;
+        
+        [Header("LABELS")]
+        public TMP_Text appVersion;
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -80,7 +83,7 @@ namespace UI
         public Slider loadingBar;
         public TMP_Text loadPromptText;
 		public KeyCode userPromptKey;
-		
+
 		private GameObject _listener;
 		private float _sfxVolume;
 		
@@ -113,6 +116,7 @@ namespace UI
 
 		void Start()
 		{
+			appVersion.text = "v. " + Application.version;
 			if (Camera.main == null) return;
 
 	        _listener = Camera.main.gameObject;

@@ -40,17 +40,17 @@
 
       .progress-container {
         position: absolute;
-        top: 80%;
+        bottom: 50px;
         width: 100%;
-        transform: translateY(-50%);
         height: 30px;
+        transform: translateY(-50%);
         background-color: #f3f3f3;
       }
 
       .progress-bar {
         height: 100%;
-        background-color: rgb(0, 82, 124);
-        width: 0%;
+        background-color: #364AAD;
+        width: 0;
         transition: width 0.3s ease-in-out;
       }
 
@@ -60,6 +60,26 @@
         margin-top: 20px;
         color: white;
         font-family: 'Uniform Regular', sans-serif;
+      }
+
+      .overlay {
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        position: absolute;
+        top: 0;
+      }
+
+      .gif-container {
+        height: calc(100% - 120px);
+      }
+
+      .gif-container img {
+        width: auto;
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+        display: block;
       }
     </style>
   </head>
@@ -98,9 +118,6 @@
             const loadingValueString = (loadingValue * 100).toFixed(2) + "%";
             window.progressBarEl.style.width = loadingValueString;
             window.loadingValueTextEl.innerText = loadingValueString;
-            if (loadingValue > 0.98) {
-              window.progressBarContainer.style.display = "none";
-            }
           } else {
             window.progressBarContainer = document.querySelector(".progress-container");
             window.progressBarEl = document.querySelector(".progress-bar");
@@ -115,6 +132,11 @@
         const canvas = document.querySelector('#unity-canvas');
         canvas.style.width = `${document.documentElement.clientWidth}px`;
         canvas.style.height = `${document.documentElement.clientHeight}px`;
+        
+        window.UnityReadyCallback = function () {
+          const overlay = document.querySelector(".overlay");
+          overlay.style.display = 'none';
+        }
       });
 
       function showCaptcha() {
@@ -146,9 +168,14 @@
       </div>
     </div>
 
-    <div class="progress-container">
-      <div class="progress-bar"></div>
-      <h3 class="loading-text">Loading:&nbsp;<span class="loading-value"></span></h3>
+    <div class="overlay">
+      <div class="gif-container">
+        <img src="StreamingAssets/bb.gif" alt="Baking Bad">
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+        <h3 class="loading-text">Loading:&nbsp;<span class="loading-value"></span></h3>
+      </div>
     </div>
   </body>
 </html>

@@ -58,7 +58,7 @@ namespace Managers
 
                 case WeaponType.Explosive:
                     AudioSource.PlayClipAtPoint(
-                        weapon.name == "Zoooka" ? explosiveFire : minePlanted,
+                        weapon.name.ToLower() == "zoooka" ? explosiveFire : minePlanted,
                         _listener.transform.position, _sfxVolume);
                     break;
             }

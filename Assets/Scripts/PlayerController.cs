@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
         var weapons = GetAllWeapons();
         foreach (var w in weapons)
         {
-            if (item.Name != w.name) continue;
+            if (!string.Equals(item.Name, w.name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
             if (item.Type.ToString() != w.GetComponent<Weapon>().weaponType.ToString()) continue;
             

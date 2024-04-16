@@ -475,14 +475,29 @@ namespace UI
         {
             CopyToClipboard(TezosManager.Instance.Wallet.GetWalletAddress());
         }
-		
+
+		public void OpenInTzKt()
+		{
+			var network = TezosManager.Instance.Config.Network.ToString();
+			var address = TezosManager.Instance.Wallet.GetWalletAddress();
+			Application.OpenURL($"https://{network}.tzkt.io/{address}/balances/nft");
+		}
+
+		public void OpenBakingBad()
+		{
+			Application.OpenURL("https://bakingbad.dev");
+		}
+
 		private void CopyToClipboard(string text)
 		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			CopyToClipboardJS(text);
-#else
-			GUIUtility.systemCopyBuffer = text;
-#endif
+			if (Application.platform == RuntimePlatform.WebGLPlayer)
+			{
+				CopyToClipboardJS(text);
+			}
+			else
+			{
+				GUIUtility.systemCopyBuffer = text;
+			}
 		}
 	}
 }

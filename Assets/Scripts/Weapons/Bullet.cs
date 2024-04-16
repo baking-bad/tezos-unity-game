@@ -38,9 +38,7 @@ namespace Weapons
             if (hit.collider == null) return;
             
             if (hit.collider.CompareTag("Bullet")) return;
-            
-            if (hit.collider.CompareTag("Aura")) return;
-            
+
             if (hit.collider.CompareTag("Enemy") && !enemyBullet)
             {
                 hit.collider.TryGetComponent<Enemy>(out var enemy);

@@ -11,6 +11,7 @@ namespace Weapons
         [SerializeField] private float buckshotLifeTime;
         [SerializeField] private float inaccurancyDistanceBtwBuckshot;
         [SerializeField] private GameObject buckshot;
+        [SerializeField] protected LayerMask mask;
 
         protected override void Awake()
         {
@@ -55,7 +56,7 @@ namespace Weapons
 
             for (var i = 0; i < bulletsPerShot; i++)
             {
-                if (Physics.Raycast(shotPoint.position, GetShootingDirection(), out var hit, distance))
+                if (Physics.Raycast(shotPoint.position, GetShootingDirection(), out var hit, distance, mask))
                 {
                     if (hit.collider != null)
                     {
@@ -71,6 +72,7 @@ namespace Weapons
                 
                             enemy.TakeDamage(damage, stunTime);
                         }
+
                         DrawBuckshot(hit.point);
                     }
                     else

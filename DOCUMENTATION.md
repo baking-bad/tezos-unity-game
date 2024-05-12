@@ -11,7 +11,26 @@ The game process starts with authentication through Tezos wallet or Kukai embed 
 </p>
 
 After connected, the user will be prompted to sign game-generated payload in order to make sure that user have access
-to his address private keys. After success authentication user can start game.
+to his address private keys.
+
+### Signing process
+Step-by-step signing process looks like:
+1. Unity client on startup performs get query with Tezos address `public_key` on [/payload/get/](https://game.baking-bad.org/back/api/payload/get/)
+2. Game backend generates random payload string here: https://github.com/k-karuna/tezos_game_back/blob/e6bc9c021b86704ec1ce1b5e3fd799977d05034f/api/views.py#L44
+and receives corresponding payload string.
+3. Once payload string received, Unity game client calls SDK `RequestSignPayload` method https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L108
+with received payload.
+4. User signs payload with his Tezos wallet.
+5. After `PayloadSigned` event occurs https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L76
+Unity game client performs checking of returned SigningResult through [/payload/verify/](https://game.baking-bad.org/back/api/payload/verify/)
+6. Game backend performs signature validation with provided `public_key` and `signature` parameters.
+7. After success signature validation user can start game.
+
+### Backend API
+Full game backend API specs can be found in https://game.baking-bad.org/back/swagger/
+All corresponding handlers for each HTTP endpoint can be found here https://github.com/k-karuna/tezos_game_back/blob/main/api/views.py
+
+### Game description
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/game.png?raw=true">
@@ -32,8 +51,8 @@ Controls list:
 
 Once in 4 seconds player can use acceleration, cooldown displays in #2. Current player HP displays on top left
 corner (#3). There's a certain chance of falling out some drop after killing a mob: additional HP, shield
-(damage immunity) and various ammo. Additionally to common creeps at every 10 waves Boss will be spawned - mega creep
-with increased HP, current level of which you can see on #4. Аfter killing a boss, there's a chance on drop another more
+(damage immunity) and various ammo. Additionally, to common creeps at every 10 waves Boss will be spawned - mega creep
+with increased HP, current level of which you can see on #4. After killing a boss, there's a chance on drop another more
 powerful weapons and NFT. All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own different drop chances, because all of them
 can enhance player in-game stats. For example Armor reduces the damage received by the player by 10%. Here is the full
 list of all available NFT's with their drop chances:
@@ -96,6 +115,16 @@ And last tab - players own all-time stats.
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/stats.png?raw=true">
 </p>
+
+### NFT's managing
+Game NFT tokens contract: https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/operations/
+This token contract is [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md).
+Contract administrator is https://tzkt.io/tz1SxjxDH6UA1SmdxNnuaQT94JttgxkJ2zrR/operations/
+All NFT's pre-minted in amount 1000 of each other (total supply of Armor token for example can be found here
+https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/tokens/1/holders).
+When user click on `Claim Reward` button on the main menu, game client performs HTTP request to https://game.baking-bad.org/back/api/drop/transfer/
+with solved captcha and his Tezos address. After this backend side calls `transfer` entrypoint on Game token contract from 
+contract administrator (whose private key stores on backend side) to the user's address.
 
 ## Developers docs
 

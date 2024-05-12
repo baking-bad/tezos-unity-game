@@ -172,21 +172,21 @@ namespace UI
 			// check texture quality
 			if (PlayerPrefs.GetInt("Textures") == 0)
 			{
-				QualitySettings.masterTextureLimit = 2;
+				QualitySettings.globalTextureMipmapLimit = 2;
 				texturelowtextLINE.gameObject.SetActive(true);
 				texturemedtextLINE.gameObject.SetActive(false);
 				texturehightextLINE.gameObject.SetActive(false);
 			}
 			else if (PlayerPrefs.GetInt("Textures") == 1)
 			{
-				QualitySettings.masterTextureLimit = 1;
+				QualitySettings.globalTextureMipmapLimit = 1;
 				texturelowtextLINE.gameObject.SetActive(false);
 				texturemedtextLINE.gameObject.SetActive(true);
 				texturehightextLINE.gameObject.SetActive(false);
 			}
 			else if (PlayerPrefs.GetInt("Textures") == 2)
 			{
-				QualitySettings.masterTextureLimit = 0;
+				QualitySettings.globalTextureMipmapLimit = 0;
 				texturelowtextLINE.gameObject.SetActive(false);
 				texturemedtextLINE.gameObject.SetActive(false);
 				texturehightextLINE.gameObject.SetActive(true);
@@ -391,7 +391,7 @@ namespace UI
 		public void TexturesLow()
 		{
 			PlayerPrefs.SetInt("Textures", 0);
-			QualitySettings.masterTextureLimit = 2;
+			QualitySettings.globalTextureMipmapLimit = 2;
 			texturelowtextLINE.gameObject.SetActive(true);
 			texturemedtextLINE.gameObject.SetActive(false);
 			texturehightextLINE.gameObject.SetActive(false);
@@ -400,7 +400,7 @@ namespace UI
 		public void TexturesMed()
 		{
 			PlayerPrefs.SetInt("Textures", 1);
-			QualitySettings.masterTextureLimit = 1;
+			QualitySettings.globalTextureMipmapLimit = 1;
 			texturelowtextLINE.gameObject.SetActive(false);
 			texturemedtextLINE.gameObject.SetActive(true);
 			texturehightextLINE.gameObject.SetActive(false);
@@ -409,7 +409,7 @@ namespace UI
 		public void TexturesHigh()
 		{
 			PlayerPrefs.SetInt("Textures", 2);
-			QualitySettings.masterTextureLimit = 0;
+			QualitySettings.globalTextureMipmapLimit = 0;
 			texturelowtextLINE.gameObject.SetActive(false);
 			texturemedtextLINE.gameObject.SetActive(false);
 			texturehightextLINE.gameObject.SetActive(true);

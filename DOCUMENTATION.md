@@ -1,34 +1,48 @@
-[Baking Bad](https://github.com/baking-bad) team glad to introduce shooter demo game build with Unity
-and [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk)
+The [Baking Bad](https://github.com/baking-bad) team is glad to introduce this demo game built with Unity
+and the [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
 
 ## Gamers readme
 
-The game is single-player shooter with survival elements.
-The game process starts with authentication through Tezos wallet or Kukai embed social login.
+The game is a single-player shooter with survival elements.
+The game process starts with authentication through a Tezos wallet.
+You can use a wallet in a browser extension or mobile app such as [Temple](https://templewallet.com/) or the [Kukai](https://wallet.kukai.app/) social wallet.
 
 <p align="center">
   <img width="600" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/connect.png?raw=true">
 </p>
 
-After connected, the user will be prompted to sign game-generated payload in order to make sure that user have access
-to his address private keys.
+The game prompts you to connect your wallet.
+Then to verify that you have the private keys for the account, it prompts you to sign a payload of random text.
+The game does not require any payment.
 
-### Signing process
-Step-by-step signing process looks like:
-1. Unity client on startup performs get query with Tezos address `public_key` on [/payload/get/](https://game.baking-bad.org/back/api/payload/get/)
-2. Game backend generates random payload string here: https://github.com/k-karuna/tezos_game_back/blob/e6bc9c021b86704ec1ce1b5e3fd799977d05034f/api/views.py#L44
-and receives corresponding payload string.
-3. Once payload string received, Unity game client calls SDK `RequestSignPayload` method https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L108
-with received payload.
-4. User signs payload with his Tezos wallet.
-5. After `PayloadSigned` event occurs https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L76
-Unity game client performs checking of returned SigningResult through [/payload/verify/](https://game.baking-bad.org/back/api/payload/verify/)
-6. Game backend performs signature validation with provided `public_key` and `signature` parameters.
-7. After success signature validation user can start game.
+## Developer information
+
+The following sections provide information about how the game is set up so you can use it as a model for your own games.
+For more developer information about the Tezos Unity SDK, see https://docs.tezos.com/unity.
+
+### Authentication
+
+The game uses the user's Tezos account as a source of authentication.
+It prompts the user to connect their Tezos wallet so it can retrieve the user's account address.
+For more information about connecting to user wallets, see [Connecting accounts](https://docs.tezos.com/unity/connecting-accounts) in the SDK documentation.
+
+When the wallet is connected, the game prompts the user to sign a payload to prove that they have the key for the account.
+The process follows these general steps:
+
+1. The Unity client passes the public key of the user's account to the  backend's [/payload/get/](https://game.baking-bad.org/back/api/payload/get/) endpoint.
+2. The backend generates a random payload string with this code: https://github.com/k-karuna/tezos_game_back/blob/e6bc9c021b86704ec1ce1b5e3fd799977d05034f/api/views.py#L44 and returns it to the Unity client.
+3. The Unity game client calls the SDK `RequestSignPayload` method with the payload: https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L108.
+4. The user signs the payload in their Tezos wallet.
+5. The SDK triggers the `PayloadSigned` event and the SDK handler receives the signed payload: https://github.com/baking-bad/tezos-unity-game/blob/7e3fb6454896896f7e0ac77f09d2b5f02e104aa7/Assets/Scripts/Managers/UserDataManager.cs#L76.
+6. The game client passes the signed payload to the backend's [/payload/verify/](https://game.baking-bad.org/back/api/payload/verify/) endpoint.
+7. The backend performs signature validation with the provided `public_key` and `signature` parameters and returns a success or failure message to the Unity client.
+8. If the validation succeeded, the user can start playing the game.
 
 ### Backend API
-Full game backend API specs can be found in https://game.baking-bad.org/back/swagger/
-All corresponding handlers for each HTTP endpoint can be found here https://github.com/k-karuna/tezos_game_back/blob/main/api/views.py
+
+The backend accepts requests from the game client through a REST API.
+Its specs are available here: https://game.baking-bad.org/back/swagger/.
+All corresponding handlers for each HTTP endpoint can be found here: https://github.com/k-karuna/tezos_game_back/blob/main/api/views.py
 
 ### Game description
 
@@ -36,8 +50,7 @@ All corresponding handlers for each HTTP endpoint can be found here https://gith
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/game.png?raw=true">
 </p>
 
-Player spawns with one low-DPS default weapon (Walky, #1). The goal of the game is to survive as long, as
-possible.
+The player spawns with one low-DPS default weapon (Walky), which is shown as the active weapon (#1 in the annotated screencapture above). The goal of the game is to survive as long as possible.
 
 Controls list:
 
@@ -49,13 +62,17 @@ Controls list:
 | Acceleration | Space      |
 | Pause menu   | Esc        |
 
-Once in 4 seconds player can use acceleration, cooldown displays in #2. Current player HP displays on top left
-corner (#3). There's a certain chance of falling out some drop after killing a mob: additional HP, shield
-(damage immunity) and various ammo. Additionally, to common creeps at every 10 waves Boss will be spawned - mega creep
-with increased HP, current level of which you can see on #4. After killing a boss, there's a chance on drop another more
-powerful weapons and NFT. All NFT's are [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and has their own different drop chances, because all of them
-can enhance player in-game stats. For example Armor reduces the damage received by the player by 10%. Here is the full
-list of all available NFT's with their drop chances:
+Once every 4 seconds, the player can use acceleration; its cooldown displays in #2.
+The current player's HP appears in the top left corner (#3).
+After killing a mob, sometimes a powerup appears: additional HP, shield
+(damage immunity), and various ammo.
+Additionally, at every 10 waves a boss is spawned - a mega creep
+with increased HP, the current level of which you can see on #4.
+
+After killing a boss, there's a chance that more powerful gear drops.
+This gear is represented by Tezos [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) tokens and each has their own different drop chances, because all of them
+can enhance player in-game stats in different ways. For example, armor reduces the damage received by the player by 10%. Here is the full
+list of all available tokens with their drop chances:
 
 | Token      | Type      |                                    Description                                     |                   Drop chance |
 |------------|-----------|:----------------------------------------------------------------------------------:|------------------------------:|
@@ -78,69 +95,69 @@ list of all available NFT's with their drop chances:
 | 	Precise 2 | Module    |            Combat module for the armored suit. Increases damage by 10%.            |                         3.77% |
 | 	Precise 3 | Module    |            Combat module for the armored suit. Increases damage by 15%.            |                         1.89% |
 
-After player killed boss and NFT dropped from him, claim rewards button will appear in main menu with total NFT's amount
-available.
+When the player kills a boss that drops a token, the claim rewards button appears in the main menu:
 
 <p align="center">
   <img width="400" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/claim.png?raw=true">
 </p>
 
-After click on claim and solving captcha, game server will send NFT to player's Tezos address and after approximately 30
-seconds player will be notified that token-transfer operation successfully completed with hash:
+After the player clicks the button and solves a captcha, the game client triggers the backend to send the tokens to the player's Tezos address.
+After approximately 30 seconds, the player is notified that the token transfer operation successfully completed and the UI shows the hash of the operation:
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/success-operation.png?raw=true">
 </p>
 
-Players can copy provided operation hash and see more details about it on https://tzkt.io/{operationHash}
+Players can copy the provided operation hash and see more details about it in a block explorer, such as https://tzkt.io/{operationHash}.
 
-Next, players will be able to see all their NFT's on inventory page and enhance players stats by equipping tokens with
-drag and drop from inventory tab to left. Note: equipped state did not persistently saved after game tab reloading, so
-make sure that all your tokens are equipped after such cases.
+Next, players can see all their tokens on the inventory page and enhance their stats by dragging them from the inventory to their character.
+Note: The character's loadout is not saved after the game client reloads, so players must make sure to equip their tokens before each game.
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/armor.png?raw=true">
 </p>
 
-
-When equipped, players can see how this tokens enhance players properties in
-effects tab.
+When equipped, players can see how their tokens enhance their character's properties in the effects tab.
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/effects.png?raw=true">
 </p>
 
-And last tab - players own all-time stats.
+The last tab shows the player's all-time stats, which are stored in hte backend database.
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/stats.png?raw=true">
 </p>
 
-### NFT's managing
-Game NFT tokens contract: https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/operations/
-This token contract is [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md).
-Contract administrator is https://tzkt.io/tz1SxjxDH6UA1SmdxNnuaQT94JttgxkJ2zrR/operations/
-All NFT's pre-minted in amount 1000 of each other (total supply of Armor token for example can be found here
-https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/tokens/1/holders).
-When user click on `Claim Reward` button on the main menu, game client performs HTTP request to https://game.baking-bad.org/back/api/drop/transfer/
-with solved captcha and his Tezos address. After this backend side calls `transfer` entrypoint on Game token contract from 
-contract administrator (whose private key stores on backend side) to the user's address.
+### Token management
+
+The backend uses a smart contract to manage tokens: https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/operations/.
+This token contract is compliant with the [FA2](https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md) standard, which allows other applications such as wallets and block explorers to show information about them and handle transfers.
+
+The contract pre-minted 1000 of each type of token.
+For example, you can see the total supply of the Armor token here:
+https://tzkt.io/KT1TSZfPJ5uZW1GjcnXmvt1npAQ2nh5S1FAj/tokens/1/holders.
+When the user clicks the `Claim Reward` button in the main menu, the game client sends an HTTP request to https://game.baking-bad.org/back/api/drop/transfer/
+with the solved captcha and the Tezos address.
+Then the backend calls the contract's `transfer` entrypoint from
+the contract administrator account, whose private key is stored on the backend.
+The contract updates its ledger to show that the user account now has one token of the specified token type.
 
 ## Developers docs
 
-This section will describe how core features was
-developed using [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
-First of all, we connected SDK through Unity package manager using git url:
+This section describes how core features were developed using the [Tezos Unity SDK](https://github.com/trilitech/tezos-unity-sdk).
+
+First of all, we installed the SDK through the Unity package manager using the git URL of the SDK:
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/package-manager.png?raw=true">
 </p>
 
-After waiting a while for the dependencies to be resolved we need to drag and drop 2 prefabs on our game scene:
-`TezosManager` and `TezosAuthenticator` which are located in `Runtime/Prefabs` SDK directory.
+After waiting a while for the dependencies to be resolved we dragged and dropped 2 prefabs on our game scene:
+`TezosManager` and `TezosAuthenticator` which are located in the `Runtime/Prefabs` SDK directory.
 
-Adding `TezosManager` on our scene creates `TezosManager` singleton object which is entrypoint to whole SDK features.
-For example here in `UserDataManager` we are subscribing to SDK events:
+Adding `TezosManager` to our scene creates the `TezosManager` singleton object, which is the entrypoint to the SDK features.
+For example, here in `UserDataManager` the application subscribes to these SDK events:
 
 * WalletConnected
 * WalletDisconnected
@@ -149,27 +166,27 @@ For example here in `UserDataManager` we are subscribing to SDK events:
 
 https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L67-L70
 
-`UserDataManager` also is a game singleton object that stores all user-specific data in game, for example:
+`UserDataManager` is a game singleton object that stores all user-specific data in the game, including:
 
 * List of user tokens
 * List of contract tokens
-* List of rewards (Nft's that user able to claim)
+* List of rewards (tokens that the user is able to claim)
 
-So, this collections filling in with appropriate values after `WalletConnected`, `ContractCallCompleted` SDK events in
-`LoadGameNfts` method.
+This object fills in appropriate values after the `WalletConnected`, `ContractCallCompleted` SDK events in the `LoadGameNfts` method.
+Here is the relevant code:
 
 https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L193
 https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L249
 https://github.com/baking-bad/tezos-unity-game/blob/bc2b576c7172f798a06f9be985f6fb44b817401a/Assets/Scripts/Managers/UserDataManager.cs#L286
 
-Also, this game implement transfer token feature, which is executed when double-clicking on tokens in inventory tab:
+Also, the game allows users to transfer tokens by double-clicking on tokens in the inventory tab:
 
 <p align="center">
   <img width="800" src="https://github.com/baking-bad/tezos-unity-game/blob/master/images/transfer.png?raw=true">
 </p>
 
-This actions performs easily with next SDK code:
+The game uses the [`TokenContract`](https://docs.tezos.com/unity/reference/TokenContract) object's [`transfer`](https://docs.tezos.com/unity/reference/TokenContract#transfer) method to transfer tokens:
 
 https://github.com/baking-bad/tezos-unity-game/blob/cad51934c4decf8652b9f57381268019f71e6eca/Assets/Scripts/Managers/UserDataManager.cs#L320
 
-That's pretty much it, more detailed SDK docs [available here](https://docs.tezos.com/unity).
+For more detailed information on using the SDK, see [Tezos Unity SDK](https://docs.tezos.com/unity).

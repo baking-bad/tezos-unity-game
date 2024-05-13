@@ -9,7 +9,7 @@ This **Shooter Game** demonstrates key features of the "Tezos SDK For Unity".
 ### Documentation
 
 * [Game documentation](https://github.com/baking-bad/tezos-unity-game/blob/master/DOCUMENTATION.md)
-* [Tezos Unity SDK Documentation](https://opentezos.com/gaming/unity-sdk)
+* [Tezos Unity SDK Documentation](https://docs.tezos.com/unity)
 
 ### Play game and enjoy 👇
 

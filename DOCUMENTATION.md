@@ -172,4 +172,4 @@ This actions performs easily with next SDK code:
 
 https://github.com/baking-bad/tezos-unity-game/blob/cad51934c4decf8652b9f57381268019f71e6eca/Assets/Scripts/Managers/UserDataManager.cs#L320
 
-That's pretty much it, more detailed SDK docs [available here](https://opentezos.com/gaming/unity-sdk/).
+That's pretty much it, more detailed SDK docs [available here](https://docs.tezos.com/unity).
